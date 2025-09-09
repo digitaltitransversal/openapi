@@ -20,7 +20,7 @@ properties:
         example: 1677196303
       type:
         type: string
-        example: "cash"
+        example: "cash or spin_by_oxxo"
       payment_source_id:
         type: string
         example: "src_2tLkkyfMPh6v7pFry"
