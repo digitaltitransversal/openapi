@@ -3,28 +3,22 @@ get:
     - Api Keys
   operationId: getApiKey
   summary: Get Api Key
-  description: "Gets a api key that corresponds to a api key ID"
+  description: Gets an API key by its ID.
+  security:
+    - basicAuth: []
   responses:
-    200:
+    "200":
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: "../../schemas/api_keys/api_key_response.yml"
-      headers:
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
-    401:
+    "401":
       $ref: "../errors/401.yml"
-    404:
+    "404":
       $ref: "../errors/404.yml"
-    500:
+    "500":
       $ref: "../errors/500.yml"
-  security:
-    - bearerAuth: []
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
@@ -34,23 +28,11 @@ put:
     - Api Keys
   operationId: updateApiKey
   summary: Update Api Key
-  description: "Update an existing api key"
-  responses:
-    "200":
-      description: successful operation
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-            $ref: ../../schemas/api_keys/api_key_response.yml
-    404:
-      $ref: "../errors/404.yml"
-    401:
-      $ref: "../errors/401.yml"
-    500:
-      $ref: "../errors/500.yml"
+  description: Update an existing API key.
   security:
-    - bearerAuth: []
+    - basicAuth: []
   requestBody:
+    required: true
     content:
       application/json:
         schema:
@@ -60,11 +42,30 @@ put:
             active:
               type: boolean
               example: true
-              description: Indicates if the webhook key is active
+              description: Indicates whether the API key is active.
             description:
               type: string
               example: online store
-              description: A name or brief explanation of what this api key is used for
+              description: A name or brief explanation of what this API key is used for.
+  responses:
+    "200":
+      description: successful operation
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ../../schemas/api_keys/api_key_response.yml
+    "401":
+      $ref: "../errors/401.yml"
+    "404":
+      $ref: "../errors/404.yml"
+    "422":
+      description: parameter validation error
+      content:
+        application/json:
+          schema:
+            $ref: "../errors/422.yml"
+    "500":
+      $ref: "../errors/500.yml"
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
@@ -73,12 +74,14 @@ delete:
     - Api Keys
   operationId: deleteApiKey
   summary: Delete Api Key
-  description: "Deletes a api key that corresponds to a api key ID"
+  description: Deletes an API key by its ID.
+  security:
+    - basicAuth: []
   responses:
-    200:
+    "200":
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             title: delete_api_keys_response
             allOf:
@@ -88,20 +91,18 @@ delete:
                   deleted:
                     type: boolean
                     example: true
-      headers:
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
-    401:
+    "401":
       $ref: "../errors/401.yml"
-    404:
+    "404":
       $ref: "../errors/404.yml"
-    500:
+    "422":
+      description: parameter validation error
+      content:
+        application/json:
+          schema:
+            $ref: "../errors/422.yml"
+    "500":
       $ref: "../errors/500.yml"
-  security:
-    - bearerAuth: []
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
