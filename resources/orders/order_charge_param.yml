@@ -3,27 +3,39 @@ post:
     - Charges
   operationId: ordersCreateCharge
   summary: Create charge
-  description: Create charge for an existing orden
+  description: |
+    Create a charge for an existing order.
+
+    Notes:
+    - This endpoint creates a charge **associated to the given order** (`order_id`).
+    - Some payment methods may result in a `pending_payment` charge status and can affect subsequent order operations.
+    - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
+
+  security:
+    - basicAuth: []
+
+  requestBody:
+    $ref: "../../requestBodies/charges/charge_create.yml"
+
   responses:
-    200:
+    "200":
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
-            $ref: ../../schemas/charges/charge_order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    404:
-     $ref: '../errors/404.yml'
-    428:
-     $ref: '../errors/428.yml'
-    500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/charges/charge_create.yml'
+            $ref: "../../schemas/charges/charge_order_response.yml"
+    "401":
+      $ref: "../errors/401.yml"
+    "404":
+      $ref: "../errors/404.yml"
+    "422":
+      $ref: "../errors/422.yml"
+    "428":
+      $ref: "../errors/428.yml"
+    "500":
+      $ref: "../errors/500.yml"
+
   parameters:
-    - $ref: '../../parameters/commons/path_param/id.yml'
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+    - $ref: "../../parameters/commons/path_param/id.yml"
+    - $ref: "../../parameters/commons/headers/accept_language.yml"
+    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"

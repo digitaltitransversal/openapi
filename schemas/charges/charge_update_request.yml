@@ -1,7 +1,11 @@
 title: charge_update_request
-description: requested field for update a charge
+type: object
+description: Request body to update a charge. Only `reference_id` can be updated.
 properties:
   reference_id:
     type: string
     example: "278482642"
-    description: "custom reference id"
+    description: Custom reference ID.
+    minLength: 1
+    maxLength: 99
+    nullable: true
