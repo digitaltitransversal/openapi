@@ -1,18 +1,22 @@
 title: update_fiscal_entity_request
+type: object
 properties:
   address:
     allOf:
       - $ref: ./customer_address.yml
   tax_id:
     type: string
+
   email:
     type: string
+
   phone:
     type: string
+
   metadata:
     type: object
-    additionalProperties:
-      type: object
+    additionalProperties: true
+
   company_name:
     type: string
     example: "Femsa"

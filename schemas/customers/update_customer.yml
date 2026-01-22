@@ -1,64 +1,68 @@
-title: update customer request
-description: update customer
+title: customer_update_request
 type: object
+description: Request body to update a customer.
+
 properties:
-  antifraud_info:
-    type: object
-    nullable: true
-    properties:
-      account_created_at:
-        type: integer
-        example: 1484040996
-        format: int64
-      first_paid_at:
-        type: integer
-        example: 1485151007
-  default_payment_source_id:
-    type: string
-    description: "It is a parameter that allows to identify in the response, the Femsa ID of a payment method (payment_id)"
-    example: "src_1a2b3c4d5e6f7g8h"
-  email:
-    type: string
-    description: "An email address is a series of customizable characters followed by a universal Internet symbol, the at symbol (@), the name of a host server, and a web domain ending (.mx, .com, .org, . net, etc)."
-    example:  miguel@gmail.com
   name:
     type: string
-    description: Client's name
-    example:  miguel
+    description: Customer's name.
+    example: miguel
+
+  email:
+    type: string
+    format: email
+    description: Customer email address.
+    example: miguel@gmail.com
+
   phone:
     type: string
-    description: Is the customer's phone number
+    description: Customer phone number.
     example: "+5215555555555"
-  default_shipping_contact_id:
-    type: string
-    description: It is a parameter that allows to identify in the response, the Femsa ID of the shipping address (shipping_contact)
-    example: ship_cont_1a2b3c4d5e6f7g8h
+    nullable: true
+    maxLength: 19
+
   corporate:
     type: boolean
-    description: "It is a value that allows identifying if the email is corporate or not."
+    description: Indicates whether the customer email is corporate.
     example: false
     default: false
+
   custom_reference:
     type: string
-    description: It is an undefined value.
-  fiscal_entities:
-    type: array
-    items:
-      $ref: './customer_fiscal_entities_request.yml'
+    description: Merchant-defined reference used to identify the customer in your system.
+    example: "customer_123"
+    nullable: true
+
+  referrer:
+    type: string
+    description: Referrer value (if applicable).
+    example: "my_platform"
+    nullable: true
+
   metadata:
     type: object
+    description: Arbitrary metadata associated with the customer.
     additionalProperties: true
-    maxProperties: 100
+
   payment_sources:
-    description: Contains details of the payment methods that the customer has active or has used in Femsa
     type: array
+    description: Customer payment sources to be added/updated (optional).
     items:
-      title: customer_payment_methods_request
       oneOf:
-        - $ref: ../../schemas/customers/payment_method_cash_request.yml
-  shipping_contacts:
-    description: Contains the detail of the shipping addresses that the client has active or has used in Femsa
-    type: array
-    items:
-      $ref: './customer_shipping_contacts.yml'
- 
+        - $ref: "../../schemas/customers/payment_method_cash_request.yml"
+    nullable: true
+
+  default_payment_source_id:
+    type: string
+    description: Sets the default payment source for the customer (must be an existing payment source on the customer).
+    example: "src_1a2b3c4d5e6f7g8h"
+
+  default_fiscal_entity_id:
+    type: string
+    description: Sets the default fiscal entity for the customer (must be an existing fiscal entity on the customer).
+    example: "fe_1a2b3c4d5e6f7g8h"
+
+  default_shipping_contact_id:
+    type: string
+    description: Sets the default shipping contact for the customer (must be an existing shipping contact on the customer).
+    example: "ship_cont_1a2b3c4d5e6f7g8h"

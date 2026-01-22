@@ -1,0 +1,66 @@
+title: customer_fiscal_entities_response
+type: object
+description: Fiscal entity response object.
+required:
+  - id
+  - object
+  - created_at
+  - parent_id
+  - default
+  - address
+properties:
+  id:
+    type: string
+    example: "fis_ent_2zQh5bjjTEQ3mNpag"
+
+  object:
+    type: string
+    enum:
+      - fiscal_entity
+    example: "fiscal_entity"
+
+  created_at:
+    type: integer
+    format: int64
+    example: 1769040798
+
+  parent_id:
+    type: string
+    description: Customer ID this fiscal entity belongs to.
+    example: "cus_2zMeTHgj2JBkYGmXq"
+
+  default:
+    type: boolean
+    description: Indicates whether this is the default fiscal entity for the customer.
+    example: false
+
+  address:
+    type: object
+    required:
+      - object
+      - postal_code
+    properties:
+      object:
+        type: string
+        enum:
+          - fiscal_entity_address
+        example: "fiscal_entity_address"
+      postal_code:
+        type: string
+        example: "06100"
+      street1:
+        type: string
+        example: "Nuevo Leon 254"
+        nullable: true
+      external_number:
+        type: string
+        example: "string"
+        nullable: true
+      city:
+        type: string
+        example: "Ciudad de Mexico"
+        nullable: true
+      country:
+        type: string
+        example: "mx"
+        nullable: true
