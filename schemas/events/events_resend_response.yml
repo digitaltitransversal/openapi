@@ -1,26 +1,32 @@
 title: event_webhook_resend_response
-description: event model
+description: Webhook log model returned after resending an event webhook delivery.
 type: object
+required:
+  - id
+  - url
+  - failed_attempts
+  - last_http_response_status
+  - response_data
+  - last_attempted_at
 properties:
   failed_attempts:
     type: integer
-    example: 6
+    example: 2
   id:
     type: string
-    example: "webhl_2svd2sh6GbqzyWBNZ"
+    example: "webhl_2zPzadKdcLpBVnWC2"
   last_attempted_at:
     type: integer
-    example: 1684265970
+    example: 1768856284
   last_http_response_status:
     type: integer
-    format: int32
     example: 405
   response_data:
+    type: object
     additionalProperties: true
     maxProperties: 100
-    type: object
     example: {}
   url:
     type: string
-    example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
     format: uri
+    example: "https://example.com/new-webhooks"

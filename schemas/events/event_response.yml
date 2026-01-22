@@ -1,35 +1,60 @@
 title: event_response
 description: event model
 type: object
+required:
+  - id
+  - object
+  - created_at
+  - livemode
+  - type
+  - data
+  - webhook_status
+  - webhook_logs
 properties:
   created_at:
     type: integer
     format: int64
     example: 1661445644
+
   data:
+    type: object
     additionalProperties: true
     maxProperties: 100
-    type: object
     example:
-      action: 'ping'
-      livemode: true
+      data:
+        object:
+          action: "ping"
+          livemode: true
+        previous_attributes: {}
+
   id:
     type: string
     example: "6307a60c41de27127515a575"
+
   livemode:
     type: boolean
     example: true
+
   object:
     type: string
+    enum: ["event"]
     example: "event"
+
   type:
     type: string
     example: "webhook_ping"
+
   webhook_logs:
     type: array
     items:
       type: object
       title: WebhookLog
+      required:
+        - id
+        - url
+        - failed_attempts
+        - last_http_response_status
+        - last_attempted_at
       properties:
         failed_attempts:
           type: integer
@@ -39,26 +64,28 @@ properties:
           example: "webhl_2svd2sh6GbqzyWBNZ"
         last_attempted_at:
           type: integer
+          format: int64
           example: 1669651274
         last_http_response_status:
           type: integer
-          format: int32
           example: 200
         object:
           type: string
+          enum: ["webhook_log"]
           example: "webhook_log"
         response_data:
+          type: object
+          nullable: true
           additionalProperties: true
           maxProperties: 100
-          type: object
           example:
             amount: 3000
             payable: true
         url:
           type: string
-          example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
           format: uri
+          example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
+
   webhook_status:
     type: string
     example: "successful"
-    
