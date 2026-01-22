@@ -4,8 +4,10 @@ get:
   operationId: getApiKeys
   summary: Get list of Api Keys
   description: Consume the list of API keys you have.
+
   security:
-    - basicAuth: []
+    - bearerAuth: []
+  
   responses:
     "200":
       description: successful
@@ -26,6 +28,7 @@ get:
       $ref: "../errors/401.yml"
     "500":
       $ref: "../errors/500.yml"
+  
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
     - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
@@ -44,10 +47,13 @@ post:
   operationId: createApiKey
   summary: Create Api Key
   description: Create an API key.
+  
   security:
-    - basicAuth: []
+    - bearerAuth: []
+  
   requestBody:
     $ref: "../../requestBodies/api_keys/api_keys_create.yml"
+  
   responses:
     "200":
       description: successful operation

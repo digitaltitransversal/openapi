@@ -3,8 +3,10 @@ get:
     - Charges
   operationId: getCharges
   summary: Get A List of Charges
+  
   security:
-    - basicAuth: []
+    - bearerAuth: []
+  
   responses:
     "200":
       description: successful
@@ -27,6 +29,7 @@ get:
       $ref: "../errors/422_whitelist.yml"
     "500":
       $ref: "../errors/500.yml"
+  
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
     - $ref: "../../parameters/commons/headers/x_child_company_id.yml"

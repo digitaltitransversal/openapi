@@ -12,7 +12,7 @@ post:
     - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
 
   security:
-    - basicAuth: []
+    - bearerAuth: []
 
   requestBody:
     $ref: "../../requestBodies/charges/charge_create.yml"

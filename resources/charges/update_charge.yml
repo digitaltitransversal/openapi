@@ -4,14 +4,17 @@ put:
   operationId: updateCharge
   summary: Update a charge
   description: Updates an existing charge. Only `reference_id` can be updated.
+  
   security:
-    - basicAuth: []
+    - bearerAuth: []
+  
   requestBody:
     required: true
     content:
       application/json:
         schema:
           $ref: "../../requestBodies/charges/charge_update.yml"
+  
   responses:
     "200":
       description: successful
@@ -27,6 +30,7 @@ put:
       $ref: "../errors/422.yml"
     "500":
       $ref: "../errors/500.yml"
+  
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"

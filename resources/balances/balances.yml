@@ -4,8 +4,9 @@ get:
   operationId: getBalance
   summary: Get a company's balance
   description: Get a company's balance
+
   security:
-    - basicAuth: []
+    - bearerAuth: []
   responses:
     "200":
       description: successful
@@ -17,5 +18,6 @@ get:
       $ref: "../errors/401.yml"
     "500":
       $ref: "../errors/500.yml"
+  
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
