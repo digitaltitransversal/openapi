@@ -1,4 +1,5 @@
 title: update_order_discount_lines_request
+type: object
 description: "List of discounts that apply to the order."
 properties:
   amount:
@@ -12,4 +13,5 @@ properties:
     example: "123"
   type:
     type: string
+    enum: ["loyalty", "campaign", "coupon", "sign"]
     example: "loyalty"
