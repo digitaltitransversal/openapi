@@ -3,23 +3,26 @@ get:
     - Logs
   operationId: getLogById
   summary: Get Log
-  description: Get the details of a specific log
-  responses:
-    200:
-      description: successful
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-              $ref: '../../schemas/logs/log_response.yml'
-    401:
-     $ref: '../errors/401.yml'
-    404:
-     $ref: '../errors/404.yml'
-    500:
-     $ref: '../errors/500.yml'
+  description: |
+    Returns a single log by its ID. Logs can be used for troubleshooting and auditing requests and internal operations.
+  
   security:
     - bearerAuth: []
+  
+  responses:
+    "200":
+      description: successful
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: "../../schemas/logs/log_response.yml"
+    "401":
+      $ref: "../errors/401.yml"
+    "404":
+      $ref: "../errors/404.yml"
+    "500":
+      $ref: "../errors/500.yml"
   parameters:
-    - $ref: '../../parameters/commons/path_param/id.yml'
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+    - $ref: "../../parameters/commons/path_param/id.yml"
+    - $ref: "../../parameters/commons/headers/accept_language.yml"
+    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
