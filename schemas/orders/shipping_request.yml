@@ -1,4 +1,6 @@
 title: shipping_request
+type: object
+description: Shipping line request payload.
 required:
   - amount
 properties:
@@ -8,9 +10,9 @@ properties:
     example: 100
     minimum: 0
     description: Shipping amount in cents
-  carrier: 
+  carrier:
     type: string
-    example: FEDEX
+    example: "FEDEX"
     description: Carrier name for the shipment
   tracking_number:
     type: string
@@ -18,8 +20,12 @@ properties:
     description: Tracking number can be used to track the shipment
   method:
     type: string
-    example: "Same day" 
+    example: "Same day"
     description: Method of shipment
+  description:
+    type: string
+    example: "Shipping line"
+    description: Shipping line description
   metadata:
     description: Hash where the user can send additional information for each 'shipping'.
     type: object

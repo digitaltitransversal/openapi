@@ -3,56 +3,66 @@ put:
     - Shippings
   operationId: ordersUpdateShipping
   summary: Update Shipping
-  description: Update existing shipping for an existing orden
+  description: >-
+    Updates an existing shipping line for an order. The shipping line identified by
+    `shipping_id` belongs to the order identified by `id`. Only the fields provided in
+    the request body are updated.
+  
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: '../../requestBodies/shippings/shipping_create.yml'
+
   responses:
     200:
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/charges/shipping_order_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/shippings/shipping_create.yml'
+      $ref: '../errors/500.yml'
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/shipping_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 delete:
   tags:
     - Shippings
   operationId: ordersDeleteShipping
   summary: Delete Shipping
-  description: Delete shipping
+  description: >-
+    Deletes an existing shipping line from an order. The shipping line identified by
+    `shipping_id` belongs to the order identified by `id`.
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/charges/shipping_order_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
-    428:
-     $ref: '../errors/428.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/shipping_id.yml'
