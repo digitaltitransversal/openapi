@@ -1,81 +1,158 @@
 title: transfers_response
-description: "A transfer represents the action of sending an amount to a business bank account including the status, amount and method used to make the transfer."
+description: "A transfer represents the action of sending an amount to a business bank account including the status, amount and destination used to make the transfer."
 type: object
+required:
+  - id
+  - object
+  - amount
+  - created_at
+  - currency
+  - livemode
+  - status
+  - statement_reference
+  - statement_description
+  - destination
 properties:
-  amount: 
-    type: integer
-    example: 10000
-    format: int64
-    description: "Amount in cents of the transfer."
-  created_at:
-    type: integer
-    example: 1553273553
-    format: int64
-    description: "Date and time of creation of the transfer."
-  currency:
-    type: string
-    example: "MXN"
-    description: "The currency of the transfer. It uses the 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)"
-    maxLength: 3
   id:
     type: string
-    example: "5b0337d4dD344ef954fe1X4b6"
+    example: "trf_2tPAmKCEJqh8RE6nY"
     description: "Unique identifier of the transfer."
-  livemode:
-    type: boolean
-    example: true
-    description: "Indicates whether the transfer was created in live mode or test mode."
-  method:
-    type: object
-    description: "Method used to make the transfer."
-    title: transfer_method_response
-    properties:
-      account_holder:
-        type: string
-        example: "John Doe"
-        description: "Name of the account holder."
-      account_number:
-        type: string
-        example: "012180023547896764"
-        description: "Account number of the bank account."
-      bank:
-        type: string
-        example: "BBVA Bancomer"
-        description: "Name of the bank."
-      created_at:
-        type: integer
-        example: 1553273553
-        format: int64
-        description: "Date and time of creation of the transfer."
-      id:
-        type: string
-        example: "pytmtd_2ide3qwTdDvNBosEC"
-        description: "Unique identifier of the transfer."
-      object:
-        type: string
-        example: "bank_transfer_payout_method"
-        description: "Object name, which is bank_transfer_payout_method."
-      payee_id:
-        type: string
-        example: "payee_2icdDewRxDENBos85"
-        description: "Unique identifier of the payee."
-      type:
-        type: string
-        example: "BankTransferPayoutMethod"
-        description: "Type of the payee."
   object:
     type: string
     example: "transfer"
     description: "Object name, which is transfer."
-  statement_description:
+  amount:
+    type: integer
+    format: int64
+    example: 10000
+    description: "Amount in cents of the transfer."
+  created_at:
+    type: integer
+    format: int64
+    example: 1553273553
+    description: "Date and time of creation of the transfer in Unix format."
+  currency:
     type: string
-    example: "Femsa 4401234"
-    description: "Description of the transfer."
-  statement_reference:
-    type: string
-    example: "4401234"
-    description: "Reference number of the transfer."
+    example: "MXN"
+    maxLength: 3
+    description: "The currency of the transfer. It uses the 3-letter code of ISO 4217."
+  livemode:
+    type: boolean
+    example: true
+    description: "Indicates whether the transfer was created in live mode or test mode."
   status:
     type: string
     example: "pending"
     description: "Code indicating transfer status."
+  statement_reference:
+    type: string
+    example: "4401234"
+    description: "Reference number of the transfer."
+  statement_description:
+    type: string
+    example: "Femsa 4401234"
+    description: "Description of the transfer."
+
+  destination:
+    type: object
+    description: "Destination payout method used to make the transfer."
+    required:
+      - id
+      - payee_id
+      - created_at
+    properties:
+      payee_id:
+        type: string
+        example: "payee_2icdDewRxDENBos85"
+        description: "Unique identifier of the payee."
+      id:
+        type: string
+        example: "pytmtd_2ide3qwTdDvNBosEC"
+        description: "Unique identifier of the payout method."
+      created_at:
+        type: integer
+        format: int64
+        example: 1553273553
+        description: "Date and time of creation of the payout method in Unix format."
+      object:
+        type: string
+        example: "destination"
+        nullable: true
+        description: "Object name, present for bank transfer destination."
+      type:
+        type: string
+        example: "bank_transfer"
+        nullable: true
+        description: "Destination type."
+      last4:
+        type: string
+        example: "6764"
+        nullable: true
+        description: "Last 4 digits of the destination account number."
+      account_holder_name:
+        type: string
+        example: "John Doe"
+        nullable: true
+        description: "Name of the account holder."
+      bank:
+        type: string
+        example: "BBVA Bancomer"
+        nullable: true
+        description: "Name of the bank."
+
+  fee:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Total fee for the transfer (present only when requesting the 'details' expansion)."
+  capture_amount:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  capture_fee:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  capture_net:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  refund_amount:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  refund_fee:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  refund_net:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  payout_amount:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  payout_fee:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  payout_net:
+    type: integer
+    format: int64
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+  transactions:
+    type: array
+    nullable: true
+    description: "Present only when requesting the 'details' expansion."
+    items:
+      type: object
