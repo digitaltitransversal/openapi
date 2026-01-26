@@ -2,13 +2,17 @@ get:
   tags:
     - Transactions
   operationId: getTransactions
-  summary: Get List transactions
-  description: Get transaction details in the form of a list
+  summary: Get transactions
+  description: Returns a paginated list of transactions. Results can be filtered using query parameters.
+
+  security:
+    - bearerAuth: []  
+
   responses:
     200:
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             title: get_transactions_response
             allOf:
@@ -21,33 +25,11 @@ get:
                     type: array
                     items:
                       $ref: '../../schemas/transactions/transaction_response.yml'
-      headers:
-        Date:
-          description: The date and time that the response was sent
-          schema:
-            type: string
-            example: "Fri, 03 Feb 2023 16:57:48 GMT"
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
-        Content-Length:
-          description: The length of the response body in bytes
-          schema:
-            type: string
-            example: "2737"
-        Connection:
-          description: The type of connection used to transfer the response
-          schema:
-            type: string
-            example: "keep-alive"
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
