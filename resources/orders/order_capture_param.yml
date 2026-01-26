@@ -1,32 +1,21 @@
 post:
   tags:
     - Orders
-  operationId: ordersCreateCapture
-  description: Processes an order that has been previously authorized.
+  operationId: captureOrder
   summary: Capture Order
-  responses:
-    200:
-      description: successful
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-            $ref: ../../schemas/orders/order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    404:
-     $ref: '../errors/404.yml'
-    428:
-     $ref: '../errors/428.yml'
-    500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+  description: >-
+    Captures (finalizes) an order that has been previously authorized. Use this
+    endpoint to capture a specific amount. The captured amount must be greater
+    than 0 and must comply with the order and charge constraints enforced by the
+    API.
+
   requestBody:
-    description: requested fields for capture order
+    description: Requested fields for capturing an order
     content:
       application/json:
         schema:
           title: order_capture_request
+          type: object
           required:
             - amount
           properties:
@@ -37,7 +26,24 @@ post:
               description: Amount to capture
               minimum: 1
               nullable: false
+  
+  responses:
+    "200":
+      description: Successful operation
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ../../schemas/orders/order_response.yml
+    "401":
+      $ref: ../errors/401.yml
+    "404":
+      $ref: ../errors/404.yml
+    "428":
+      $ref: ../errors/428.yml
+    "500":
+      $ref: ../errors/500.yml
+  
   parameters:
-    - $ref: '../../parameters/commons/path_param/id.yml'
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+    - $ref: ../../parameters/commons/path_param/id.yml
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml
