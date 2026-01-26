@@ -1,9 +1,9 @@
 title: product order response
 allOf:
-  - $ref: '../../schemas/orders/product.yml'
+  - $ref: ../../schemas/orders/product.yml
   - type: object
     properties:
-      id: 
+      id:
         type: string
       object:
         type: string

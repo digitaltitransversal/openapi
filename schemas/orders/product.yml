@@ -5,10 +5,6 @@ required:
   - unit_price
   - quantity
 properties:
-  antifraud_info:
-    type: object
-    additionalProperties: true
-    example: { "key": "value" }
   brand:
     type: string
     example: "Cohiba"
@@ -43,9 +39,9 @@ properties:
     type: array
     items:
       type: string
-    example: [ "food", "mexican food"]
+    example: ["food", "mexican food"]
     description: "List of tags for the item. It is used to identify the item in the order."
-  unit_price: 
+  unit_price:
     type: integer
     format: int32
     example: 20000
