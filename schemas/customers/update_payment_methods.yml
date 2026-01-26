@@ -1,6 +1,20 @@
 title: update_payment_methods
 type: object
 properties:
-  name:
+  expires_at:
+    oneOf:
+      - type: integer
+        format: int64
+        example: 1677196303
+      - type: string
+        example: "1677196303"
+  amount:
+    oneOf:
+      - type: integer
+        format: int64
+        example: 10000
+      - type: string
+        example: "10000"
+  type:
     type: string
-    example: "name of person"
+    example: "oxxo_recurrent"

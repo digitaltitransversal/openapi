@@ -3,70 +3,81 @@ put:
     - Payment Methods
   operationId: UpdateCustomerPaymentMethods
   summary: Update Payment Method
-  description: 'Gets a payment Method that corresponds to a customer ID.'
+  description: >-
+    Updates a specific payment method of a customer. Use this endpoint to modify the
+    payment method identified by `payment_method_id` for the customer identified by `id`.
+    The fields that can be updated depend on the payment method `type`.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/customers/customer_update_payment_methods.yml 
+
   responses:
     '200':
       description: successful operation
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
-            title: "update_customer_payment_methods_response"
+            title: update_customer_payment_methods_response
             discriminator:
-                propertyName: type
-                mapping:
-                  cash: payment_method_cash_response
-                  oxxo_recurrent: payment_method_cash_response
+              propertyName: type
+              mapping:
+                cash: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
+                oxxo_recurrent: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response' 
-            
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: ../../requestBodies/customers/customer_update_payment_methods.yml
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/payment_method_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 delete:
   tags:
     - Payment Methods
   operationId: DeleteCustomerPaymentMethods
   summary: Delete Payment Method
-  description: 'Delete an existing payment method'
+  description: >-
+    Deletes a specific payment method of a customer. After deletion, the payment method
+    can no longer be used for future payments.
+
+  security:
+    - bearerAuth: []
+
   responses:
     '200':
       description: successful operation
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
-            title: "update_customer_payment_methods_response"
+            title: delete_customer_payment_methods_response
             discriminator:
-                propertyName: type
-                mapping:
-                  cash: payment_method_cash_response
-                  oxxo_recurrent: payment_method_cash_response
+              propertyName: type
+              mapping:
+                cash: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
+                oxxo_recurrent: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response' 
-            
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/payment_method_id.yml'
