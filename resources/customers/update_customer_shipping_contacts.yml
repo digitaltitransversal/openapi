@@ -2,55 +2,69 @@ put:
   tags:
     - Shipping Contacts
   operationId: UpdateCustomerShippingContacts
-  summary: Update shipping contacts
-  description: 'Update shipping contact that corresponds to a customer ID.'
+  summary: Update shipping contact
+  description: >-
+    Updates an existing shipping contact for a customer. The shipping contact identified by
+    `shipping_contacts_id` belongs to the customer identified by `id`. Only the fields provided
+    in the request body are updated.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/customers/customer_update_shipping_contacts.yml
+
   responses:
     '200':
       description: successful operation
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/customers/customer_shipping_contacts_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: ../../requestBodies/customers/customer_update_shipping_contacts.yml
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/shipping_contacts_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 delete:
   tags:
     - Shipping Contacts
   operationId: DeleteCustomerShippingContacts
-  summary: Delete shipping contacts
-  description: 'Delete shipping contact that corresponds to a customer ID.'
+  summary: Delete shipping contact
+  description: >-
+    Deletes an existing shipping contact for a customer. The shipping contact identified by
+    `shipping_contacts_id` belongs to the customer identified by `id`. The response includes
+    the deleted resource with `deleted: true`.
+
+  security:
+    - bearerAuth: []
+
   responses:
     '200':
       description: successful operation
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/customers/customer_shipping_contacts_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/shipping_contacts_id.yml'

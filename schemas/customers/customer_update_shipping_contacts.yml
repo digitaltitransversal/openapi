@@ -1,34 +1,35 @@
 title: customer_update_shipping_contacts_request
+type: object
 description: |-
-  [Shipping](https://developers.femsa.com/v2.1.0/reference/createcustomershippingcontacts)
-  details, required in case of sending a shipping. If we do not receive a shipping_contact on the order, the default shipping_contact of the customer will be used.
+  [Shipping Contacts](https://developers.femsa.com/v2.2.0/reference/createcustomershippingcontacts)
+  details for updating a customer shipping contact. Only the fields provided in the request body are updated.
 properties:
   phone:
     type: string
-    example:  "+525511223344"
-    description: "Phone contact"
+    example: "+525511223344"
+    description: Phone contact
   receiver:
     type: string
-    example:   "Marvin Fuller"
-    description: "Name of the person who will receive the order"
-  between_streets: 
+    example: "Marvin Fuller"
+    description: Name of the person who will receive the order
+  between_streets:
     type: string
     example: "Ackerman Crescent"
-    description: "The street names between which the order will be delivered."
-  address: 
+    description: The street names between which the order will be delivered.
+  address:
     type: object
-    description: "Address of the person who will receive the order"
+    description: Address of the person who will receive the order
     properties:
       street1:
         type: string
-        example: Nuevo Leon 254
-      street2: 
+        example: "Nuevo Leon 254"
+      street2:
         type: string
-        example: Departamento 404
+        example: "Departamento 404"
       postal_code:
         type: string
         example: "06100"
-      city: 
+      city:
         type: string
         example: "Ciudad de Mexico"
       state:
@@ -36,18 +37,15 @@ properties:
         example: "Ciudad de Mexico"
       country:
         type: string
-        example: MX
-        description: "this field follows the [ISO 3166-1 alpha-2 standard](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)"
+        example: "MX"
+        description: this field follows the [ISO 3166-1 alpha-2 standard](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
       residential:
         type: boolean
         example: true
         nullable: true
-  parent_id:
-    type: string
-  default:
-    type: boolean
-    nullable: true
-  deleted:
-    type: boolean
-    nullable: true
-    
+  metadata:
+    type: object
+    additionalProperties: true
+    maxProperties: 100
+    description: Metadata associated with the shipping contact
+    example: { "key": "value" }
