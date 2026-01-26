@@ -1,30 +1,42 @@
 title: webhook_key_delete_response
-description: webhook keys model
+description: Represents a webhook signing key after it has been deleted.
 type: object
+required:
+  - id
+  - object
+  - active
+  - livemode
+  - created_at
+  - deleted
 properties:
-  active:
-    type: boolean
-    example: true
-    description: Indicates if the webhook key is active
-  created_at:
-    type: integer
-    example: 1577836800
-    format: int64
-    description: Unix timestamp in seconds with the creation date of the webhook key
-  deleted:
-    type: boolean
-    example: true
-    description: Indicates if the webhook key is deleted
   id:
     type: string
     example: "62730ba6fb7dfd6a712f118e"
     description: Unique identifier of the webhook key
-  livemode:
-    type: boolean
-    example: false
-    description: Indicates if the webhook key is in live mode
   object:
     type: string
     example: webhook_key
     description: Object name, value is webhook_key
- 
+  active:
+    type: boolean
+    example: true
+    description: Indicates if the webhook key is active
+  livemode:
+    type: boolean
+    example: false
+    description: Indicates if the webhook key is in live mode
+  created_at:
+    type: integer
+    format: int64
+    example: 1577836800
+    description: Unix timestamp in seconds with the creation date of the webhook key
+  deactivated_at:
+    type: integer
+    format: int64
+    nullable: true
+    example: 1577836800
+    description: Unix timestamp in seconds when the webhook key was deactivated (if applicable).
+  deleted:
+    type: boolean
+    example: true
+    description: Indicates if the webhook key is deleted

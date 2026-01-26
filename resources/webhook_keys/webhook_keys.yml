@@ -2,13 +2,17 @@ get:
   tags:
     - Webhook keys
   operationId: getWebhookKeys
-  summary: Get List of Webhook Keys
-  description: 'Consume the list of webhook keys you have'
+  summary: Get webhook keys
+  description: Returns a paginated list of webhook signing keys for the current company.
+  
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
       content:
-        application/vnd.app-v2.1.0+json:
+        application/vnd.app-v2.2.0+json:
           schema:
             title: get_webhook_keys_response
             allOf:
@@ -20,33 +24,11 @@ get:
                     type: array
                     items:
                       $ref: '../../schemas/webhook-keys/webhook-key_response.yml'
-      headers:
-        Date:
-          description: The date and time that the response was sent
-          schema:
-            type: string
-            example: "Fri, 03 Feb 2023 16:57:48 GMT"
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
-        Content-Length:
-          description: The length of the response body in bytes
-          schema:
-            type: string
-            example: "2737"
-        Connection:
-          description: The type of connection used to transfer the response
-          schema:
-            type: string
-            example: "keep-alive"
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+ 
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
@@ -54,29 +36,21 @@ get:
     - $ref: '../../parameters/commons/query/search.yml'
     - $ref: '../../parameters/commons/query/next_page.yml'
     - $ref: '../../parameters/commons/query/previous_page.yml'
+
 post:
   tags:
     - Webhook keys
   operationId: createWebhookKey
-  summary: Create Webhook Key
-  description: 'Create a webhook key'
-  responses:
-    '200':
-      description: successful operation
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-            $ref: '../../schemas/webhook-keys/webhook-key_create_response.yml'
-    401:
-     $ref: '../errors/401.yml'
-    500:
-     $ref: '../errors/500.yml'
+  summary: Create webhook key
+  description: Creates a new webhook signing key for the current company.
+
   security:
     - bearerAuth: []
+
   requestBody:
     content:
-      application/json:
-        schema:  
+      application/vnd.app-v2.2.0+json:
+        schema:
           type: object
           title: webhook_key_request
           properties:
@@ -85,5 +59,20 @@ post:
               example: true
               description: Indicates if the webhook key is active
               default: true
+              nullable: true
+  
+  responses:
+    '200':
+      description: successful operation
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: '../../schemas/webhook-keys/webhook-key_create_response.yml'
+    401:
+      $ref: '../errors/401.yml'
+    500:
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
+    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
