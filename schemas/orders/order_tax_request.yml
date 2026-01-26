@@ -6,7 +6,7 @@ required:
 properties:
   amount:
     type: integer
-    example: "100"
+    example: 100
     format: int64
     minimum: 0
     description: "The amount to be collected for tax in cents"

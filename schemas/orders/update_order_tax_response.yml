@@ -5,7 +5,7 @@ allOf:
   - $ref: order_tax_request.yml
   - type: object
     properties:
-      id: 
+      id:
         type: string
         example: "tax_lin_2tQ8dC5mg1UADmVPo"
       object:
@@ -14,3 +14,8 @@ allOf:
       parent_id:
         type: string
         example: "ord_2tPAmKCEJqh8RE6nY"
+      deleted:
+        type: boolean
+        nullable: true
+        example: true
+        description: Present only when the tax line was deleted.
