@@ -2,52 +2,67 @@ get:
   tags:
     - Orders
   operationId: getOrderById
-  description: Info for a specific order
   summary: Get Order
-  responses:
-    200:
-      description: successful
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-            $ref: ../../schemas/orders/order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    404:
-     $ref: '../errors/404.yml'
-    500:
-     $ref: '../errors/500.yml'
+  description: >-
+    Returns the full details of an Order by its ID. The response follows the
+    standard Order representation, including nested previews (for example
+    `charges`, `line_items`, `shipping_lines`, `tax_lines`, and `discount_lines`)
+    when available.
+  
   security:
     - bearerAuth: []
+    
+  responses:
+    "200":
+      description: Successful operation
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ../../schemas/orders/order_response.yml
+    "401":
+      $ref: ../errors/401.yml
+    "404":
+      $ref: ../errors/404.yml
+    "500":
+      $ref: ../errors/500.yml
+  
   parameters:
-    - $ref: '../../parameters/commons/path_param/id.yml'
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+    - $ref: ../../parameters/commons/path_param/id.yml
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml
+
 put:
   tags:
     - Orders
   operationId: updateOrder
-  description: Update an existing Order.
   summary: Update Order
-  responses:
-    200:
-      description: successful
-      content:
-        application/vnd.app-v2.1.0+json:
-          schema:
-            $ref: ../../schemas/orders/order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    404:
-     $ref: '../errors/404.yml'
-    422:
-     $ref: '../errors/422.yml'
-    500:
-     $ref: '../errors/500.yml'
+  description: >-
+    Updates an existing Order. Only the fields allowed by the API can be updated.
+    Depending on the payload, this operation may also create/update related
+    resources (for example, adding new charges) according to server-side
+    validations.
+    
   security:
     - bearerAuth: []
+
   requestBody:
-    $ref: '../../requestBodies/orders/order_update.yml'
+    $ref: ../../requestBodies/orders/order_update.yml
+  
+  responses:
+    "200":
+      description: Successful operation
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ../../schemas/orders/order_response.yml
+    "401":
+      $ref: ../errors/401.yml
+    "404":
+      $ref: ../errors/404.yml
+    "422":
+      $ref: ../errors/422.yml
+    "500":
+      $ref: ../errors/500.yml
   parameters:
-    - $ref: '../../parameters/commons/path_param/id.yml'
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
+    - $ref: ../../parameters/commons/path_param/id.yml
+    - $ref: ../../parameters/commons/headers/accept_language.yml

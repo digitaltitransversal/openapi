@@ -1,73 +1,71 @@
 summary: Create an order with checkout
 value:
-  checkout:
-    allowed_payment_methods:
-    - "[cash]"
-    expires_at: 0
-    failure_url: string
-    name: string
-    on_demand_enabled: true
-    success_url: string
-    type: Integration
-  currency: MXN
+  currency: "MXN"
+
   customer_info:
-    name: DevTest
-    email: test@femsa.com
-    phone: '5522997233'
+    name: "DevTest"
+    email: "test@femsa.com"
+    phone: "5522997233"
     corporate: false
-    object: customer_info
-  discount_lines:
-  - amount: 500
-    code: '123'
-    type: loyalty
+
   line_items:
-  - antifraud_info:
-      additionalProp1: {}
-      additionalProp2: {}
-      additionalProp3: {}
-    description: string
-    sku: string
-    name: Box of Cohiba S1s
-    unit_price: 20000
-    quantity: 1
-    tags:
-    - string
-    brand: string
-    metadata:
-      additionalProp1: string
-      additionalProp2: string
-      additionalProp3: string
-  metadata:
-    additionalProp1: string
-    additionalProp2: string
-    additionalProp3: string
-  pre_authorize: false
+    - name: "Box of Cohiba S1s"
+      unit_price: 20000
+      quantity: 1
+
+  checkout:
+    type: "HostedPayment"
+    name: "ord-devtest-001"
+    allowed_payment_methods:
+      - "cash"
+    success_url: "https://example.com/success"
+    failure_url: "https://example.com/failure"
+    starts_at: 1767892421
+    expires_at: 1768111199
+    can_not_expire: false
+    is_redirect_on_failure: true
+    redirection_time: 15
+
+  channel:
+    checkout_request_id: "51fb2fac-fcab-44ee-802c-dcebae1e2928"
+    checkout_request_type: "HostedPayment"
+    checkout_request_name: "ord-devtest-001"
+
+  discount_lines:
+    - amount: 500
+      code: "123"
+      type: "loyalty"
+
   shipping_contact:
-    phone: '525511223344'
-    receiver: Marvin Fuller
-    between_streets: Ackerman Crescent
+    phone: "525511223344"
+    receiver: "Marvin Fuller"
+    between_streets: "Ackerman Crescent"
     address:
-      street1: Nuevo Leon 254
-      street2: Departamento 404
-      postal_code: '06100'
-      city: Ciudad de Mexico
-      state: Ciudad de Mexico
-      country: MX
+      street1: "Nuevo Leon 254"
+      street2: "Departamento 404"
+      postal_code: "06100"
+      city: "Ciudad de Mexico"
+      state: "Ciudad de Mexico"
+      country: "mx"
       residential: true
-    parent_id: string
-    default: true
-    deleted: true
+
   shipping_lines:
-  - amount: 100
-    carrier: FEDEX
-    tracking_number: TRACK123
-    method: TRAING
-    metadata:
-      key: value
+    - amount: 100
+      carrier: "FEDEX"
+      tracking_number: "TRACK123"
+      method: "TRAING"
+      metadata:
+        key: "value"
+
   tax_lines:
-  - amount: 100
-    description: testing
-    metadata:
-      additionalProp1: {}
-      additionalProp2: {}
-      additionalProp3: {}
+    - amount: 100
+      description: "testing"
+      metadata:
+        additionalProp1: {}
+        additionalProp2: {}
+        additionalProp3: {}
+
+  metadata:
+    additionalProp1: "string"
+    additionalProp2: "string"
+    additionalProp3: "string"
