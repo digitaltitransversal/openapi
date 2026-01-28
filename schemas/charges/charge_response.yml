@@ -69,7 +69,7 @@ properties:
 
   device_fingerprint:
     type: string
-    example: ""
+    example: "6FR3chaU4Y1nGAW5NAGd1rcjAKa142Ba"
 
   description:
     type: string
@@ -106,10 +106,6 @@ properties:
   order_id:
     type: string
     example: "ord_2zNwzJrfNC24uQUzq"
-
-  is_button_premia:
-    type: boolean
-    example: false
 
   refunds:
     type: object

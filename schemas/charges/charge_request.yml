@@ -7,7 +7,6 @@ properties:
   amount:
     type: integer
     example: 40000
-    description: Amount in cents.
 
   payment_method:
     type: object
