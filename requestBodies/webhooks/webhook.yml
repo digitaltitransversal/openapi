@@ -1,6 +1,6 @@
-description: requested field for webhook        
+description: Webhook creation/update request payload.
 content:
-  application/json:
-    schema:  
+  application/vnd.app-v2.2.0+json:
+    schema:
       $ref: '../../schemas/webhooks/webhook_request.yml'
 required: true

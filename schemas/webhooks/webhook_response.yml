@@ -1,47 +1,61 @@
 title: webhook_response
-description: webhooks model
+description: Represents a webhook endpoint configured to receive event notifications.
 type: object
+required:
+  - id
+  - object
+  - url
+  - status
+  - subscribed_events
+  - synchronous
+  - livemode
+  - active
 properties:
-  deleted:
-    type: boolean
-    example: false
-    nullable: true
-  development_enabled:
-    type: boolean
-    example: false
   id:
     type: string
     example: "6307a60c41de27127515a575"
-  livemode:
-    type: boolean
-    example: true
+    description: Unique identifier of the webhook.
   object:
     type: string
-    example: "event"
-  production_enabled:
-    type: boolean
-    example: true
+    example: "webhook"
+    description: Object name, which is webhook.
+  url:
+    type: string
+    example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
+    description: The URL where events will be delivered.
   status:
     type: string
     example: "listening"
+    enum:
+      - being_pinged
+      - listening
+      - intermittent_errors
+      - unresponsive
+      - error
+      - disabled
+    description: Current delivery status of the webhook.
   subscribed_events:
     type: array
     items:
       type: string
-    example: ["charge.created",
-                "charge.paid",
-                "charge.under_fraud_review",
-                "charge.fraudulent",
-                "charge.refunded",
-                "charge.preauthorized",
-                "charge.declined",
-                "charge.canceled",
-                "charge.reversed",
-                "charge.pending_confirmation"]
+    example:
+      - "charge.created"
+      - "charge.paid"
+    description: List of event types the webhook is subscribed to.
   synchronous:
     type: boolean
     example: false
-  url:
+    description: Indicates whether the webhook uses synchronous delivery behavior.
+  description:
     type: string
-    example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
-    
+    nullable: true
+    example: "My integrations webhook"
+    description: Optional description of the webhook.
+  livemode:
+    type: boolean
+    example: true
+    description: Indicates whether the webhook is in live mode or test mode.
+  active:
+    type: boolean
+    example: true
+    description: Indicates whether the webhook is active.

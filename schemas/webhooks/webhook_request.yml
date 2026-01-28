@@ -1,18 +1,38 @@
-title: a webhook
-description: a webhook
+title: webhook_request
+description: Parameters used to create or update a webhook.
 type: object
 required:
   - url
-  - synchronous
 properties:
   url:
     type: string
-    format: url
+    format: uri
     example: "https://webhook.site/89277eaa-a8e4-4306-8dc5-f55c80703dc8"
     pattern: "^(?!.*(localhost|127\\.0\\.0\\.1)).*$"
-    description: Here you must place the URL of your Webhook remember that you must program what you will do with the events received. Also do not forget to handle the HTTPS protocol for greater security.
+    description: Webhook endpoint URL. Local URLs are not allowed.
+  subscribed_events:
+    type: array
+    items:
+      type: string
+    description: List of event types the webhook is subscribed to.
+  events:
+    type: array
+    items:
+      type: string
+    deprecated: true
+    description: Alias for subscribed_events.
   synchronous:
     type: boolean
     example: false
     default: false
-    description: It is a value that allows to decide if the events will be synchronous or asynchronous. We recommend asynchronous = false
+    description: Indicates whether the webhook uses synchronous delivery behavior.
+  active:
+    type: boolean
+    example: true
+    default: true
+    description: Indicates whether the webhook is active.
+  description:
+    type: string
+    nullable: true
+    example: "My integrations webhook"
+    description: Optional description of the webhook.
