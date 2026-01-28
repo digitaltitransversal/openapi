@@ -9,11 +9,7 @@ put:
     - bearerAuth: []
   
   requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: "../../requestBodies/charges/charge_update.yml"
+    $ref: "../../requestBodies/charges/charge_update.yml"
   
   responses:
     "200":

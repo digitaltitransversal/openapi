@@ -711,83 +711,4137 @@ paths:
         schema:
           type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: ./requestBodies/charges/charge_update.yml
-        required: true
+        $ref: '#/components/requestBodies/charge_update'
       responses:
         "200":
           content:
             application/vnd.app-v2.2.0+json:
               schema:
-                $ref: ./schemas/charges/charge_response.yml
+                $ref: '#/components/schemas/charge_response'
           description: successful
         "401":
-          $ref: ./resources/charges/../errors/401.yml
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
         "404":
-          $ref: ./resources/charges/../errors/404.yml
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
         "422":
-          $ref: ./resources/charges/../errors/422.yml
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
         "500":
-          $ref: ./resources/charges/../errors/500.yml
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
       security:
       - bearerAuth: []
       summary: Update a charge
       tags:
       - Charges
   /orders/{id}/charges:
-    $ref: ./resources/orders/order_charge_param.yml
+    post:
+      description: |
+        Create a charge for an existing order.
+
+        Notes:
+        - This endpoint creates a charge **associated to the given order** (`order_id`).
+        - Some payment methods may result in a `pending_payment` charge status and can affect subsequent order operations.
+        - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
+      operationId: ordersCreateCharge
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/charge_create'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/charge_order_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "428":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: The order cannot be modified because it has already
+                    a charge which is pending payment.
+                  message: The order cannot be modified because it has already a charge
+                    which is pending payment.
+                  param: null
+                  code: femsa.errors.precondition_required.combo.order.cannot_be_updated_because_has_charge
+                log_id: 641b6e233cd9a50001515039
+                object: error
+                type: precondition_required_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Precondition Required
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create charge
+      tags:
+      - Charges
   /companies:
-    $ref: ./resources/companies/companies.yml
+    get:
+      description: Consume the list of child companies.  This is used for holding
+        companies with several child entities.
+      operationId: getCompanies
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/get_companies_response'
+          description: successful
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get List of Companies
+      tags:
+      - Companies
   /companies/{id}:
-    $ref: ./resources/companies/company.yml
+    get:
+      operationId: getCompany
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/company_response'
+          description: successful
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Company
+      tags:
+      - Companies
   /customers:
-    $ref: ./resources/customers/create_customer.yml
+    get:
+      description: Retrieves a paginated list of customers.
+      operationId: getCustomers
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/customers_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get a list of customers
+      tags:
+      - Customers
+    post:
+      description: Creates a customer.
+      operationId: createCustomer
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/customer'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create customer
+      tags:
+      - Customers
   /customers/{id}:
-    $ref: ./resources/customers/get_customer.yml
+    delete:
+      description: Deleted a customer resource that corresponds to a customer ID.
+      operationId: deleteCustomerById
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_response'
+          description: successful operation
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Delete Customer
+      tags:
+      - Customers
+    get:
+      description: Gets a customer resource that corresponds to a customer ID.
+      operationId: getCustomerById
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Customer
+      tags:
+      - Customers
+    put:
+      description: You can update customer-related data
+      operationId: updateCustomer
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/update_customer'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Update customer
+      tags:
+      - Customers
   /customers/{id}/fiscal_entities:
-    $ref: ./resources/customers/create_customer_fiscal_entities.yml
+    post:
+      description: Create a fiscal entity resource for a given customer ID.
+      operationId: CreateCustomerFiscalEntities
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/customer_fiscal_entities'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_fiscal_entities_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create Fiscal Entity
+      tags:
+      - Customers
   /customers/{id}/fiscal_entities/{fiscal_entities_id}:
-    $ref: ./resources/customers/update_customer_fiscal_entities.yml
+    put:
+      description: Update Fiscal Entity resource that corresponds to a customer ID.
+      operationId: UpdateCustomerFiscalEntities
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: identifier
+        example: fis_ent_2tQ8HkkfbauaKP9Ho
+        in: path
+        name: fiscal_entities_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/customer_update_fiscal_entities'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_fiscal_entities_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Update Fiscal Entity
+      tags:
+      - Customers
   /orders/{id}/discount_lines:
-    $ref: ./resources/orders/discount_lines_param.yml
+    get:
+      description: Get discount lines for an existing order
+      operationId: ordersGetDiscountLines
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/get_order_discount_lines_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get a List of Discounts
+      tags:
+      - Discounts
+    post:
+      description: Create discount lines for an existing order
+      operationId: ordersCreateDiscountLine
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/discount_line_create'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/discount_lines_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create Discount
+      tags:
+      - Discounts
   /orders/{id}/discount_lines/{discount_lines_id}:
-    $ref: ./resources/orders/update_order_discount_lines_param.yml
+    delete:
+      description: Delete an existing discount line for an existing order
+      operationId: ordersDeleteDiscountLines
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: discount line id identifier
+        example: dis_lin_2tQ974hSHcsdeSZHG
+        in: path
+        name: discount_lines_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/discount_lines_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Delete Discount
+      tags:
+      - Discounts
+    get:
+      description: Get an existing discount line for an existing order
+      operationId: ordersGetDiscountLine
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: discount line id identifier
+        example: dis_lin_2tQ974hSHcsdeSZHG
+        in: path
+        name: discount_lines_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/discount_lines_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Discount
+      tags:
+      - Discounts
+    put:
+      description: Update an existing discount line for an existing order
+      operationId: ordersUpdateDiscountLines
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: discount line id identifier
+        example: dis_lin_2tQ974hSHcsdeSZHG
+        in: path
+        name: discount_lines_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/discount_line_update'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/discount_lines_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Update Discount
+      tags:
+      - Discounts
   /events:
-    $ref: ./resources/events/events.yml
+    get:
+      operationId: getEvents
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/get_events_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get list of Events
+      tags:
+      - Events
   /events/{id}:
-    $ref: ./resources/events/event.yml
+    get:
+      description: |
+        Returns a single event by its ID, including its payload (`data`) and webhook delivery information.
+        The `webhook_status` indicates whether webhook notifications were applicable and their overall status. The [webhook_logs]) array contains delivery attempts (it can be empty when webhook notifications are not applicable or no attempts were created).
+      operationId: getEvent
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/event_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Event
+      tags:
+      - Events
   /events/{event_id}/webhook_logs/{webhook_log_id}/resend:
-    $ref: ./resources/events/events_resend.yml
+    post:
+      description: |
+        Triggers a new delivery attempt for a specific webhook log associated with the given event.
+        Use this endpoint to retry failed webhook deliveries (for example, non-2xx responses or timeouts). The response returns the updated webhook log with the latest attempt metadata.
+      operationId: resendEvent
+      parameters:
+      - description: event identifier
+        example: 6463d6e35a4c3e001819e760
+        in: path
+        name: event_id
+        required: true
+        schema:
+          type: string
+      - description: webhook log identifier
+        example: webhl_2tsv6NzWJHBWCkqGt
+        in: path
+        name: webhook_log_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/events_resend_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Resend Event
+      tags:
+      - Events
   /logs:
-    $ref: ./resources/logs/log.yml
+    get:
+      description: |
+        Returns a paginated list of logs generated by the platform. Logs can be used for troubleshooting and auditing requests and internal operations.
+        Use pagination parameters to navigate through results, and `search` to filter by supported criteria.
+      operationId: getLogs
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/logs_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get List Of Logs
+      tags:
+      - Logs
   /logs/{id}:
-    $ref: ./resources/logs/log_by_id.yml
+    get:
+      description: |
+        Returns a single log by its ID. Logs can be used for troubleshooting and auditing requests and internal operations.
+      operationId: getLogById
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/log_response'
+          description: successful
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Log
+      tags:
+      - Logs
   /orders:
-    $ref: ./resources/orders/order.yml
+    get:
+      description: |
+        Returns a paginated list of orders created in your account.
+        Use pagination parameters to navigate through results, and `search` to filter by supported criteria.
+      operationId: getOrders
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/get_orders_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get a list of Orders
+      tags:
+      - Orders
+    post:
+      description: |
+        Creates a new order. Optionally, you can include `charges` to create payment charges for the order during creation.
+        If checkout parameters are provided and a checkout is created/linked, the response may include a `checkout` object.
+      operationId: createOrder
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/order'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              examples:
+                cash:
+                  $ref: '#/components/examples/order_cash'
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create order
+      tags:
+      - Orders
   /orders/{id}:
-    $ref: ./resources/orders/order_param.yml
+    get:
+      description: "Returns the full details of an Order by its ID. The response follows\
+        \ the standard Order representation, including nested previews (for example\
+        \ `charges`, `line_items`, `shipping_lines`, `tax_lines`, and `discount_lines`)\
+        \ when available."
+      operationId: getOrderById
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Order
+      tags:
+      - Orders
+    put:
+      description: "Updates an existing Order. Only the fields allowed by the API\
+        \ can be updated. Depending on the payload, this operation may also create/update\
+        \ related resources (for example, adding new charges) according to server-side\
+        \ validations."
+      operationId: updateOrder
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/order_update'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Update Order
+      tags:
+      - Orders
   /orders/{id}/cancel:
-    $ref: ./resources/orders/order_cancel_param.yml
+    post:
+      description: "Cancels an existing order. This operation marks the order as cancelled\
+        \ and prevents further processing depending on its current state. If the order\
+        \ cannot be cancelled (for example, due to its status or related charge constraints),\
+        \ the API returns an error response."
+      operationId: cancelOrder
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "428":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: The order cannot be modified because it has already
+                    a charge which is pending payment.
+                  message: The order cannot be modified because it has already a charge
+                    which is pending payment.
+                  param: null
+                  code: femsa.errors.precondition_required.combo.order.cannot_be_updated_because_has_charge
+                log_id: 641b6e233cd9a50001515039
+                object: error
+                type: precondition_required_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Precondition Required
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Cancel Order
+      tags:
+      - Orders
   /orders/{id}/capture:
-    $ref: ./resources/orders/order_capture_param.yml
+    post:
+      description: Captures (finalizes) an order that has been previously authorized.
+        Use this endpoint to capture a specific amount. The captured amount must be
+        greater than 0 and must comply with the order and charge constraints enforced
+        by the API.
+      operationId: captureOrder
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_capture_request'
+        description: Requested fields for capturing an order
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "428":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: The order cannot be modified because it has already
+                    a charge which is pending payment.
+                  message: The order cannot be modified because it has already a charge
+                    which is pending payment.
+                  param: null
+                  code: femsa.errors.precondition_required.combo.order.cannot_be_updated_because_has_charge
+                log_id: 641b6e233cd9a50001515039
+                object: error
+                type: precondition_required_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Precondition Required
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      summary: Capture Order
+      tags:
+      - Orders
   /orders/{id}/line_items:
-    $ref: ./resources/orders/order_product_param.yml
+    post:
+      description: Creates a new product (line item) for an existing order. Use this
+        endpoint to add an additional item to the order after it has been created.
+      operationId: ordersCreateProduct
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/product_create'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/product_order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create Product
+      tags:
+      - Products
   /orders/{id}/line_items/{line_item_id}:
-    $ref: ./resources/orders/update_order_product_param.yml
+    delete:
+      description: Deletes a product (line item) from an existing order. The API will
+        validate whether the order can be modified before removing the item.
+      operationId: ordersDeleteProduct
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: identifier
+        example: line_item_2tQ8HkkfbauaKP9Ho
+        in: path
+        name: line_item_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/product_order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Delete Product
+      tags:
+      - Products
+    put:
+      description: Updates an existing product (line item) for an existing order.
+        Use this endpoint to modify the details of a specific line item in the order.
+      operationId: ordersUpdateProduct
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: identifier
+        example: line_item_2tQ8HkkfbauaKP9Ho
+        in: path
+        name: line_item_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/product_update'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/product_order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Update Product
+      tags:
+      - Products
   /orders/{id}/refunds:
-    $ref: ./resources/orders/order_refunds_param.yml
+    post:
+      description: "Creates a refund for an order. This operation is used to refund\
+        \ a previously paid order (fully or partially, depending on the request body).\
+        \ The API will validate the order and its related charges before processing\
+        \ the refund. If the refund cannot be created due to business rules or state,\
+        \ an error response is returned."
+      operationId: refundOrder
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/order_refunds_request'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Refund Order
+      tags:
+      - Orders
   /orders/{id}/refunds/{refund_id}:
-    $ref: ./resources/orders/order_cancel_refunds_param.yml
+    delete:
+      description: "Cancels a refund previously created for an order. This operation\
+        \ is only available when the refund is still cancellable according to its\
+        \ current status and the payment method rules. If the refund cannot be cancelled,\
+        \ the API returns an error response."
+      operationId: cancelOrderRefund
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: refund identifier
+        example: 6407b5bee1329a000175ba11
+        in: path
+        name: refund_id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/order_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Cancel Refund
+      tags:
+      - Orders
   /checkouts:
-    $ref: ./resources/checkouts/checkouts.yml
+    get:
+      description: Returns a paginated list of payment links created by the merchant.
+        Results can be navigated using the pagination parameters.
+      operationId: getCheckouts
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/checkouts_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get a list of payment links
+      tags:
+      - Payment Link
+    post:
+      description: "Creates a new payment link. The request body defines the payment\
+        \ link type, allowed payment methods, and expiration settings."
+      operationId: createCheckout
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/checkout'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/checkout_response'
+          description: Successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create Unique Payment Link
+      tags:
+      - Payment Link
   /checkouts/{id}:
-    $ref: ./resources/checkouts/checkout.yml
+    get:
+      operationId: getCheckout
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.1.0+json:
+              schema:
+                $ref: '#/components/schemas/checkout_response'
+          description: successful operation
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get a payment link by ID
+      tags:
+      - Payment Link
   /checkouts/{id}/cancel:
-    $ref: ./resources/checkouts/checkout_cancel.yml
+    put:
+      description: "Cancels an existing payment link. After cancellation, the link\
+        \ can no longer be used to generate new payments. This operation is idempotent:\
+        \ cancelling an already cancelled payment link returns the current resource\
+        \ representation."
+      operationId: cancelCheckout
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/checkout_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Cancel Payment Link
+      tags:
+      - Payment Link
   /checkouts/{id}/email:
-    $ref: ./resources/checkouts/checkout_email.yml
+    post:
+      operationId: emailCheckout
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/checkout_email'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/checkout_response'
+          description: successful operation
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Send an email
+      tags:
+      - Payment Link
   /checkouts/{id}/sms:
     $ref: ./resources/checkouts/checkout_sms.yml
   /customers/{id}/payment_sources:
@@ -825,6 +4879,29 @@ paths:
   /webhooks/{id}/test:
     $ref: ./resources/webhooks/webhook_test.yml
 components:
+  examples:
+    order_cash:
+      value:
+        id: 62bce95741de276186407e41
+        livemode: false
+        created_at: 1656547671
+        currency: MXN
+        payment_method:
+          service_name: OxxoPay
+          barcode_url: https://s3.amazonaws.com/cash_payment_barcodes/sandbox_reference.png
+          object: cash_payment
+          type: oxxo
+          expires_at: 1656634070
+          store_name: OXXO
+          reference: 98000013217610
+        object: charge
+        description: Payment from order
+        status: paid
+        amount: 13500
+        paid_at: 1656547702
+        fee: 537
+        customer_id: null
+        order_id: ord_2s53K99C8GXVmCfPm
   parameters:
     accept_language:
       description: Use for knowing which language to use
@@ -893,6 +4970,54 @@ components:
       required: false
       schema:
         type: string
+    fiscal_entities_id:
+      description: identifier
+      example: fis_ent_2tQ8HkkfbauaKP9Ho
+      in: path
+      name: fiscal_entities_id
+      required: true
+      schema:
+        type: string
+    discount_lines_id:
+      description: discount line id identifier
+      example: dis_lin_2tQ974hSHcsdeSZHG
+      in: path
+      name: discount_lines_id
+      required: true
+      schema:
+        type: string
+    event_id:
+      description: event identifier
+      example: 6463d6e35a4c3e001819e760
+      in: path
+      name: event_id
+      required: true
+      schema:
+        type: string
+    webhook_log_id:
+      description: webhook log identifier
+      example: webhl_2tsv6NzWJHBWCkqGt
+      in: path
+      name: webhook_log_id
+      required: true
+      schema:
+        type: string
+    line_items_id:
+      description: identifier
+      example: line_item_2tQ8HkkfbauaKP9Ho
+      in: path
+      name: line_item_id
+      required: true
+      schema:
+        type: string
+    refund_id:
+      description: refund identifier
+      example: 6407b5bee1329a000175ba11
+      in: path
+      name: refund_id
+      required: true
+      schema:
+        type: string
   requestBodies:
     api_keys_create:
       content:
@@ -900,6 +5025,118 @@ components:
           schema:
             $ref: ./schemas/api_keys/api_key_request.yml
       description: requested field for a api keys
+      required: true
+    charge_update:
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ./schemas/charges/charge_update_request.yml
+      description: requested field for update a charge
+      required: true
+    charge_create:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/charges/charge_request.yml
+      description: requested field for a charge
+      required: true
+    customer:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/customers/customer.yml
+      description: requested field for customer
+      required: true
+    update_customer:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/customers/update_customer.yml
+      description: requested field for customer
+      required: true
+    customer_fiscal_entities:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/customers/customer_fiscal_entities_request.yml
+      description: requested field for customer fiscal entities
+      required: true
+    customer_update_fiscal_entities:
+      content:
+        application/vnd.app-v2.2.0+json:
+          schema:
+            $ref: ./schemas/customers/customer_update_fiscal_entities_request.yml
+      description: requested field for customer update fiscal entities
+      required: true
+    discount_line_create:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/orders/order_discount_lines_request.yml
+      description: requested field for a discount lines
+      required: true
+    discount_line_update:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/orders/order_discount_lines_request.yml
+      description: requested field for a discount lines
+      required: true
+    order:
+      content:
+        application/json:
+          examples:
+            order_with_charges:
+              $ref: ./schemas/orders/request_examples/order_with_charges.yml
+            order_with_checkout:
+              $ref: ./schemas/orders/request_examples/order_with_checkout.yml
+          schema:
+            $ref: ./schemas/orders/order_request.yml
+      description: requested fields for order
+      required: true
+    order_update:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/orders/order_update_request.yml
+      description: requested field for an order
+      required: true
+    product_create:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/orders/product.yml
+      description: Fields required to create a new product (line item) for an existing
+        order. This request adds a new item to the order.
+      required: true
+    product_update:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/orders/update_product.yml
+      description: Fields allowed to update an existing product (line item) in an
+        order. All fields are optional; only the provided fields will be updated.
+      required: true
+    order_refunds_request:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/order_refunds_request'
+      description: requested field for a refund
+      required: true
+    checkout:
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/checkouts/checkout.yml
+      description: requested field for checkout
+      required: true
+    checkout_email:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/emailCheckout_request'
+      description: requested field for sms checkout
       required: true
   responses:
     "401":
@@ -977,6 +5214,37 @@ components:
           schema:
             $ref: '#/components/schemas/error'
       description: whitelist validation error
+    "428":
+      content:
+        application/vnd.app-v2.2.0+json:
+          example:
+            details:
+            - debug_message: The order cannot be modified because it has already a
+                charge which is pending payment.
+              message: The order cannot be modified because it has already a charge
+                which is pending payment.
+              param: null
+              code: femsa.errors.precondition_required.combo.order.cannot_be_updated_because_has_charge
+            log_id: 641b6e233cd9a50001515039
+            object: error
+            type: precondition_required_error
+          schema:
+            $ref: '#/components/schemas/error'
+      description: Precondition Required
+    "402":
+      content:
+        application/vnd.app-v2.2.0+json:
+          example:
+            details:
+            - message: The order could not be processed.
+              code: femsa.errors.processing.order.used
+              debug_message: The order has already been used.
+            log_id: 641b6d073cd9a50001515007
+            object: error
+            type: processing_error
+          schema:
+            $ref: '#/components/schemas/error'
+      description: payment required error
   schemas:
     page:
       description: page metadata
@@ -1295,6 +5563,704 @@ components:
       - status
       title: charge_response
       type: object
+    charge_order_response:
+      properties:
+        amount:
+          example: 4321
+          type: integer
+        channel:
+          $ref: '#/components/schemas/charge_order_response_channel'
+        created_at:
+          example: 1676386026
+          format: int64
+          type: integer
+        currency:
+          example: MXN
+          type: string
+        customer_id:
+          type: string
+        description:
+          example: Payment from order
+          type: string
+        device_fingerprint:
+          example: 6FR3chaU4Y1nGAW5NAGd1rcjAKa142Ba
+          nullable: true
+          type: string
+        failure_code:
+          example: suspected_fraud
+          type: string
+        failure_message:
+          example: Este cargo ha sido declinado porque el comportamiento del comprador
+            es sospechoso.
+          type: string
+        id:
+          example: 63efa757cf65380001aec040
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        object:
+          type: string
+        order_id:
+          example: ord_2tN73UdUSNrYRPD9r
+          type: string
+        paid_at:
+          example: 1676390742
+          nullable: true
+          type: integer
+        payment_method:
+          $ref: '#/components/schemas/charge_order_response_payment_method'
+        reference_id:
+          description: Reference ID of the charge
+          example: ref_2tN73UdUSNrYRPD9r
+          nullable: true
+          type: string
+        refunds:
+          items:
+            type: object
+          type: array
+        status:
+          example: pending_payment
+          type: string
+      title: charges_data_response
+      type: object
+    company_response:
+      description: Company model
+      properties:
+        id:
+          description: The child company's unique identifier
+          example: 6441bb27659a060465da7335
+          type: string
+        created_at:
+          description: The resource's creation date (unix timestamp)
+          example: 1680397724
+          format: int64
+          type: integer
+        name:
+          description: The child company's name
+          example: Child Company A
+          type: string
+        object:
+          description: The resource's type
+          enum:
+          - company
+          type: string
+        parent_company_id:
+          description: Id of the parent company
+          example: 6441bb3c62db5812e7920c31
+          type: string
+        use_parent_fiscal_data:
+          description: Whether the parent company's fiscal data is to be used for
+            liquidation and tax purposes
+          example: false
+          type: boolean
+        payout_destination:
+          $ref: ./schemas/companies/company_payout_destination_response.yml
+        fiscal_info:
+          $ref: ./schemas/companies/company_fiscal_info_response.yml
+      title: company_response
+      type: object
+    customer_response:
+      description: customer response
+      properties:
+        antifraud_info:
+          $ref: '#/components/schemas/customer_antifraud_info_response'
+        corporate:
+          description: true if the customer is a company
+          type: boolean
+        created_at:
+          description: Creation date of the object
+          example: 1485151007
+          format: int64
+          type: integer
+        custom_reference:
+          description: Custom reference
+          example: custom_reference
+          type: string
+        default_fiscal_entity_id:
+          example: fis_ent_2tKqqAfqPi21oCmEJ
+          nullable: true
+          type: string
+        default_shipping_contact_id:
+          example: ship_cont_2tKZsTYcsryyu7Ah8
+          nullable: true
+          type: string
+        default_payment_source_id:
+          example: src_2tHJfJ79KyUwpxTio
+          nullable: true
+          type: string
+        email:
+          example: Felipe@gmail.com
+          format: email
+          type: string
+        fiscal_entities:
+          $ref: '#/components/schemas/customer_fiscal_entities_response_1'
+        id:
+          description: Customer's ID
+          example: cus_2tHJfJ79KyUwpxTik
+          type: string
+        livemode:
+          description: true if the object exists in live mode or the value false if
+            the object exists in test mode
+          example: true
+          type: boolean
+        name:
+          description: Customer's name
+          example: Felipe
+          type: string
+        metadata:
+          additionalProperties: true
+          maxProperties: 100
+          type: object
+        object:
+          enum:
+          - customer
+          example: customer
+          type: string
+        payment_sources:
+          $ref: '#/components/schemas/customer_payment_methods_response'
+        phone:
+          description: Customer's phone number
+          example: "+5215555555555"
+          type: string
+        shipping_contacts:
+          $ref: '#/components/schemas/customer_response_shipping_contacts'
+      required:
+      - created_at
+      - id
+      - livemode
+      - name
+      - object
+      title: customer_response
+      type: object
+    customer_fiscal_entities_response:
+      description: Fiscal entity response object.
+      properties:
+        id:
+          example: fis_ent_2zQh5bjjTEQ3mNpag
+          type: string
+        object:
+          enum:
+          - fiscal_entity
+          example: fiscal_entity
+          type: string
+        created_at:
+          example: 1769040798
+          format: int64
+          type: integer
+        parent_id:
+          description: Customer ID this fiscal entity belongs to.
+          example: cus_2zMeTHgj2JBkYGmXq
+          type: string
+        default:
+          description: Indicates whether this is the default fiscal entity for the
+            customer.
+          example: false
+          type: boolean
+        address:
+          $ref: '#/components/schemas/customer_fiscal_entities_response_address'
+      required:
+      - address
+      - created_at
+      - default
+      - id
+      - object
+      - parent_id
+      title: customer_fiscal_entities_response
+      type: object
+    discount_lines_response:
+      allOf:
+      - $ref: ./schemas/orders/order_discount_lines_request.yml
+      - properties:
+          id:
+            description: The discount line id
+            example: dis_lin_2tQQ58HPgPw7StE8z
+            type: string
+          object:
+            description: The object name
+            enum:
+            - discount_line
+            example: discount_line
+            type: string
+          parent_id:
+            description: The order id
+            example: ord_2tPAmKCEJqh8RE6nY
+            type: string
+        required:
+        - id
+        - object
+        - parent_id
+        type: object
+      title: discount_lines_order_response
+      type: object
+    event_response:
+      description: event model
+      properties:
+        created_at:
+          example: 1661445644
+          format: int64
+          type: integer
+        data:
+          additionalProperties: true
+          example:
+            data:
+              object:
+                action: ping
+                livemode: true
+              previous_attributes: {}
+          maxProperties: 100
+          type: object
+        id:
+          example: 6307a60c41de27127515a575
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        object:
+          enum:
+          - event
+          example: event
+          type: string
+        type:
+          example: webhook_ping
+          type: string
+        webhook_logs:
+          items:
+            $ref: '#/components/schemas/WebhookLog'
+          type: array
+        webhook_status:
+          example: successful
+          type: string
+      required:
+      - created_at
+      - data
+      - id
+      - livemode
+      - object
+      - type
+      - webhook_logs
+      - webhook_status
+      title: event_response
+      type: object
+    events_resend_response:
+      description: Webhook log model returned after resending an event webhook delivery.
+      properties:
+        failed_attempts:
+          example: 2
+          type: integer
+        id:
+          example: webhl_2zPzadKdcLpBVnWC2
+          type: string
+        last_attempted_at:
+          example: 1768856284
+          type: integer
+        last_http_response_status:
+          example: 405
+          type: integer
+        response_data:
+          additionalProperties: true
+          example: {}
+          maxProperties: 100
+          type: object
+        url:
+          example: https://example.com/new-webhooks
+          format: uri
+          type: string
+      required:
+      - failed_attempts
+      - id
+      - last_attempted_at
+      - last_http_response_status
+      - response_data
+      - url
+      title: event_webhook_resend_response
+      type: object
+    logs_response:
+      description: Log model representing a recorded request/response cycle for troubleshooting
+        and auditing.
+      properties:
+        id:
+          example: 696139685c96a70001d67e1a
+          type: string
+        object:
+          enum:
+          - log
+          example: log
+          type: string
+        created_at:
+          example: 1767979368
+          format: int64
+          type: integer
+        livemode:
+          example: true
+          type: boolean
+        method:
+          example: GET
+          type: string
+        url:
+          example: /events
+          type: string
+        status:
+          example: "200"
+          type: string
+        version:
+          example: 2.1.0
+          type: string
+        ip_address:
+          example: 54.86.50.139
+          format: ipv4
+          type: string
+        related:
+          example: Event
+          type: string
+        query_string:
+          additionalProperties: true
+          example:
+            limit: "20"
+          nullable: true
+          type: object
+        request_body:
+          additionalProperties: true
+          example: {}
+          nullable: true
+          type: object
+        response_body:
+          additionalProperties: true
+          nullable: true
+          type: object
+        request_headers:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+        response_headers:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+        searchable_tags:
+          items:
+            type: string
+          type: array
+      required:
+      - created_at
+      - id
+      - ip_address
+      - livemode
+      - method
+      - object
+      - related
+      - status
+      - url
+      - version
+      title: log_response
+      type: object
+    log_response:
+      description: Log model representing a recorded request/response cycle for troubleshooting
+        and auditing.
+      properties:
+        id:
+          example: 6307a60c41de27127515a575
+          type: string
+        object:
+          enum:
+          - log
+          example: log
+          type: string
+        created_at:
+          example: 1661445644
+          format: int64
+          type: integer
+        updated_at:
+          example: 2022-08-25T16:40:44.887Z
+          format: date-time
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        ip_address:
+          example: 54.235.131.48
+          format: ipv4
+          type: string
+        loggable_id:
+          example: ord_87632467832
+          nullable: true
+          type: string
+        loggable_type:
+          example: order
+          nullable: true
+          type: string
+        method:
+          example: POST
+          type: string
+        url:
+          example: /filter_resource
+          type: string
+        related:
+          example: FilterResource
+          type: string
+        version:
+          example: 2.2.0
+          type: string
+        user_account_id:
+          example: 5a0b7001edbb6e1725b0b2c6
+          nullable: true
+          type: string
+        oauth_token_id:
+          nullable: true
+          type: string
+          example: null
+        status:
+          example: "200"
+          type: string
+        query_string:
+          additionalProperties: true
+          example:
+            amount: 3000
+            payable: true
+          nullable: true
+          type: object
+        request_headers:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+        response_headers:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+        request_body:
+          additionalProperties: true
+          nullable: true
+          type: object
+        response_body:
+          additionalProperties: true
+          nullable: true
+          type: object
+        searchable_tags:
+          example:
+          - 6307a60c41de27127515a575
+          - 6307a60c41de27127515a571
+          items:
+            type: string
+          type: array
+      required:
+      - created_at
+      - id
+      - livemode
+      - object
+      title: log_response
+      type: object
+    orders_response:
+      properties:
+        data:
+          items:
+            $ref: ./schemas/orders/order_response.yml
+          type: array
+      required:
+      - data
+      title: orders_response
+      type: object
+    order_response:
+      description: |
+        Order model.
+        Some nested resources are returned as list previews (for example: `charges`, `line_items`), and may be `null` depending on the request/context.
+        The `checkout` field is only present when the order is linked to a checkout (`channel.checkout_request_id`).
+      properties:
+        id:
+          example: ord_2zKSF2aUY2kBRcyXJ
+          type: string
+        object:
+          enum:
+          - order
+          example: order
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        amount:
+          example: 10000
+          type: integer
+        currency:
+          example: MXN
+          maxLength: 3
+          type: string
+        payment_status:
+          description: Current payment status of the order. It can be `null` for orders
+            without payment information yet.
+          example: pending_payment
+          nullable: true
+          type: string
+        amount_refunded:
+          example: 0
+          type: integer
+        split_payment:
+          description: Indicates whether the order uses split payments (when available/configured).
+          nullable: true
+          type: boolean
+        metadata:
+          additionalProperties: true
+          description: Metadata attached to the order.
+          example: {}
+          maxProperties: 100
+          type: object
+        is_refundable:
+          description: Indicates whether the order is currently refundable.
+          example: false
+          type: boolean
+        created_at:
+          example: 1767651766
+          format: int64
+          type: integer
+        updated_at:
+          example: 1767651766
+          format: int64
+          type: integer
+        customer_info:
+          $ref: ./schemas/customers/customer_info_response.yml
+        shipping_contact:
+          $ref: ./schemas/customers/customer_shipping_contact_response.yml
+        channel:
+          $ref: ./schemas/channels/channel_response.yml
+        fiscal_entity:
+          $ref: ./schemas/fiscal_entities/fiscal_entity_response.yml
+        checkout:
+          $ref: ./schemas/checkouts/checkout_response.yml
+        is_button_premia:
+          description: Indicates whether the order is associated with Button Premia
+            (when applicable).
+          nullable: true
+          type: boolean
+        line_items:
+          $ref: '#/components/schemas/order_response_line_items'
+        shipping_lines:
+          $ref: '#/components/schemas/order_response_shipping_lines'
+        tax_lines:
+          $ref: '#/components/schemas/order_response_tax_lines'
+        discount_lines:
+          $ref: '#/components/schemas/order_response_discount_lines'
+        charges:
+          $ref: '#/components/schemas/order_response_charges'
+        partial_reference:
+          additionalProperties: true
+          description: Partial reference information (when applicable). Structure
+            may vary depending on the payment flow.
+          nullable: true
+          type: object
+        payments_info:
+          additionalProperties: true
+          description: Additional payment information (when available). Structure
+            may vary.
+          nullable: true
+          type: object
+      required:
+      - amount
+      - amount_refunded
+      - created_at
+      - currency
+      - id
+      - livemode
+      - object
+      - payment_status
+      - updated_at
+      title: order_response
+      type: object
+    product_order_response:
+      allOf:
+      - $ref: ./schemas/orders/product.yml
+      - properties:
+          id:
+            type: string
+          object:
+            type: string
+          parent_id:
+            type: string
+        type: object
+      title: product order response
+    checkout_response:
+      description: checkout response
+      properties:
+        allowed_payment_methods:
+          example:
+          - cash
+          items:
+            type: string
+          type: array
+        can_not_expire:
+          example: false
+          type: boolean
+        emails_sent:
+          example: 0
+          type: integer
+        expires_at:
+          example: 1680397724
+          format: int64
+          type: integer
+        failure_url:
+          example: https://pay.femsa.com/failure
+          type: string
+        id:
+          example: b0bf16c4-18b9-445e-ba24-01604f329dbf
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        metadata:
+          additionalProperties: true
+          example:
+            key: value
+          type: object
+        name:
+          description: Payment link name
+          example: Payment Link Name 1594138857
+          type: string
+        needs_shipping_contact:
+          example: false
+          type: boolean
+        object:
+          example: checkout
+          type: string
+        paid_payments_count:
+          example: 0
+          type: integer
+        payments_limit_count:
+          example: 5
+          format: int32
+          nullable: true
+          type: integer
+        recurrent:
+          example: false
+          type: boolean
+        slug:
+          example: b0bf16c418b9445eba2401604f329dbf
+          type: string
+        sms_sent:
+          example: 0
+          type: integer
+        starts_at:
+          example: 1677650400
+          type: integer
+        status:
+          example: Issued
+          type: string
+        success_url:
+          example: https://pay.femsa.com/success
+          type: string
+        type:
+          example: PaymentLink
+          type: string
+        url:
+          example: https://pay.femsa.com/link/b0bf16c418b9445eba2401604f329dbf
+          format: uri
+          type: string
+      required:
+      - id
+      - livemode
+      - name
+      - object
+      title: checkout_response
+      type: object
     get_api_keys_response:
       allOf:
       - $ref: '#/components/schemas/page'
@@ -1343,6 +6309,126 @@ components:
             type: array
         type: object
       title: get_charges_response
+    get_companies_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/company_response'
+            type: array
+        type: object
+      title: get_companies_response
+    customers_response:
+      allOf:
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/customer_response'
+            title: customers_data_response
+            type: array
+        type: object
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      title: customers_response
+    get_order_discount_lines_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/discount_lines_response'
+            type: array
+        type: object
+      title: get_order_discount_lines_response
+    get_events_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/event_response'
+            type: array
+        required:
+        - data
+        type: object
+      title: get_events_response
+    get_orders_response:
+      allOf:
+      - $ref: '#/components/schemas/orders_response'
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      title: get_orders_response
+    order_capture_request:
+      properties:
+        amount:
+          description: Amount to capture
+          example: 500
+          format: int64
+          minimum: 1
+          nullable: false
+          type: integer
+      required:
+      - amount
+      title: order_capture_request
+      type: object
+    order_refunds_request:
+      properties:
+        amount:
+          description: "Amount to refund. If not provided, the API refunds the refundable\
+            \ amount of the selected charge."
+          example: 500
+          format: int64
+          minimum: 1
+          type: integer
+        charge_id:
+          description: "Charge ID to refund. If not provided, the API selects a refundable\
+            \ charge from the order."
+          example: 6976b2e3c4418f00012943c5
+          nullable: true
+          type: string
+        reason:
+          description: "Refund reason. If not provided, the API uses a default reason."
+          enum:
+          - requested_by_client
+          - cannot_be_fulfilled
+          - duplicated_transaction
+          - suspected_fraud
+          - other
+          example: suspected_fraud
+          type: string
+        expires_at:
+          description: Expiration timestamp for cash refunds (must be within the allowed
+            range configured by the API).
+          example: 1553273553
+          format: int64
+          nullable: true
+          type: integer
+      title: order_refunds_request
+      type: object
+    checkouts_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/checkout_response'
+            type: array
+        type: object
+      title: checkouts_response
+    emailCheckout_request:
+      properties:
+        email:
+          example: example@femsa.com
+          format: email
+          type: string
+      required:
+      - email
+      type: object
     charge_response_channel:
       properties:
         segment:
@@ -1428,6 +6514,306 @@ components:
         type: object
       nullable: true
       title: charge_response_refunds
+      type: object
+    charge_order_response_channel:
+      properties:
+        segment:
+          example: Checkout
+          type: string
+        checkout_request_id:
+          example: 6fca054a-8519-4c43-971e-cea35cc519bb
+          type: string
+        checkout_request_type:
+          example: HostedPayment
+          type: string
+        id:
+          example: channel_2tNDzhA4Akmzj11AU
+          type: string
+      type: object
+    charge_order_response_payment_method:
+      discriminator:
+        mapping:
+          cash_payment: payment_method_cash
+        propertyName: object
+      oneOf:
+      - $ref: ./schemas/charges/charge_payment_method_cash_response.yml#/payment_method_cash
+      title: charge_order_response_payment_method
+    customer_antifraud_info_response:
+      nullable: true
+      properties:
+        first_paid_at:
+          example: 1485151007
+          format: int64
+          nullable: true
+          type: integer
+        account_created_at:
+          example: 1484040996
+          format: int64
+          nullable: true
+          type: integer
+      title: customer_antifraud_info_response
+      type: object
+    customer_fiscal_entities_response_1:
+      allOf:
+      - $ref: ./schemas/pagination/pagination.yml
+      - $ref: ./schemas/pagination/page.yml
+      - properties:
+          data:
+            items:
+              $ref: ./schemas/customers/customer_fiscal_entities_response.yml
+            type: array
+        type: object
+      title: customer_fiscal_entities_response
+    customer_payment_methods_data:
+      discriminator:
+        mapping:
+          cash: ./customer_payment_method_cash_response.yml
+          oxxo_recurrent: ./customer_payment_method_cash_response.yml
+        propertyName: type
+      oneOf:
+      - $ref: ./schemas/customers/customer_payment_method_cash_response.yml
+      title: customer_payment_methods_data
+    customer_payment_methods_response:
+      allOf:
+      - $ref: ./schemas/pagination/pagination.yml
+      - $ref: ./schemas/pagination/page.yml
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/customer_payment_methods_data'
+            title: customer_payment_methods_data
+            type: array
+        title: customerPaymentMethods
+        type: object
+      title: customer_payment_methods_response
+    customer_shipping_contacts_data_response:
+      allOf:
+      - $ref: ./schemas/customers/customer_shipping_contacts.yml
+      - properties:
+          id:
+            example: ship_cont_2tKZsTYcsryyu7Ah8
+            type: string
+          object:
+            example: shipping_contact
+            type: string
+          created_at:
+            example: 1675715413
+            format: int64
+            type: integer
+        required:
+        - created_at
+        - id
+        - object
+        type: object
+      title: customer_shipping_contacts_data_response
+    customer_response_shipping_contacts:
+      allOf:
+      - $ref: ./schemas/pagination/pagination.yml
+      - $ref: ./schemas/pagination/page.yml
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/customer_shipping_contacts_data_response'
+            type: array
+        type: object
+    customer_fiscal_entities_response_address:
+      properties:
+        object:
+          enum:
+          - fiscal_entity_address
+          example: fiscal_entity_address
+          type: string
+        postal_code:
+          example: "06100"
+          type: string
+        street1:
+          example: Nuevo Leon 254
+          nullable: true
+          type: string
+        external_number:
+          example: string
+          nullable: true
+          type: string
+        city:
+          example: Ciudad de Mexico
+          nullable: true
+          type: string
+        country:
+          example: mx
+          nullable: true
+          type: string
+      required:
+      - object
+      - postal_code
+      type: object
+    WebhookLog:
+      properties:
+        failed_attempts:
+          example: 10
+          type: integer
+        id:
+          example: webhl_2svd2sh6GbqzyWBNZ
+          type: string
+        last_attempted_at:
+          example: 1669651274
+          format: int64
+          type: integer
+        last_http_response_status:
+          example: 200
+          type: integer
+        object:
+          enum:
+          - webhook_log
+          example: webhook_log
+          type: string
+        response_data:
+          additionalProperties: true
+          example:
+            amount: 3000
+            payable: true
+          maxProperties: 100
+          nullable: true
+          type: object
+        url:
+          example: https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval
+          format: uri
+          type: string
+      required:
+      - failed_attempts
+      - id
+      - last_attempted_at
+      - last_http_response_status
+      - url
+      title: WebhookLog
+      type: object
+    order_response_line_items:
+      description: List preview of line items included in the order. It can be `null`
+        depending on the response context.
+      nullable: true
+      properties:
+        object:
+          enum:
+          - list
+          example: list
+          type: string
+        has_more:
+          example: false
+          type: boolean
+        total:
+          example: 1
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: ./schemas/orders/line_item_response.yml
+          type: array
+      required:
+      - data
+      - has_more
+      - object
+      type: object
+    order_response_shipping_lines:
+      description: List preview of shipping lines for the order. It can be `null`
+        when not applicable or not included.
+      nullable: true
+      properties:
+        object:
+          enum:
+          - list
+          example: list
+          type: string
+        has_more:
+          example: false
+          type: boolean
+        total:
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: ./schemas/orders/shipping_line_response.yml
+          type: array
+      required:
+      - data
+      - has_more
+      - object
+      type: object
+    order_response_tax_lines:
+      description: List preview of tax lines for the order. It can be `null` when
+        not applicable or not included.
+      nullable: true
+      properties:
+        object:
+          enum:
+          - list
+          example: list
+          type: string
+        has_more:
+          example: false
+          type: boolean
+        total:
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: ./schemas/orders/tax_line_response.yml
+          type: array
+      required:
+      - data
+      - has_more
+      - object
+      type: object
+    order_response_discount_lines:
+      description: List preview of discount lines applied to the order. It can be
+        `null` when not applicable or not included.
+      nullable: true
+      properties:
+        object:
+          enum:
+          - list
+          example: list
+          type: string
+        has_more:
+          example: false
+          type: boolean
+        total:
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: ./schemas/orders/discount_line_response.yml
+          type: array
+      required:
+      - data
+      - has_more
+      - object
+      type: object
+    order_response_charges:
+      description: |
+        List preview of charges created for the order.
+        Charges are only created when included in the request or created later through payment flows.
+        This field can be `null` depending on the response context.
+      nullable: true
+      properties:
+        object:
+          enum:
+          - list
+          example: list
+          type: string
+        has_more:
+          example: false
+          type: boolean
+        total:
+          example: 1
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: ./schemas/charges/charge_response.yml
+          type: array
+      required:
+      - data
+      - has_more
+      - object
       type: object
   securitySchemes:
     bearerAuth:
