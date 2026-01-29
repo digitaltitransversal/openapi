@@ -4842,10 +4842,120 @@ paths:
       summary: Send an email
       tags:
       - Payment Link
-  /checkouts/{id}/sms:
-    $ref: ./resources/checkouts/checkout_sms.yml
   /customers/{id}/payment_sources:
-    $ref: ./resources/customers/create_customer_payment_methods.yml
+    get:
+      description: Get a list of Payment Methods
+      operationId: GetCustomerPaymentMethods
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/get_payment_method_response'
+          description: successful operation
+        "401":
+          $ref: ./resources/customers/../errors/401.yml
+        "404":
+          $ref: ./resources/customers/../errors/404.yml
+        "500":
+          $ref: ./resources/customers/../errors/500.yml
+      security:
+      - bearerAuth: []
+      summary: Get Payment Methods
+      tags:
+      - Payment Methods
+    post:
+      description: Creates a new payment method for a customer. The payment method
+        is associated with the customer identified by `id`. The accepted fields depend
+        on the payment method `type`.
+      operationId: CreateCustomerPaymentMethods
+      parameters:
+      - $ref: ./resources/customers/../../parameters/commons/path_param/id.yml
+      - $ref: ./resources/customers/../../parameters/commons/headers/accept_language.yml
+      - $ref: ./resources/customers/../../parameters/commons/headers/x_child_company_id.yml
+      requestBody:
+        $ref: ./resources/customers/../../requestBodies/customers/customer_payment_methods.yml
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/create_customer_payment_methods_response'
+          description: successful operation
+        "401":
+          $ref: ./resources/customers/../errors/401.yml
+        "404":
+          $ref: ./resources/customers/../errors/404.yml
+        "422":
+          $ref: ./resources/customers/../errors/422.yml
+        "500":
+          $ref: ./resources/customers/../errors/500.yml
+      security:
+      - bearerAuth: []
+      summary: Create Payment Method
+      tags:
+      - Payment Methods
   /customers/{id}/payment_sources/{payment_method_id}:
     $ref: ./resources/customers/update_customer_payment_methods.yml
   /orders/{id}/shipping_lines:
@@ -6261,6 +6371,32 @@ components:
       - object
       title: checkout_response
       type: object
+    payment_method_cash_response:
+      allOf:
+      - $ref: ./schemas/customers/customer_payment_method_response.yml
+      - properties:
+          reference:
+            example: "93000262276908"
+            type: string
+          barcode:
+            example: "93000262276908"
+            type: string
+          barcode_url:
+            example: https://pt-common-s3-e.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-
+            format: uri
+            type: string
+          expires_at:
+            example: 1677196303
+            format: int64
+            nullable: true
+            type: integer
+          provider:
+            example: Oxxo
+            type: string
+        type: object
+      description: Cash payment method response.
+      title: customer_payment_method_cash_response
+      type: object
     get_api_keys_response:
       allOf:
       - $ref: '#/components/schemas/page'
@@ -6429,6 +6565,35 @@ components:
       required:
       - email
       type: object
+    get_customer_payment_method_data_response:
+      discriminator:
+        mapping:
+          cash: ../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response
+          oxxo_recurrent: ../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/payment_method_cash_response'
+      title: get_customer_payment_method_data_response
+    get_payment_method_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/get_customer_payment_method_data_response'
+            type: array
+        type: object
+      title: get_payment_method_response
+    create_customer_payment_methods_response:
+      discriminator:
+        mapping:
+          cash: ../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response
+          oxxo_recurrent: ../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response
+        propertyName: type
+      oneOf:
+      - $ref: ./schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response
+      title: create_customer_payment_methods_response
     charge_response_channel:
       properties:
         segment:
