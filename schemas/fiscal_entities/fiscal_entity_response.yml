@@ -1,0 +1,18 @@
+title: fiscal_entity_response
+type: object
+description: Fiscal entity information.
+properties:
+  id:
+    type: string
+    example: "fis_ent_1234567890"
+  object:
+    type: string
+    example: "fiscal_entity"
+  tax_id:
+    type: string
+    example: "XAXX010101000"
+  name:
+    type: string
+    example: "John Doe"
+  address:
+    $ref: "../orders/fiscal_entity_address.yml"

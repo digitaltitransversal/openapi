@@ -1,0 +1,16 @@
+title: channel_response
+type: object
+description: Channel information.
+properties:
+  segment:
+    type: string
+    example: "Checkout"
+  checkout_request_id:
+    type: string
+    example: "f3a5bfc1-ba1c-474f-9687-46d8b75ffc90"
+  checkout_request_type:
+    type: string
+    example: "Integration"
+  id:
+    type: string
+    example: "channel_2zNxD65G8MBNkYksy"

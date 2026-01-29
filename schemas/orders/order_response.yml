@@ -81,7 +81,7 @@ properties:
   shipping_contact:
     description: Shipping contact associated with the order. It may be `null` when not provided/required.
     nullable: true
-    $ref: ../customers/customer_shipping_contact_response.yml
+    $ref: ../customers/customer_shipping_contacts_response.yml
 
   channel:
     description: Channel information for the order (for example Checkout-related metadata). It may be `null`.

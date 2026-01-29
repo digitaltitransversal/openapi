@@ -23,11 +23,8 @@ put:
             title: update_customer_payment_methods_response
             discriminator:
               propertyName: type
-              mapping:
-                cash: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
-                oxxo_recurrent: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
     401:
       $ref: '../errors/401.yml'
     404:
@@ -64,11 +61,8 @@ delete:
             title: delete_customer_payment_methods_response
             discriminator:
               propertyName: type
-              mapping:
-                cash: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
-                oxxo_recurrent: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
     401:
       $ref: '../errors/401.yml'
     404:

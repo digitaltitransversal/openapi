@@ -1,0 +1,31 @@
+title: shipping_line_response
+type: object
+description: Shipping line response.
+properties:
+  id:
+    type: string
+    example: "ship_line_1234567890"
+  object:
+    type: string
+    example: "shipping_line"
+  amount:
+    type: integer
+    format: int64
+    example: 1000
+  carrier:
+    type: string
+    nullable: true
+    example: null
+  tracking_number:
+    type: string
+    nullable: true
+    example: null
+  method:
+    type: string
+    nullable: true
+    example: null
+  metadata:
+    type: object
+    additionalProperties: true
+    maxProperties: 100
+    nullable: true

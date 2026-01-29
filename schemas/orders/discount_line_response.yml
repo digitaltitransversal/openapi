@@ -1,0 +1,27 @@
+title: discount_line_response
+type: object
+description: Discount line response.
+properties:
+  id:
+    type: string
+    example: "disc_line_1234567890"
+  object:
+    type: string
+    example: "discount_line"
+  amount:
+    type: integer
+    format: int64
+    example: -500
+  code:
+    type: string
+    nullable: true
+    example: null
+  description:
+    type: string
+    nullable: true
+    example: null
+  metadata:
+    type: object
+    additionalProperties: true
+    maxProperties: 100
+    nullable: true
