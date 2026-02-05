@@ -8472,6 +8472,18 @@ components:
       type: object
     api_key_response:
       description: API keys model
+      example:
+        role: private
+        deleted: false
+        livemode: false
+        updated_at: 1684167923
+        prefix: key_rp
+        deactivated_at: 0
+        active: true
+        description: online store
+        created_at: 1684167881
+        id: 64625cc9f3e02c00163f5e4d
+        object: api_key
       properties:
         id:
           description: Unique identifier of the API key
