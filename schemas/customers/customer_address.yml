@@ -3,7 +3,6 @@ required:
   - street1
   - city
   - postal_code
-  - city
   - country
 
 properties:
