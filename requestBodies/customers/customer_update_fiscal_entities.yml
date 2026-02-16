@@ -1,6 +1,6 @@
 description: requested field for customer update fiscal entities
 content:
-  application/vnd.app-v2.2.0+json:
+  application/json:
     schema:
       $ref: "../../schemas/customers/customer_update_fiscal_entities_request.yml"
 required: true

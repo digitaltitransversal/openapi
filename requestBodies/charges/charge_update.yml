@@ -1,6 +1,6 @@
 description: requested field for update a charge
 content:
-  application/vnd.app-v2.2.0+json:
+  application/json:
     schema:
       $ref: "../../schemas/charges/charge_update_request.yml"
 required: true

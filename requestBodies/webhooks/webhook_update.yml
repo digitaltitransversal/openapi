@@ -1,6 +1,6 @@
 description: Webhook update request payload.
 content:
-  application/vnd.app-v2.2.0+json:
+  application/json:
     schema:
       $ref: '../../schemas/webhooks/webhook_update_request.yml'
 required: true
