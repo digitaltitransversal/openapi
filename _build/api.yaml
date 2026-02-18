@@ -976,7 +976,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/get_companies_response'
           description: successful
@@ -1068,7 +1068,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/company_response'
           description: successful
@@ -1389,7 +1389,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/customer_response'
           description: successful operation
@@ -1499,7 +1499,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/customer_response'
           description: successful operation
@@ -1596,7 +1596,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/customer_response'
           description: successful operation
@@ -4482,7 +4482,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.1.0+json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/checkout_response'
           description: successful operation
