@@ -39,8 +39,16 @@ properties:
     items:
       type: string
     example:
-      - "charge.created"
-      - "charge.paid"
+      ["charge.created",
+                "charge.paid",
+                "charge.under_fraud_review",
+                "charge.fraudulent",
+                "charge.refunded",
+                "charge.preauthorized",
+                "charge.declined",
+                "charge.canceled",
+                "charge.reversed",
+                "charge.pending_confirmation"]
     description: List of event types the webhook is subscribed to.
   synchronous:
     type: boolean

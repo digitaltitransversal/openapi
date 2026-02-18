@@ -2,8 +2,8 @@ get:
   tags:
     - Webhook keys
   operationId: getWebhookKeys
-  summary: Get webhook keys
-  description: Returns a paginated list of webhook signing keys for the current company.
+  summary: Get List of Webhooks
+  description: 'Consume the list of webhooks you have, each environment supports 10 webhooks (For production and testing)'
   
   security:
     - bearerAuth: []
@@ -41,7 +41,7 @@ post:
   tags:
     - Webhook keys
   operationId: createWebhookKey
-  summary: Create webhook key
+  summary: Create Webhook Key
   description: Creates a new webhook signing key for the current company.
 
   security:

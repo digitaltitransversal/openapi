@@ -1,32 +1,27 @@
-description: Customer payment method request.
-content:
-  application/json:
-    schema:
-      title: payment_method_oxxo_recurrent_request
-      type: object
-      description: Customer payment method request for recurrent OXXO references.
-      required:
-        - type
-      properties:
-        type:
-          type: string
-          enum: ["oxxo_recurrent"]
-          example: "oxxo_recurrent"
-        expires_at:
-          oneOf:
-            - type: integer
-              format: int64
-              example: 1717171717
-            - type: string
-              example: "1717171717"
-        amount:
-          oneOf:
-            - type: integer
-              format: int64
-              example: 10000
-            - type: string
-              example: "10000"
-        reference:
-          type: string
-          example: "93000262276908"
-required: true
+title: payment_method_oxxo_recurrent_request
+type: object
+description: Customer payment method request for recurrent OXXO references.
+required:
+  - type
+properties:
+  type:
+    type: string
+    enum: ["oxxo_recurrent"]
+    example: "oxxo_recurrent"
+  expires_at:
+    oneOf:
+      - type: integer
+        format: int64
+        example: 1717171717
+      - type: string
+        example: "1717171717"
+  amount:
+    oneOf:
+      - type: integer
+        format: int64
+        example: 10000
+      - type: string
+        example: "10000"
+  reference:
+    type: string
+    example: "93000262276908"

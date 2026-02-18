@@ -2,7 +2,7 @@ get:
   tags:
     - Transfers
   operationId: getTransfers
-  summary: Get transfers
+  summary: Get a list of transfers
   description: Returns a paginated list of transfers. Results can be filtered using query parameters.
  
   security:
