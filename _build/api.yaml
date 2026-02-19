@@ -22,7 +22,7 @@ paths:
         Retrieves a paginated list of API keys for the authenticated account.
 
         Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
-        Use the `search` query parameter to perform a general search (for example by key `id`, description, or prefix).
+        Use the `search` query parameter to perform a general search (for example by key `id` or description).
       operationId: getApiKeys
       parameters:
       - description: Use for knowing which language to use
@@ -72,7 +72,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: "General search, e.g. by id, description, prefix"
+      - description: "General search, e.g. by id or description"
         in: query
         name: search
         required: false
@@ -124,6 +124,9 @@ paths:
     post:
       description: |
         Creates a new API key.
+
+        The response includes an `authentication_token` that is shown only once (at creation time).
+        Copy and store it securely.
       operationId: createApiKey
       parameters:
       - description: Use for knowing which language to use
@@ -240,14 +243,6 @@ paths:
           enum:
           - es
           - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
           type: string
       responses:
         "200":
@@ -450,14 +445,6 @@ paths:
           - es
           - en
           type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
@@ -467,7 +454,7 @@ paths:
       responses:
         "200":
           content:
-            application/vnd.app-v2.2.0+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/api_key_response'
           description: successful operation
@@ -3085,10 +3072,12 @@ paths:
       tags:
       - Orders
     put:
-      description: "Updates an existing Order. Only the fields allowed by the API\
-        \ can be updated. Depending on the payload, this operation may also create/update\
-        \ related resources (for example, adding new charges) according to server-side\
-        \ validations."
+      description: |
+        Updates an existing order by its ID.
+
+        Orders are the central resource in the API. Updating an order may also update related order sub-resources when they are included in the request payload, according to server-side validations.
+
+        Only fields supported by the API can be modified.
       operationId: updateOrder
       parameters:
       - description: Identifier of the resource
@@ -3188,7 +3177,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Update Order
+      summary: Update order
       tags:
       - Orders
   /orders/{id}/cancel:
@@ -6193,8 +6182,13 @@ paths:
       - Taxes
   /transactions:
     get:
-      description: Returns a paginated list of transactions. Results can be filtered
-        using query parameters.
+      description: |
+        Returns a paginated list of transactions (ledger movements).
+
+        A transaction is a movement that represents the financial impact of payment operations, including amounts, fees, and net values.
+        Transactions can be linked to a charge and may be linked to a transfer (payout) when they are included in a payout.
+
+        If you need payout-level information (destination, statement reference/description, payout status), use GET /transfers.
       operationId: getTransactions
       parameters:
       - description: Use for knowing which language to use
@@ -6244,12 +6238,11 @@ paths:
         required: false
         schema:
           type: string
-      - description: id of the object to be retrieved
+      - description: "General order search, e.g. by mail, reference etc."
         in: query
-        name: id
+        name: search
         required: false
         schema:
-          example: 65412a893cd69a0001c25892
           type: string
       - description: id of the charge used for filtering
         in: query
@@ -6278,7 +6271,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/get_transactions_response'
-          description: successful
+          description: Successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6312,7 +6305,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get transactions
+      summary: List transactions
       tags:
       - Transactions
   /transactions/{id}:
@@ -6515,8 +6508,14 @@ paths:
       - Transfers
   /transfers/{id}:
     get:
-      description: Retrieves the details of a transfer by its ID.
-      operationId: getTransfer
+      description: |
+        Returns a paginated list of transfers (payouts/dispersions).
+
+        A transfer represents a payout of funds to the merchant (where the money is sent and the payout status).
+        Transfers typically aggregate multiple transactions.
+
+        If you need movement-level details (amount/fee/net per operation) or to reconcile charges, use GET /transactions.
+      operationId: getTransfers
       parameters:
       - description: Use for knowing which language to use
         examples:
@@ -6556,7 +6555,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/transfer_response'
-          description: successful
+          description: Successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6571,22 +6570,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
           description: authentication error
-        "404":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: The resource was not found.
-                  param: null
-                  code: femsa.errors.resource_not_found.entity
-                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
-                    not be found.
-                log_id: 641b6c253cd9a50001514fae
-                object: error
-                type: resource_not_found_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: not found entity
         "500":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6606,7 +6589,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get transfer
+      summary: List transfers
       tags:
       - Transfers
   /webhook_keys:
@@ -7692,7 +7675,7 @@ components:
         line_items:
         - name: Box of Cohiba S1s
           unit_price: 20000
-          quantity: 1
+          quantity: 2
         charges:
         - amount: 40000
           payment_method:
@@ -7910,14 +7893,6 @@ components:
       required: true
       schema:
         type: string
-    id_query:
-      description: id of the object to be retrieved
-      in: query
-      name: id
-      required: false
-      schema:
-        example: 65412a893cd69a0001c25892
-        type: string
     charge_id:
       description: id of the charge used for filtering
       in: query
@@ -8024,7 +7999,27 @@ components:
               $ref: '#/components/examples/order_with_checkout'
           schema:
             $ref: '#/components/schemas/order_request'
-      description: requested fields for order
+      description: |
+        Fields used to create an Order.
+
+        Required:
+        - `currency`
+        - `line_items`
+        - `customer_info`
+
+        Customer information is required to successfully create an order in this API, since downstream flows (such as creating charges, checkout configuration, and validating referenced customer sub-documents) require customer context.
+
+        Provide `customer_info` in one of the following ways:
+        - Reference an existing customer using [customer_info.customer_id] OR
+        - Provide customer details (at minimum `customer_info.name` and `customer_info.email`) to create the order with customer context.
+
+        You can create the order in one of these ways:
+        - Include `charges` to create the order and attempt charging it immediately (only one charge object is allowed).
+        - Include `checkout` to create the order with embedded checkout configuration.
+
+        Important validation rules:
+        - `charges` and `checkout` are mutually exclusive in the same request.
+        - If you provide `shipping_contact_id` or `fiscal_entity_id`, you must also provide [customer_info.customer_id] so the API can validate the referenced customer sub-documents.
       required: true
     order_update:
       content:
@@ -8274,6 +8269,18 @@ components:
       type: object
     api_key_response:
       description: API keys model
+      example:
+        role: private
+        deleted: false
+        livemode: false
+        updated_at: 1684167923
+        prefix: key_rp
+        deactivated_at: 0
+        active: true
+        description: online store
+        created_at: 1684167881
+        id: 64625cc9f3e02c00163f5e4d
+        object: api_key
       properties:
         id:
           description: Unique identifier of the API key
@@ -10152,49 +10159,28 @@ components:
       title: a order
       type: object
     order_update_request:
-      description: a order
+      description: Order update payload. Only supported fields can be modified.
       properties:
-        charges:
-          items:
-            $ref: '#/components/schemas/charge_request'
-          type: array
-        checkout:
-          $ref: '#/components/schemas/checkout_request'
+        status:
+          description: Order status update. Allowed values depend on server-side validations.
+          type: string
         currency:
-          description: "Currency with which the payment will be made. It uses the\
-            \ 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)"
+          description: Currency with which the payment will be made. It uses the 3-letter
+            code of the International Standard ISO 4217.
           example: MXN
           maxLength: 3
           type: string
         customer_info:
           $ref: '#/components/schemas/order_update_request_customer_info'
-        discount_lines:
-          description: "List of [discounts](https://developers.femsa.com/v2.1.0/reference/orderscreatediscountline)\
-            \ that are applied to the order. You must have at least one discount."
-          items:
-            $ref: '#/components/schemas/order_discount_lines_request'
-          type: array
-        fiscal_entity:
-          $ref: '#/components/schemas/order_update_fiscal_entity_request'
         line_items:
-          description: "List of [products](https://developers.femsa.com/v2.1.0/reference/orderscreateproduct)\
-            \ that are sold in the order. You must have at least one product."
+          description: "List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct)\
+            \ sold in the order."
           items:
             $ref: '#/components/schemas/product'
           type: array
-        metadata:
-          additionalProperties:
-            type: string
-          type: object
-        pre_authorize:
-          default: false
-          description: Indicates whether the order charges must be preauthorized
-          type: boolean
-        shipping_contact:
-          $ref: '#/components/schemas/customer_shipping_contacts'
         shipping_lines:
-          description: "List of [shipping costs](https://developers.femsa.com/v2.1.0/reference/orderscreateshipping).\
-            \ If the online store offers digital products."
+          description: "List of [shipping costs](https://developers.digitalfemsa.io/reference/orderscreateshipping)\
+            \ applied to the order."
           items:
             $ref: '#/components/schemas/shipping_request'
           type: array
@@ -10202,6 +10188,39 @@ components:
           items:
             $ref: '#/components/schemas/order_tax_request'
           type: array
+        discount_lines:
+          description: "List of [discounts](https://developers.digitalfemsa.io/reference/orderscreatediscountline)\
+            \ applied to the order."
+          items:
+            $ref: '#/components/schemas/order_discount_lines_request'
+          type: array
+        metadata:
+          additionalProperties: true
+          description: Additional information attached to the order.
+          type: object
+        return_url:
+          description: URL to redirect the customer after completing the flow (when
+            applicable).
+          example: https://example.com/return
+          type: string
+        charges:
+          description: |
+            Charges update. Subject to server-side validations (for example, max charges rules).
+          items:
+            $ref: '#/components/schemas/charge_request'
+          type: array
+        shipping_contact_id:
+          description: References an existing customer shipping contact.
+          nullable: true
+          type: string
+        shipping_contact:
+          $ref: ./schemas/customers/customer_shipping_contact.yml
+        fiscal_entity_id:
+          description: References an existing customer fiscal entity.
+          nullable: true
+          type: string
+        fiscal_entity:
+          $ref: '#/components/schemas/order_update_fiscal_entity_request'
       title: order_update
       type: object
     product:
@@ -10605,7 +10624,7 @@ components:
       type: object
     payment_method_cash:
       allOf:
-      - $ref: '#/components/schemas/payment_method'
+      - $ref: ./schemas/charges/charge_payment_method_response.yml#/payment_method
       - description: use for cash responses
         properties:
           object:
@@ -10705,7 +10724,7 @@ components:
           example: John Doe
           type: string
         address:
-          $ref: '#/components/schemas/fiscal_entity_address'
+          $ref: ./schemas/orders/fiscal_entity_address.yml
       title: fiscal_entity_response
       type: object
     line_item_response:
@@ -10838,7 +10857,7 @@ components:
       type: object
     payment_method_cash_request:
       allOf:
-      - $ref: '#/components/schemas/customer_payment_method_request'
+      - $ref: ./schemas/customers/customer_payment_method_request.yml
       - properties:
           expires_at:
             description: Expiration date as unix timestamp (seconds).
@@ -10884,7 +10903,7 @@ components:
       type: object
     checkout_request:
       description: |
-        [Checkout](https://developers.femsa.com/v2.1.0/reference/payment-link) details
+        [Checkout](https://developers.digitalfemsa.io/docs/checkout-redireccionado) details
       properties:
         allowed_payment_methods:
           description: Are the payment methods available for this link
@@ -10990,27 +11009,6 @@ components:
       - postal_code
       - street1
       title: order_fiscal_entity_address_request
-      type: object
-    payment_method:
-      properties:
-        type:
-          type: string
-        object:
-          example: payment_source
-          type: string
-      required:
-      - object
-      type: object
-    customer_payment_method_request:
-      description: Payment method data to attach to a customer.
-      properties:
-        type:
-          description: Type of payment method.
-          example: cash
-          type: string
-      required:
-      - type
-      title: customer_payment_method_request
       type: object
     get_api_keys_response:
       allOf:
@@ -11250,7 +11248,7 @@ components:
       - $ref: '#/components/schemas/page'
       - properties:
           data:
-            description: Transactions
+            description: Transactions (ledger movements)
             items:
               $ref: '#/components/schemas/transaction_response'
             type: array
@@ -11802,7 +11800,7 @@ components:
       type: object
     charge_request_payment_method:
       description: |
-        Payment method used in the charge. Go to the payment methods section for more details.
+        Payment method used in the charge.
       properties:
         type:
           description: Payment method type.
@@ -11835,11 +11833,10 @@ components:
       - $ref: '#/components/schemas/customer_info'
       - $ref: '#/components/schemas/customer_info_just_customer_id'
     order_update_fiscal_entity_request:
-      description: "Fiscal entity of the order, Currently it is a purely informative\
-        \ field"
+      description: Fiscal entity information associated with the order.
       properties:
         address:
-          $ref: '#/components/schemas/fiscal_entity_address'
+          $ref: ./schemas/orders/fiscal_entity_address.yml
         email:
           description: Email of the fiscal entity
           example: test@gmail.com
@@ -11871,8 +11868,8 @@ components:
       description: It is the information of the customer who will be created when
         receiving a new payment.
       oneOf:
-      - $ref: '#/components/schemas/customer_info'
-      - $ref: '#/components/schemas/customer_info_just_customer_id'
+      - $ref: ./schemas/customers/customer_info.yml
+      - $ref: ./schemas/customers/customer_info_just_customer_id.yml
     checkout_order_template:
       description: It maintains the attributes with which the order will be created
         when receiving a new payment.
@@ -11890,7 +11887,7 @@ components:
             and "quantity" parameters that are used to calculate the total amount
             of the order.
           items:
-            $ref: '#/components/schemas/product'
+            $ref: ./schemas/orders/product.yml
           type: array
         metadata:
           additionalProperties: true

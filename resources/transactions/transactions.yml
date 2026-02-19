@@ -2,15 +2,20 @@ get:
   tags:
     - Transactions
   operationId: getTransactions
-  summary: Get transactions
-  description: Returns a paginated list of transactions. Results can be filtered using query parameters.
+  summary: List transactions
+  description: |
+    Returns a paginated list of transactions (ledger movements).
 
+    A transaction is a movement that represents the financial impact of payment operations, including amounts, fees, and net values.
+    Transactions can be linked to a charge and may be linked to a transfer (payout) when they are included in a payout.
+
+    If you need payout-level information (destination, statement reference/description, payout status), use GET /transfers.
   security:
-    - bearerAuth: []  
+    - bearerAuth: []
 
   responses:
-    200:
-      description: successful
+    "200":
+      description: Successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
@@ -21,22 +26,22 @@ get:
               - type: object
                 properties:
                   data:
-                    description: Transactions
+                    description: Transactions (ledger movements)
                     type: array
                     items:
-                      $ref: '../../schemas/transactions/transaction_response.yml'
-    401:
-      $ref: '../errors/401.yml'
-    500:
-      $ref: '../errors/500.yml'
+                      $ref: ../../schemas/transactions/transaction_response.yml
+    "401":
+      $ref: ../errors/401.yml
+    "500":
+      $ref: ../errors/500.yml
 
   parameters:
-    - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
-    - $ref: '../../parameters/commons/query/limit.yml'
-    - $ref: '../../parameters/commons/query/next_page.yml'
-    - $ref: '../../parameters/commons/query/previous_page.yml'
-    - $ref: '../../parameters/commons/query/id_query.yml'
-    - $ref: '../../parameters/commons/query/charge_id.yml'
-    - $ref: '../../parameters/commons/query/type.yml'
-    - $ref: '../../parameters/commons/query/currency.yml'
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml
+    - $ref: ../../parameters/commons/query/limit.yml
+    - $ref: ../../parameters/commons/query/next_page.yml
+    - $ref: ../../parameters/commons/query/previous_page.yml
+    - $ref: ../../parameters/commons/query/search.yml
+    - $ref: ../../parameters/commons/query/charge_id.yml
+    - $ref: ../../parameters/commons/query/type.yml
+    - $ref: ../../parameters/commons/query/currency.yml

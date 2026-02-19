@@ -35,12 +35,13 @@ put:
   tags:
     - Orders
   operationId: updateOrder
-  summary: Update Order
-  description: >-
-    Updates an existing Order. Only the fields allowed by the API can be updated.
-    Depending on the payload, this operation may also create/update related
-    resources (for example, adding new charges) according to server-side
-    validations.
+  summary: Update order
+  description: |
+    Updates an existing order by its ID.
+
+    Orders are the central resource in the API. Updating an order may also update related order sub-resources when they are included in the request payload, according to server-side validations.
+
+    Only fields supported by the API can be modified.
     
   security:
     - bearerAuth: []

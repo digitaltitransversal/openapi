@@ -7,7 +7,7 @@ get:
     Retrieves a paginated list of API keys for the authenticated account.
 
     Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
-    Use the `search` query parameter to perform a general search (for example by key `id`, description, or prefix).
+    Use the `search` query parameter to perform a general search (for example by key `id` or description).
 
   security:
     - bearerAuth: []
@@ -39,13 +39,12 @@ get:
     - $ref: "../../parameters/commons/query/limit.yml"
     - $ref: "../../parameters/commons/query/next_page.yml"
     - $ref: "../../parameters/commons/query/previous_page.yml"
-    - description: General search, e.g. by id, description, prefix
+    - description: General search, e.g. by id or description
       in: query
       name: search
       required: false
       schema:
         type: string
-
 post:
   tags:
     - Api Keys
@@ -53,6 +52,9 @@ post:
   summary: Create API key
   description: |
     Creates a new API key.
+
+    The response includes an `authentication_token` that is shown only once (at creation time).
+    Copy and store it securely.
 
   security:
     - bearerAuth: []

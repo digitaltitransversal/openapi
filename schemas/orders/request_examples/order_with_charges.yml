@@ -9,7 +9,7 @@ value:
   line_items:
     - name: "Box of Cohiba S1s"
       unit_price: 20000
-      quantity: 1
+      quantity: 2
   charges:
     - amount: 40000
       payment_method:

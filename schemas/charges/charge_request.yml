@@ -11,7 +11,7 @@ properties:
   payment_method:
     type: object
     description: >
-      Payment method used in the charge. Go to the payment methods section for more details.
+      Payment method used in the charge.
     required:
       - type
     properties:
