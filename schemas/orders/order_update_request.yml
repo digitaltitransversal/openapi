@@ -64,7 +64,7 @@ properties:
     description: References an existing customer shipping contact.
 
   shipping_contact:
-    $ref: ../../schemas/customers/customer_shipping_contact.yml
+    $ref: ../../schemas/customers/customer_shipping_contacts.yml
 
   fiscal_entity_id:
     type: string

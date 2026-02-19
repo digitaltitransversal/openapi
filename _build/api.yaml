@@ -10214,7 +10214,7 @@ components:
           nullable: true
           type: string
         shipping_contact:
-          $ref: ./schemas/customers/customer_shipping_contact.yml
+          $ref: '#/components/schemas/customer_shipping_contacts'
         fiscal_entity_id:
           description: References an existing customer fiscal entity.
           nullable: true
@@ -10624,7 +10624,7 @@ components:
       type: object
     payment_method_cash:
       allOf:
-      - $ref: ./schemas/charges/charge_payment_method_response.yml#/payment_method
+      - $ref: '#/components/schemas/payment_method'
       - description: use for cash responses
         properties:
           object:
@@ -10724,7 +10724,7 @@ components:
           example: John Doe
           type: string
         address:
-          $ref: ./schemas/orders/fiscal_entity_address.yml
+          $ref: '#/components/schemas/fiscal_entity_address'
       title: fiscal_entity_response
       type: object
     line_item_response:
@@ -10857,7 +10857,7 @@ components:
       type: object
     payment_method_cash_request:
       allOf:
-      - $ref: ./schemas/customers/customer_payment_method_request.yml
+      - $ref: '#/components/schemas/customer_payment_method_request'
       - properties:
           expires_at:
             description: Expiration date as unix timestamp (seconds).
@@ -11009,6 +11009,27 @@ components:
       - postal_code
       - street1
       title: order_fiscal_entity_address_request
+      type: object
+    payment_method:
+      properties:
+        type:
+          type: string
+        object:
+          example: payment_source
+          type: string
+      required:
+      - object
+      type: object
+    customer_payment_method_request:
+      description: Payment method data to attach to a customer.
+      properties:
+        type:
+          description: Type of payment method.
+          example: cash
+          type: string
+      required:
+      - type
+      title: customer_payment_method_request
       type: object
     get_api_keys_response:
       allOf:
@@ -11836,7 +11857,7 @@ components:
       description: Fiscal entity information associated with the order.
       properties:
         address:
-          $ref: ./schemas/orders/fiscal_entity_address.yml
+          $ref: '#/components/schemas/fiscal_entity_address'
         email:
           description: Email of the fiscal entity
           example: test@gmail.com
@@ -11868,8 +11889,8 @@ components:
       description: It is the information of the customer who will be created when
         receiving a new payment.
       oneOf:
-      - $ref: ./schemas/customers/customer_info.yml
-      - $ref: ./schemas/customers/customer_info_just_customer_id.yml
+      - $ref: '#/components/schemas/customer_info'
+      - $ref: '#/components/schemas/customer_info_just_customer_id'
     checkout_order_template:
       description: It maintains the attributes with which the order will be created
         when receiving a new payment.
@@ -11887,7 +11908,7 @@ components:
             and "quantity" parameters that are used to calculate the total amount
             of the order.
           items:
-            $ref: ./schemas/orders/product.yml
+            $ref: '#/components/schemas/product'
           type: array
         metadata:
           additionalProperties: true
