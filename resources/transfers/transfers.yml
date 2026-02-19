@@ -2,9 +2,15 @@ get:
   tags:
     - Transfers
   operationId: getTransfers
-  summary: Get a list of transfers
-  description: Returns a paginated list of transfers. Results can be filtered using query parameters.
- 
+  summary: List transfers
+  description: |
+    Returns a paginated list of transfers (payouts/dispersions).
+
+    A transfer represents a payout of funds to the merchant (where the money is sent and the payout status).
+    Transfers typically aggregate multiple transactions.
+
+    If you need movement-level details (amount/fee/net per operation) or to reconcile charges, use GET /transactions.
+
   security:
     - bearerAuth: []
 
