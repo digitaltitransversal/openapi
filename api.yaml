@@ -26,8 +26,6 @@ paths:
     $ref: "./resources/charges/update_charge.yml"
   /orders/{id}/charges:
     $ref: "./resources/orders/order_charge_param.yml"
-  /companies/{id}:
-    $ref: "./resources/companies/company.yml"
   /customers:
     $ref: "./resources/customers/create_customer.yml"
   /customers/{id}:

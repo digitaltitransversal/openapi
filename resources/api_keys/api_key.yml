@@ -2,12 +2,13 @@ get:
   tags:
     - Api Keys
   operationId: getApiKey
-  summary: Get Api Key
-  description: Gets an API key by its ID.
+  summary: Get API key
+  description: |
+    Retrieves the details of an API key by its ID.
 
   security:
     - bearerAuth: []
-    
+
   responses:
     "200":
       description: successful
@@ -21,21 +22,25 @@ get:
       $ref: "../errors/404.yml"
     "500":
       $ref: "../errors/500.yml"
-  
+
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
     - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
+
 put:
   tags:
     - Api Keys
   operationId: updateApiKey
-  summary: Update Api Key
-  description: Update an existing API key.
-  
+  summary: Update API key
+  description: |
+    Updates an existing API key by its ID.
+
+    Use this endpoint to change the key's status (active/inactive) or update its description.
+
   security:
     - bearerAuth: []
-  
+
   requestBody:
     required: true
     content:
@@ -52,7 +57,7 @@ put:
               type: string
               example: online store
               description: A name or brief explanation of what this API key is used for.
-  
+
   responses:
     "200":
       description: successful operation
@@ -65,26 +70,26 @@ put:
     "404":
       $ref: "../errors/404.yml"
     "422":
-      description: parameter validation error
-      content:
-        application/json:
-          schema:
-            $ref: "../errors/422.yml"
+      $ref: "../errors/422.yml"
     "500":
       $ref: "../errors/500.yml"
+
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
+    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
+
 delete:
   tags:
     - Api Keys
   operationId: deleteApiKey
-  summary: Delete Api Key
-  description: Deletes an API key by its ID.
-  
+  summary: Delete API key
+  description: |
+    Deletes an API key by its ID.
+
   security:
     - bearerAuth: []
-  
+
   responses:
     "200":
       description: successful
@@ -104,13 +109,11 @@ delete:
     "404":
       $ref: "../errors/404.yml"
     "422":
-      description: parameter validation error
-      content:
-        application/json:
-          schema:
-            $ref: "../errors/422.yml"
+      $ref: "../errors/422.yml"
     "500":
       $ref: "../errors/500.yml"
+
   parameters:
     - $ref: "../../parameters/commons/path_param/id.yml"
     - $ref: "../../parameters/commons/headers/accept_language.yml"
+    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"

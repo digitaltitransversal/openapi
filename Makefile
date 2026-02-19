@@ -1,8 +1,9 @@
 merge:
 	docker run --rm \
-	-v ${PWD}:/local openapitools/openapi-generator-cli:v7.2.0 generate \
+	-v ${PWD}:/local -w /local openapitools/openapi-generator-cli:v7.2.0 generate \
 	-g openapi-yaml \
 	-i /local/api.yaml \
+	-o /local \
 	-p outputFile=_build/api.yaml \
 	--skip-validate-spec
 

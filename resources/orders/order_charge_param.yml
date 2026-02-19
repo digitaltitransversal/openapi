@@ -2,13 +2,13 @@ post:
   tags:
     - Charges
   operationId: ordersCreateCharge
-  summary: Create charge
+  summary: Create a charge for an order
   description: |
-    Create a charge for an existing order.
+    Creates a new charge associated with an existing order.
 
     Notes:
-    - This endpoint creates a charge **associated to the given order** (`order_id`).
-    - Some payment methods may result in a `pending_payment` charge status and can affect subsequent order operations.
+    - The charge is created for the order identified by the path parameter `id`.
+    - Depending on the payment method, the charge may be created in a non-final status (for example, pending).
     - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
 
   security:
@@ -19,7 +19,7 @@ post:
 
   responses:
     "200":
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:

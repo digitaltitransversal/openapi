@@ -2,11 +2,15 @@ get:
   tags:
     - Balances
   operationId: getBalance
-  summary: Get a company's balance
-  description: Get a company's balance
+  summary: Retrieve company balance
+  description: |
+    Retrieves the current balance information for the authenticated company.
+
+    Monetary fields are returned as arrays of amounts grouped by currency.
 
   security:
     - bearerAuth: []
+
   responses:
     "200":
       description: successful
@@ -18,6 +22,7 @@ get:
       $ref: "../errors/401.yml"
     "500":
       $ref: "../errors/500.yml"
-  
+
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
+    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"

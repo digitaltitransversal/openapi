@@ -1,5 +1,8 @@
 title: balance_response
-description: balance model
+description: |
+  Company balance summary.
+
+  Monetary fields are returned as arrays of amounts grouped by currency (see `balance_common_field` items).
 type: object
 required:
   - available
@@ -8,65 +11,67 @@ required:
   - retained
   - temporarily_retained
   - target_retention_amount
-  - conekta_retention
+  - target_temporary_retention_amount
   - target_collateral_amount
   - gateway
-  - cashout_retention_amount
+  - cashout_retention_debited
 properties:
   available:
     type: array
-    description: The balance's available
+    description: Amounts currently available, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   pending:
     type: array
-    description: The balance's pending
+    description: Amounts pending settlement, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   retention_amount:
     type: array
-    description: The balance's retention amount
+    description: Retention amount applied, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   retained:
     type: array
-    description: The balance's retained
+    description: Amounts currently retained, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   temporarily_retained:
     type: array
-    description: The balance's temporarily retained
+    description: Amounts temporarily retained, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   target_retention_amount:
     type: array
-    description: The balance's target retention amount
+    description: Target retention amount, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
-  conekta_retention:
+  target_temporary_retention_amount:
     type: array
-    description: The balance's Femsa retention
-    items:
-      $ref: "./balance_common_field.yml"
-
-  cashout_retention_amount:
-    type: array
-    description: The balance's cashout retention amount
+    description: Target temporary retention amount, grouped by currency.
     items:
       $ref: "./balance_common_field.yml"
 
   target_collateral_amount:
-    type: object
-    description: The balance's target collateral amount
-    additionalProperties: true
+    type: array
+    description: Target collateral amount, grouped by currency.
+    items:
+      $ref: "./balance_common_field.yml"
 
   gateway:
-    type: object
-    description: The balance's gateway
-    additionalProperties: true
+    type: array
+    description: Gateway balance amounts, grouped by currency.
+    items:
+      $ref: "./balance_common_field.yml"
+
+  cashout_retention_debited:
+    type: array
+    description: Cashout retention debited amounts, grouped by currency.
+    items:
+      $ref: "./balance_common_field.yml"

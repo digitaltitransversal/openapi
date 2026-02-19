@@ -2,11 +2,16 @@ get:
   tags:
     - Charges
   operationId: getCharges
-  summary: Get A List of Charges
-  
+  summary: List charges
+  description: |
+    Retrieves a paginated list of charges for the authenticated account.
+
+    Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
+    Use `search` to filter charges (for example by id or reference).
+
   security:
     - bearerAuth: []
-  
+
   responses:
     "200":
       description: successful
@@ -15,8 +20,8 @@ get:
           schema:
             title: get_charges_response
             allOf:
-              - $ref: ../../schemas/pagination/pagination.yml
               - $ref: ../../schemas/pagination/page.yml
+              - $ref: ../../schemas/pagination/pagination.yml
               - type: object
                 properties:
                   data:
@@ -29,11 +34,11 @@ get:
       $ref: "../errors/422_whitelist.yml"
     "500":
       $ref: "../errors/500.yml"
-  
+
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
     - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
     - $ref: "../../parameters/commons/query/limit.yml"
-    - $ref: "../../parameters/commons/query/search.yml"
     - $ref: "../../parameters/commons/query/next_page.yml"
     - $ref: "../../parameters/commons/query/previous_page.yml"
+    - $ref: "../../parameters/commons/query/search.yml"

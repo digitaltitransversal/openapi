@@ -18,7 +18,11 @@ security:
 paths:
   /api_keys:
     get:
-      description: Consume the list of API keys you have.
+      description: |
+        Retrieves a paginated list of API keys for the authenticated account.
+
+        Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
+        Use the `search` query parameter to perform a general search (for example by key `id`, description, or prefix).
       operationId: getApiKeys
       parameters:
       - description: Use for knowing which language to use
@@ -114,11 +118,12 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get list of Api Keys
+      summary: List API keys
       tags:
       - Api Keys
     post:
-      description: Create an API key.
+      description: |
+        Creates a new API key.
       operationId: createApiKey
       parameters:
       - description: Use for knowing which language to use
@@ -203,12 +208,13 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Create Api Key
+      summary: Create API key
       tags:
       - Api Keys
   /api_keys/{id}:
     delete:
-      description: Deletes an API key by its ID.
+      description: |
+        Deletes an API key by its ID.
       operationId: deleteApiKey
       parameters:
       - description: Identifier of the resource
@@ -234,6 +240,14 @@ paths:
           enum:
           - es
           - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
           type: string
       responses:
         "200":
@@ -274,9 +288,18 @@ paths:
           description: not found entity
         "422":
           content:
-            application/json:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
               schema:
-                $ref: '#/components/schemas/422'
+                $ref: '#/components/schemas/error'
           description: parameter validation error
         "500":
           content:
@@ -297,11 +320,12 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Delete Api Key
+      summary: Delete API key
       tags:
       - Api Keys
     get:
-      description: Gets an API key by its ID.
+      description: |
+        Retrieves the details of an API key by its ID.
       operationId: getApiKey
       parameters:
       - description: Identifier of the resource
@@ -392,11 +416,14 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get Api Key
+      summary: Get API key
       tags:
       - Api Keys
     put:
-      description: Update an existing API key.
+      description: |
+        Updates an existing API key by its ID.
+
+        Use this endpoint to change the key's status (active/inactive) or update its description.
       operationId: updateApiKey
       parameters:
       - description: Identifier of the resource
@@ -422,6 +449,14 @@ paths:
           enum:
           - es
           - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
           type: string
       requestBody:
         content:
@@ -468,9 +503,18 @@ paths:
           description: not found entity
         "422":
           content:
-            application/json:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
               schema:
-                $ref: '#/components/schemas/422'
+                $ref: '#/components/schemas/error'
           description: parameter validation error
         "500":
           content:
@@ -491,12 +535,15 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Update Api Key
+      summary: Update API key
       tags:
       - Api Keys
   /balance:
     get:
-      description: Get a company's balance
+      description: |
+        Retrieves the current balance information for the authenticated company.
+
+        Monetary fields are returned as arrays of amounts grouped by currency.
       operationId: getBalance
       parameters:
       - description: Use for knowing which language to use
@@ -515,6 +562,14 @@ paths:
           enum:
           - es
           - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
           type: string
       responses:
         "200":
@@ -556,11 +611,16 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get a company's balance
+      summary: Retrieve company balance
       tags:
       - Balances
   /charges:
     get:
+      description: |
+        Retrieves a paginated list of charges for the authenticated account.
+
+        Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
+        Use `search` to filter charges (for example by id or reference).
       operationId: getCharges
       parameters:
       - description: Use for knowing which language to use
@@ -598,12 +658,6 @@ paths:
           maximum: 250
           minimum: 1
           type: integer
-      - description: "General order search, e.g. by mail, reference etc."
-        in: query
-        name: search
-        required: false
-        schema:
-          type: string
       - description: next page
         in: query
         name: next
@@ -613,6 +667,12 @@ paths:
       - description: previous page
         in: query
         name: previous
+        required: false
+        schema:
+          type: string
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
         required: false
         schema:
           type: string
@@ -670,7 +730,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get A List of Charges
+      summary: List charges
       tags:
       - Charges
   /charges/{id}:
@@ -789,11 +849,11 @@ paths:
   /orders/{id}/charges:
     post:
       description: |
-        Create a charge for an existing order.
+        Creates a new charge associated with an existing order.
 
         Notes:
-        - This endpoint creates a charge **associated to the given order** (`order_id`).
-        - Some payment methods may result in a `pending_payment` charge status and can affect subsequent order operations.
+        - The charge is created for the order identified by the path parameter `id`.
+        - Depending on the payment method, the charge may be created in a non-final status (for example, pending).
         - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
       operationId: ordersCreateCharge
       parameters:
@@ -837,7 +897,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/charge_order_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -919,232 +979,9 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Create charge
+      summary: Create a charge for an order
       tags:
       - Charges
-  /companies:
-    get:
-      description: Consume the list of child companies.  This is used for holding
-        companies with several child entities.
-      operationId: getCompanies
-      parameters:
-      - description: Use for knowing which language to use
-        examples:
-          es:
-            summary: for spanish request/response
-            value: es
-          en:
-            summary: for english request/response
-            value: en
-        in: header
-        name: Accept-Language
-        required: false
-        schema:
-          default: es
-          enum:
-          - es
-          - en
-          type: string
-      - description: "The numbers of items to return, the maximum value is 250"
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 20
-          format: int32
-          maximum: 250
-          minimum: 1
-          type: integer
-      - description: "General order search, e.g. by mail, reference etc."
-        in: query
-        name: search
-        required: false
-        schema:
-          type: string
-      - description: next page
-        in: query
-        name: next
-        required: false
-        schema:
-          type: string
-      - description: previous page
-        in: query
-        name: previous
-        required: false
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/vnd.app-v2.2.0+json:
-              schema:
-                $ref: '#/components/schemas/get_companies_response'
-          description: successful
-          headers:
-            Date:
-              description: The date and time that the response was sent
-              schema:
-                example: "Fri, 03 Feb 2023 16:57:48 GMT"
-                type: string
-            Content-Type:
-              description: The format of the response body
-              schema:
-                example: application/json; charset=utf-8
-                type: string
-            Content-Length:
-              description: The length of the response body in bytes
-              schema:
-                example: "2737"
-                type: string
-            Connection:
-              description: The type of connection used to transfer the response
-              schema:
-                example: keep-alive
-                type: string
-        "401":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: Please include your access key in your request.
-                  param: null
-                  code: femsa.errors.authentication.missing_key
-                log_id: 507f1f77bcf86cd799439011
-                object: error
-                type: authentication_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: authentication error
-        "500":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - debug_message: There was a runtime error and Femsa engineers have
-                    been notified.
-                  message: There was a runtime error and Femsa engineers have been
-                    notified.
-                  param: null
-                  code: femsa.errors.api.system.general_failure
-                object: error
-                type: api_error
-                log_id: 641b6f2b3cd9a50001515098
-              schema:
-                $ref: '#/components/schemas/error'
-          description: internal server error
-      security:
-      - bearerAuth: []
-      summary: Get List of Companies
-      tags:
-      - Companies
-  /companies/{id}:
-    get:
-      operationId: getCompany
-      parameters:
-      - description: Identifier of the resource
-        example: 6307a60c41de27127515a575
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      - description: Use for knowing which language to use
-        examples:
-          es:
-            summary: for spanish request/response
-            value: es
-          en:
-            summary: for english request/response
-            value: en
-        in: header
-        name: Accept-Language
-        required: false
-        schema:
-          default: es
-          enum:
-          - es
-          - en
-          type: string
-      responses:
-        "200":
-          content:
-            application/vnd.app-v2.2.0+json:
-              schema:
-                $ref: '#/components/schemas/company_response'
-          description: successful
-          headers:
-            Date:
-              description: The date and time that the response was sent
-              schema:
-                example: "Fri, 03 Feb 2023 16:57:48 GMT"
-                type: string
-            Content-Type:
-              description: The format of the response body
-              schema:
-                example: application/json; charset=utf-8
-                type: string
-            Content-Length:
-              description: The length of the response body in bytes
-              schema:
-                example: "2737"
-                type: string
-            Connection:
-              description: The type of connection used to transfer the response
-              schema:
-                example: keep-alive
-                type: string
-        "401":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: Please include your access key in your request.
-                  param: null
-                  code: femsa.errors.authentication.missing_key
-                log_id: 507f1f77bcf86cd799439011
-                object: error
-                type: authentication_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: authentication error
-        "404":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: The resource was not found.
-                  param: null
-                  code: femsa.errors.resource_not_found.entity
-                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
-                    not be found.
-                log_id: 641b6c253cd9a50001514fae
-                object: error
-                type: resource_not_found_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: not found entity
-        "500":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - debug_message: There was a runtime error and Femsa engineers have
-                    been notified.
-                  message: There was a runtime error and Femsa engineers have been
-                    notified.
-                  param: null
-                  code: femsa.errors.api.system.general_failure
-                object: error
-                type: api_error
-                log_id: 641b6f2b3cd9a50001515098
-              schema:
-                $ref: '#/components/schemas/error'
-          description: internal server error
-      security:
-      - bearerAuth: []
-      summary: Get Company
-      tags:
-      - Companies
   /customers:
     get:
       description: Retrieves a paginated list of customers.
@@ -4445,8 +4282,16 @@ paths:
       - Payment Link
   /checkouts/{id}:
     get:
+      description: Retrieves the details of a checkout by its ID.
       operationId: getCheckout
       parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       - description: Use for knowing which language to use
         examples:
           es:
@@ -4472,13 +4317,6 @@ paths:
         required: false
         schema:
           type: string
-      - description: Identifier of the resource
-        example: 6307a60c41de27127515a575
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           content:
@@ -4486,27 +4324,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/checkout_response'
           description: successful operation
-          headers:
-            Date:
-              description: The date and time that the response was sent
-              schema:
-                example: "Fri, 03 Feb 2023 16:57:48 GMT"
-                type: string
-            Content-Type:
-              description: The format of the response body
-              schema:
-                example: application/json; charset=utf-8
-                type: string
-            Content-Length:
-              description: The length of the response body in bytes
-              schema:
-                example: "2737"
-                type: string
-            Connection:
-              description: The type of connection used to transfer the response
-              schema:
-                example: keep-alive
-                type: string
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -4551,21 +4368,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
           description: not found entity
-        "422":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: The name does not exist.
-                  param: payment_method.name
-                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
-                  debug_message: The name does not exist.
-                log_id: 641b6d813cd9a50001515017
-                object: error
-                type: parameter_validation_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: parameter validation error
         "500":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6708,7 +6510,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get transfers
+      summary: Get a list of transfers
       tags:
       - Transfers
   /transfers/{id}:
@@ -6809,8 +6611,8 @@ paths:
       - Transfers
   /webhook_keys:
     get:
-      description: Returns a paginated list of webhook signing keys for the current
-        company.
+      description: "Consume the list of webhooks you have, each environment supports\
+        \ 10 webhooks (For production and testing)"
       operationId: getWebhookKeys
       parameters:
       - description: Use for knowing which language to use
@@ -6906,7 +6708,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get webhook keys
+      summary: Get List of Webhooks
       tags:
       - Webhook keys
     post:
@@ -6983,7 +6785,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Create webhook key
+      summary: Create Webhook Key
       tags:
       - Webhook keys
   /webhook_keys/{id}:
@@ -8158,7 +7960,7 @@ components:
       required: true
     charge_update:
       content:
-        application/vnd.app-v2.2.0+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/charge_update_request'
       description: requested field for update a charge
@@ -8193,7 +7995,7 @@ components:
       required: true
     customer_update_fiscal_entities:
       content:
-        application/vnd.app-v2.2.0+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/customer_update_fiscal_entities_request'
       description: requested field for customer update fiscal entities
@@ -8319,14 +8121,14 @@ components:
       required: true
     webhook:
       content:
-        application/vnd.app-v2.2.0+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/webhook_request'
       description: Webhook creation/update request payload.
       required: true
     webhook_update:
       content:
-        application/vnd.app-v2.2.0+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/webhook_update_request'
       description: Webhook update request payload.
@@ -8472,18 +8274,6 @@ components:
       type: object
     api_key_response:
       description: API keys model
-      example:
-        role: private
-        deleted: false
-        livemode: false
-        updated_at: 1684167923
-        prefix: key_rp
-        deactivated_at: 0
-        active: true
-        description: online store
-        created_at: 1684167881
-        id: 64625cc9f3e02c00163f5e4d
-        object: api_key
       properties:
         id:
           description: Unique identifier of the API key
@@ -8568,9 +8358,6 @@ components:
         type: object
       description: err model
       title: error
-    "422":
-      description: parameter validation error
-      type: object
     api_key_response_on_delete:
       description: api keys model
       properties:
@@ -8629,66 +8416,71 @@ components:
       title: api_key_response_delete
       type: object
     balance_response:
-      description: balance model
+      description: |
+        Company balance summary.
+
+        Monetary fields are returned as arrays of amounts grouped by currency (see `balance_common_field` items).
       properties:
         available:
-          description: The balance's available
+          description: "Amounts currently available, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         pending:
-          description: The balance's pending
+          description: "Amounts pending settlement, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         retention_amount:
-          description: The balance's retention amount
+          description: "Retention amount applied, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         retained:
-          description: The balance's retained
+          description: "Amounts currently retained, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         temporarily_retained:
-          description: The balance's temporarily retained
+          description: "Amounts temporarily retained, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         target_retention_amount:
-          description: The balance's target retention amount
+          description: "Target retention amount, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
-        conekta_retention:
-          description: The balance's Femsa retention
-          items:
-            $ref: '#/components/schemas/balance_common_field'
-          type: array
-        cashout_retention_amount:
-          description: The balance's cashout retention amount
+        target_temporary_retention_amount:
+          description: "Target temporary retention amount, grouped by currency."
           items:
             $ref: '#/components/schemas/balance_common_field'
           type: array
         target_collateral_amount:
-          additionalProperties: true
-          description: The balance's target collateral amount
-          type: object
+          description: "Target collateral amount, grouped by currency."
+          items:
+            $ref: '#/components/schemas/balance_common_field'
+          type: array
         gateway:
-          additionalProperties: true
-          description: The balance's gateway
-          type: object
+          description: "Gateway balance amounts, grouped by currency."
+          items:
+            $ref: '#/components/schemas/balance_common_field'
+          type: array
+        cashout_retention_debited:
+          description: "Cashout retention debited amounts, grouped by currency."
+          items:
+            $ref: '#/components/schemas/balance_common_field'
+          type: array
       required:
       - available
-      - cashout_retention_amount
-      - conekta_retention
+      - cashout_retention_debited
       - gateway
       - pending
       - retained
       - retention_amount
       - target_collateral_amount
       - target_retention_amount
+      - target_temporary_retention_amount
       - temporarily_retained
       title: balance_response
       type: object
@@ -8828,42 +8620,6 @@ components:
           example: pending_payment
           type: string
       title: charges_data_response
-      type: object
-    company_response:
-      description: Company model
-      properties:
-        id:
-          description: The child company's unique identifier
-          example: 6441bb27659a060465da7335
-          type: string
-        created_at:
-          description: The resource's creation date (unix timestamp)
-          example: 1680397724
-          format: int64
-          type: integer
-        name:
-          description: The child company's name
-          example: Child Company A
-          type: string
-        object:
-          description: The resource's type
-          enum:
-          - company
-          type: string
-        parent_company_id:
-          description: Id of the parent company
-          example: 6441bb3c62db5812e7920c31
-          type: string
-        use_parent_fiscal_data:
-          description: Whether the parent company's fiscal data is to be used for
-            liquidation and tax purposes
-          example: false
-          type: boolean
-        payout_destination:
-          $ref: '#/components/schemas/company_payout_destination_response'
-        fiscal_info:
-          $ref: '#/components/schemas/company_fiscal_info_response'
-      title: company_response
       type: object
     customer_response:
       description: customer response
@@ -10009,6 +9765,14 @@ components:
           example:
           - charge.created
           - charge.paid
+          - charge.under_fraud_review
+          - charge.fraudulent
+          - charge.refunded
+          - charge.preauthorized
+          - charge.declined
+          - charge.canceled
+          - charge.reversed
+          - charge.pending_confirmation
           items:
             type: string
           type: array
@@ -10531,9 +10295,6 @@ components:
     checkout:
       description: It is a sub-resource of the Order model that can be stipulated
         in order to configure its corresponding checkout
-      oneOf:
-      - $ref: '#/components/schemas/checkout_oneOf'
-      - $ref: '#/components/schemas/checkout_oneOf_1'
       properties:
         allowed_payment_methods:
           description: Those are the payment methods that will be available for the
@@ -10560,47 +10321,11 @@ components:
           example: false
           type: boolean
         order_template:
-          description: It maintains the attributes with which the order will be created
-            when receiving a new payment.
-          properties:
-            currency:
-              description: It is the currency in which the order will be created.
-                It must be a valid ISO 4217 currency code.
-              example: MXN
-              maxLength: 3
-              type: string
-            customer_info:
-              description: It is the information of the customer who will be created
-                when receiving a new payment.
-              oneOf:
-              - $ref: '#/components/schemas/customer_info'
-              - $ref: '#/components/schemas/customer_info_just_customer_id'
-            line_items:
-              description: They are the products to buy. Each contains the "unit price"
-                and "quantity" parameters that are used to calculate the total amount
-                of the order.
-              items:
-                $ref: '#/components/schemas/product'
-              type: array
-            metadata:
-              additionalProperties: true
-              description: It is a set of key-value pairs that you can attach to the
-                order. It can be used to store additional information about the order
-                in a structured format.
-              example:
-                key: value
-              maxProperties: 100
-              type: object
-          required:
-          - currency
-          - line_items
-          type: object
+          $ref: '#/components/schemas/checkout_order_template'
         payments_limit_count:
           description: It is the number of payments that can be made through the link.
-            Required when recurrent is true.
           example: 5
           format: int32
-          minimum: 2
           type: integer
         recurrent:
           description: "false: single use. true: multiple payments"
@@ -10609,11 +10334,15 @@ components:
         type:
           description: It is the type of link that will be created. It must be a valid
             type.
-          enum:
-          - ButtonLink
-          - PaymentLink
           example: PaymentLink
           type: string
+      required:
+      - allowed_payment_methods
+      - expires_at
+      - name
+      - order_template
+      - recurrent
+      - type
       title: checkout_request
       type: object
     update_payment_methods:
@@ -10918,68 +10647,6 @@ components:
             type: string
         title: charge_data_payment_method_cash_response
         type: object
-    company_payout_destination_response:
-      description: Company payout destination model
-      properties:
-        object:
-          description: The resource's type
-          enum:
-          - payout_destination
-          type: string
-        currency:
-          description: currency of the receiving account
-          example: MXN
-          type: string
-        account_holder_name:
-          description: Name of the account holder
-          example: Child Company A
-          type: string
-        bank:
-          description: Name of the bank
-          example: BBVA
-          type: string
-        type:
-          description: Type of the payout destination
-          enum:
-          - bank_account
-          type: string
-        account_number:
-          description: Account number of the receiving account
-          example: "123456789012345678"
-          type: string
-      title: company_payout_destination_response
-      type: object
-    company_fiscal_info_response:
-      description: Company fiscal info model
-      properties:
-        object:
-          description: The resource's type
-          enum:
-          - fiscal_info
-          type: string
-        tax_id:
-          description: Tax ID of the company
-          example: XAXX010101000
-          type: string
-        legal_entity_name:
-          description: Legal name of the company
-          example: Child Company A
-          type: string
-        business_type:
-          description: Business type of the company
-          example: persona_moral
-          type: string
-        phone:
-          description: Phone number of the company
-          example: "5555555555"
-          type: string
-        physical_person_business_type:
-          description: Business type if 'persona_fisica'
-          type: string
-        address:
-          $ref: '#/components/schemas/company_fiscal_info_address_response'
-      title: company_fiscal_info_response
-      type: object
     customer_info_response:
       properties:
         custom_reference:
@@ -11211,7 +10878,6 @@ components:
           type: string
       required:
       - city
-      - city
       - country
       - postal_code
       - street1
@@ -11335,48 +11001,6 @@ components:
       required:
       - object
       type: object
-    company_fiscal_info_address_response:
-      description: Company fiscal info address model
-      properties:
-        object:
-          description: The resource's type
-          enum:
-          - address
-          type: string
-        street1:
-          description: Street Address
-          example: Calle 13
-          type: string
-        street2:
-          description: Colonia
-          example: Navarte
-          type: string
-        city:
-          description: City
-          example: Cuauhtémoc
-          type: string
-        state:
-          description: State
-          example: Ciudad de México
-          type: string
-        country:
-          description: Country
-          example: MX
-          type: string
-        postal_code:
-          description: Postal code
-          example: "3072"
-          type: string
-        external_number:
-          description: Street number
-          example: "123"
-          type: string
-        internal_number:
-          description: Unit / apartment number
-          example: "123"
-          type: string
-      title: company_fiscal_info_address_response
-      type: object
     customer_payment_method_request:
       description: Payment method data to attach to a customer.
       properties:
@@ -11401,7 +11025,14 @@ components:
       title: get_api_keys_response
     api_key_create_response:
       allOf:
-      - type: object
+      - properties:
+          authentication_token:
+            description: |
+              Used as the username for Basic Authentication, with a blank password. This value is shown only once (when the key is created). Copy and store it securely.
+            example: key_rpHzxufNgjFCdprEEFZRTKi
+            type: string
+            writeOnly: true
+        type: object
       - $ref: '#/components/schemas/api_key_response'
       title: api_key_create_response
     api_key_update_request:
@@ -11427,8 +11058,8 @@ components:
       title: delete_api_keys_response
     get_charges_response:
       allOf:
-      - $ref: '#/components/schemas/pagination'
       - $ref: '#/components/schemas/page'
+      - $ref: '#/components/schemas/pagination'
       - properties:
           data:
             items:
@@ -11436,17 +11067,6 @@ components:
             type: array
         type: object
       title: get_charges_response
-    get_companies_response:
-      allOf:
-      - $ref: '#/components/schemas/pagination'
-      - $ref: '#/components/schemas/page'
-      - properties:
-          data:
-            items:
-              $ref: '#/components/schemas/company_response'
-            type: array
-        type: object
-      title: get_companies_response
     customers_response:
       allOf:
       - properties:
@@ -12247,32 +11867,43 @@ components:
       - address
       title: order_update_fiscal_entity_request
       type: object
-    checkout_oneOf:
+    checkout_order_template_customer_info:
+      description: It is the information of the customer who will be created when
+        receiving a new payment.
+      oneOf:
+      - $ref: '#/components/schemas/customer_info'
+      - $ref: '#/components/schemas/customer_info_just_customer_id'
+    checkout_order_template:
+      description: It maintains the attributes with which the order will be created
+        when receiving a new payment.
       properties:
-        recurrent:
-          type: boolean
+        currency:
+          description: It is the currency in which the order will be created. It must
+            be a valid ISO 4217 currency code.
+          example: MXN
+          maxLength: 3
+          type: string
+        customer_info:
+          $ref: '#/components/schemas/checkout_order_template_customer_info'
+        line_items:
+          description: They are the products to buy. Each contains the "unit price"
+            and "quantity" parameters that are used to calculate the total amount
+            of the order.
+          items:
+            $ref: '#/components/schemas/product'
+          type: array
+        metadata:
+          additionalProperties: true
+          description: It is a set of key-value pairs that you can attach to the order.
+            It can be used to store additional information about the order in a structured
+            format.
+          example:
+            key: value
+          maxProperties: 100
+          type: object
       required:
-      - allowed_payment_methods
-      - expires_at
-      - name
-      - needs_shipping_contact
-      - order_template
-      - recurrent
-      - type
-      type: object
-    checkout_oneOf_1:
-      properties:
-        recurrent:
-          type: boolean
-      required:
-      - allowed_payment_methods
-      - expires_at
-      - name
-      - needs_shipping_contact
-      - order_template
-      - payments_limit_count
-      - recurrent
-      - type
+      - currency
+      - line_items
       type: object
     update_payment_methods_expires_at:
       oneOf:
