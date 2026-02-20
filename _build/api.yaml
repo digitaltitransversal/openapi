@@ -9,7 +9,7 @@ info:
     name: MIT-LICENSE
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   title: Femsa API
-  version: 2.1.0
+  version: 2.2.0
 servers:
 - description: Femsa main server
   url: https://api.digitalfemsa.io
@@ -579,6 +579,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
           description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
         "500":
           content:
             application/vnd.app-v2.2.0+json:
@@ -598,7 +627,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Retrieve company balance
+      summary: Get a company's balance
       tags:
       - Balances
   /charges:
@@ -971,7 +1000,12 @@ paths:
       - Charges
   /customers:
     get:
-      description: Retrieves a paginated list of customers.
+      description: |
+        Returns a paginated list of customers for the authenticated company.
+
+        Use the [search] parameter to filter results.
+
+        Monetary fields are returned as arrays of amounts grouped by currency.
       operationId: getCustomers
       parameters:
       - description: Use for knowing which language to use
@@ -1033,81 +1067,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/customers_response'
-          description: successful operation
-        "401":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - message: Please include your access key in your request.
-                  param: null
-                  code: femsa.errors.authentication.missing_key
-                log_id: 507f1f77bcf86cd799439011
-                object: error
-                type: authentication_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: authentication error
-        "500":
-          content:
-            application/vnd.app-v2.2.0+json:
-              example:
-                details:
-                - debug_message: There was a runtime error and Femsa engineers have
-                    been notified.
-                  message: There was a runtime error and Femsa engineers have been
-                    notified.
-                  param: null
-                  code: femsa.errors.api.system.general_failure
-                object: error
-                type: api_error
-                log_id: 641b6f2b3cd9a50001515098
-              schema:
-                $ref: '#/components/schemas/error'
-          description: internal server error
-      security:
-      - bearerAuth: []
-      summary: Get a list of customers
-      tags:
-      - Customers
-    post:
-      description: Creates a customer.
-      operationId: createCustomer
-      parameters:
-      - description: Use for knowing which language to use
-        examples:
-          es:
-            summary: for spanish request/response
-            value: es
-          en:
-            summary: for english request/response
-            value: en
-        in: header
-        name: Accept-Language
-        required: false
-        schema:
-          default: es
-          enum:
-          - es
-          - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
-          type: string
-      requestBody:
-        $ref: '#/components/requestBodies/customer'
-      responses:
-        "200":
-          content:
-            application/vnd.app-v2.2.0+json:
-              schema:
-                $ref: '#/components/schemas/customer_response'
-          description: successful operation
+          description: Successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -1170,7 +1130,114 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Create customer
+      summary: Get a list of customers
+      tags:
+      - Customers
+    post:
+      description: |
+        Creates a new customer for the authenticated company.
+
+        Use customers to store and reuse buyer information (for example name, email, phone, and addresses).
+        The created customer can be referenced later when creating orders and other resources.
+      operationId: createCustomer
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "In the case of a holding company, the company id of the child\
+          \ company to which will process the request."
+        example: 6441b6376b60c3a638da80af
+        in: header
+        name: X-Child-Company-Id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/customer'
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/customer_response'
+          description: Customer created successfully
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "402":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The order could not be processed.
+                  code: femsa.errors.processing.order.used
+                  debug_message: The order has already been used.
+                log_id: 641b6d073cd9a50001515007
+                object: error
+                type: processing_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: payment required error
+        "422":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The name does not exist.
+                  param: payment_method.name
+                  code: femsa.errors.parameter_validation.payment_method.name.nonexistent_token
+                  debug_message: The name does not exist.
+                log_id: 641b6d813cd9a50001515017
+                object: error
+                type: parameter_validation_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: parameter validation error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Create a customer
       tags:
       - Customers
   /customers/{id}:
@@ -7744,6 +7811,107 @@ components:
           additionalProp1: string
           additionalProp2: string
           additionalProp3: string
+    order_with_partial_charges:
+      description: "It allows you to pay for an order in several payments, example:\
+        \ pay $1000 MXN in 10 payments of $100"
+      summary: Create an order with partial charges
+      value:
+        charges:
+        - amount: 100000
+          payment_method:
+            type: partial_cash
+            min_amount: 10000
+            partialities: 10
+            total_amount: 100000
+            term: weekly
+        currency: MXN
+        customer_info:
+          name: DevTest
+          email: test@Femsa.com
+          phone: "5522997233"
+          corporate: false
+          object: customer_info
+        fiscal_entity:
+          tax_id: "1234567890"
+          name: Femsa Inc
+          email: test@gmail.com
+          phone: "525511223344"
+          metadata:
+            test: true
+            company_id: "123"
+          address:
+            street1: Nuevo Leon 254
+            street2: Departamento 404
+            postal_code: "06100"
+            city: Ciudad de Mexico
+            state: Ciudad de Mexico
+            country: MX
+            external_number: "123"
+        line_items:
+        - antifraud_info:
+            additionalProp1: {}
+            additionalProp2: {}
+            additionalProp3: {}
+          description: string
+          sku: string
+          name: Box of Cohiba S1s
+          unit_price: 100000
+          quantity: 1
+          tags:
+          - string
+          brand: string
+          metadata:
+            additionalProp1: string
+            additionalProp2: string
+            additionalProp3: string
+        metadata:
+          test: true
+          company_id: "123"
+        pre_authorize: false
+        shipping_contact:
+          phone: "525511223344"
+          receiver: Marvin Fuller
+          between_streets: Ackerman Crescent
+          metadata:
+            test: true
+            company_id: "123"
+          address:
+            street1: Nuevo Leon 254
+            street2: Departamento 404
+            postal_code: "06100"
+            city: Ciudad de Mexico
+            state: Ciudad de Mexico
+            country: MX
+            residential: true
+          parent_id: string
+          default: true
+          deleted: true
+    split_payment_with_cash:
+      summary: Create an order with split payment (3 cash charges)
+      value:
+        charges:
+        - amount: 10000
+          payment_method:
+            type: cash
+        - amount: 10000
+          payment_method:
+            type: cash
+        - amount: 10000
+          payment_method:
+            type: cash
+        currency: MXN
+        customer_info:
+          name: DevTest
+          email: test@femsa.com
+          phone: "5522997233"
+          corporate: false
+        line_items:
+        - description: string
+          sku: string
+          name: Box of Cohiba S1s
+          unit_price: 10000
+          quantity: 3
+          brand: string
   parameters:
     accept_language:
       description: Use for knowing which language to use
@@ -7996,6 +8164,10 @@ components:
               $ref: '#/components/examples/order_with_charges'
             order_with_checkout:
               $ref: '#/components/examples/order_with_checkout'
+            order_with_partial_charges:
+              $ref: '#/components/examples/order_with_partial_charges'
+            split_payment_with_3_cash_charges:
+              $ref: '#/components/examples/split_payment_with_cash'
           schema:
             $ref: '#/components/schemas/order_request'
       description: |
@@ -8189,6 +8361,20 @@ components:
           schema:
             $ref: '#/components/schemas/error'
       description: not found entity
+    "402":
+      content:
+        application/vnd.app-v2.2.0+json:
+          example:
+            details:
+            - message: The order could not be processed.
+              code: femsa.errors.processing.order.used
+              debug_message: The order has already been used.
+            log_id: 641b6d073cd9a50001515007
+            object: error
+            type: processing_error
+          schema:
+            $ref: '#/components/schemas/error'
+      description: payment required error
     "422_whitelist":
       content:
         application/vnd.app-v2.2.0+json:
@@ -8220,20 +8406,6 @@ components:
           schema:
             $ref: '#/components/schemas/error'
       description: Precondition Required
-    "402":
-      content:
-        application/vnd.app-v2.2.0+json:
-          example:
-            details:
-            - message: The order could not be processed.
-              code: femsa.errors.processing.order.used
-              debug_message: The order has already been used.
-            log_id: 641b6d073cd9a50001515007
-            object: error
-            type: processing_error
-          schema:
-            $ref: '#/components/schemas/error'
-      description: payment required error
   schemas:
     page:
       description: page metadata
@@ -11087,15 +11259,16 @@ components:
       title: get_charges_response
     customers_response:
       allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
       - properties:
           data:
+            description: Customers
             items:
               $ref: '#/components/schemas/customer_response'
             title: customers_data_response
             type: array
         type: object
-      - $ref: '#/components/schemas/pagination'
-      - $ref: '#/components/schemas/page'
       title: customers_response
     get_order_discount_lines_response:
       allOf:

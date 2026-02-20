@@ -2,7 +2,7 @@ get:
   tags:
     - Balances
   operationId: getBalance
-  summary: Retrieve company balance
+  summary: Get a company's balance
   description: |
     Retrieves the current balance information for the authenticated company.
 
@@ -17,12 +17,16 @@ get:
       content:
         application/vnd.app-v2.2.0+json:
           schema:
-            $ref: "../../schemas/balances/balance_response.yml"
+            $ref: ../../schemas/balances/balance_response.yml
     "401":
-      $ref: "../errors/401.yml"
+      $ref: ../errors/401.yml
+    "402":
+      $ref: ../errors/402.yml
+    "422":
+      $ref: ../errors/422.yml
     "500":
-      $ref: "../errors/500.yml"
+      $ref: ../errors/500.yml
 
   parameters:
-    - $ref: "../../parameters/commons/headers/accept_language.yml"
-    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml

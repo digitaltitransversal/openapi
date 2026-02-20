@@ -20,6 +20,8 @@ description: |
   Important validation rules:
   - `charges` and `checkout` are mutually exclusive in the same request.
   - If you provide `shipping_contact_id` or `fiscal_entity_id`, you must also provide [customer_info.customer_id] so the API can validate the referenced customer sub-documents.
+
+
 content:
   application/json:
     schema:
@@ -29,4 +31,9 @@ content:
         $ref: "../../schemas/orders/request_examples/order_with_charges.yml"
       order_with_checkout:
         $ref: "../../schemas/orders/request_examples/order_with_checkout.yml"
+      order_with_partial_charges:
+        $ref: '../../schemas/orders/request_examples/order_with_partial_charges.yml'
+      split_payment_with_3_cash_charges:
+        $ref: '../../schemas/orders/request_examples/split_payment_with_cash.yml'
+
 required: true

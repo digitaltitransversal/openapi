@@ -2,70 +2,84 @@ post:
   tags:
     - Customers
   operationId: createCustomer
-  summary: Create customer
-  description: Creates a customer.
+  summary: Create a customer
+  description: |
+    Creates a new customer for the authenticated company.
 
+    Use customers to store and reuse buyer information (for example name, email, phone, and addresses).
+    The created customer can be referenced later when creating orders and other resources.
   security:
     - bearerAuth: []
 
   requestBody:
-    $ref: "../../requestBodies/customers/customer.yml"
+    $ref: ../../requestBodies/customers/customer.yml
 
   responses:
     "200":
-      description: successful operation
+      description: Customer created successfully
       content:
         application/vnd.app-v2.2.0+json:
           schema:
-            $ref: "../../schemas/customers/customer_response.yml"
+            $ref: ../../schemas/customers/customer_response.yml
     "401":
-      $ref: "../errors/401.yml"
+      $ref: ../errors/401.yml
     "402":
-      $ref: "../errors/402.yml"
+      $ref: ../errors/402.yml
     "422":
-      $ref: "../errors/422.yml"
+      $ref: ../errors/422.yml
     "500":
-      $ref: "../errors/500.yml"
+      $ref: ../errors/500.yml
 
   parameters:
-    - $ref: "../../parameters/commons/headers/accept_language.yml"
-    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml
+
 get:
   tags:
     - Customers
   operationId: getCustomers
   summary: Get a list of customers
-  description: Retrieves a paginated list of customers.
+  description: |
+    Returns a paginated list of customers for the authenticated company.
 
+    Use the [search] parameter to filter results.
+
+    Monetary fields are returned as arrays of amounts grouped by currency.
+    
   security:
     - bearerAuth: []
 
   responses:
     "200":
-      description: successful operation
+      description: Successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
             title: customers_response
             allOf:
+              - $ref: ../../schemas/pagination/pagination.yml
+              - $ref: ../../schemas/pagination/page.yml
               - type: object
                 properties:
                   data:
                     title: customers_data_response
+                    description: Customers
                     type: array
                     items:
-                      $ref: "../../schemas/customers/customer_response.yml"
-              - $ref: "../../schemas/pagination/pagination.yml"
-              - $ref: "../../schemas/pagination/page.yml"
+                      $ref: ../../schemas/customers/customer_response.yml
     "401":
-      $ref: "../errors/401.yml"
+      $ref: ../errors/401.yml
+    "402":
+      $ref: ../errors/402.yml
+    "422":
+      $ref: ../errors/422.yml
     "500":
-      $ref: "../errors/500.yml"
+      $ref: ../errors/500.yml
 
   parameters:
-    - $ref: "../../parameters/commons/headers/accept_language.yml"
-    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
-    - $ref: "../../parameters/commons/query/limit.yml"
-    - $ref: "../../parameters/commons/query/search.yml"
-    - $ref: "../../parameters/commons/query/next_page.yml"
-    - $ref: "../../parameters/commons/query/previous_page.yml"
+    - $ref: ../../parameters/commons/headers/accept_language.yml
+    - $ref: ../../parameters/commons/headers/x_child_company_id.yml
+    - $ref: ../../parameters/commons/query/limit.yml
+    - $ref: ../../parameters/commons/query/search.yml
+    - $ref: ../../parameters/commons/query/next_page.yml
+    - $ref: ../../parameters/commons/query/previous_page.yml
