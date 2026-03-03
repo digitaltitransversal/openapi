@@ -998,6 +998,229 @@ paths:
       summary: Create a charge for an order
       tags:
       - Charges
+  /companies:
+    get:
+      description: Consume the list of child companies.  This is used for holding
+        companies with several child entities.
+      operationId: getCompanies
+      parameters:
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      - description: "The numbers of items to return, the maximum value is 250"
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          format: int32
+          maximum: 250
+          minimum: 1
+          type: integer
+      - description: "General order search, e.g. by mail, reference etc."
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: next page
+        in: query
+        name: next
+        required: false
+        schema:
+          type: string
+      - description: previous page
+        in: query
+        name: previous
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/get_companies_response'
+          description: successful
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get List of Companies
+      tags:
+      - Companies
+  /companies/{id}:
+    get:
+      operationId: getCompany
+      parameters:
+      - description: Identifier of the resource
+        example: 6307a60c41de27127515a575
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Use for knowing which language to use
+        examples:
+          es:
+            summary: for spanish request/response
+            value: es
+          en:
+            summary: for english request/response
+            value: en
+        in: header
+        name: Accept-Language
+        required: false
+        schema:
+          default: es
+          enum:
+          - es
+          - en
+          type: string
+      responses:
+        "200":
+          content:
+            application/vnd.app-v2.2.0+json:
+              schema:
+                $ref: '#/components/schemas/company_response'
+          description: successful
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
+        "401":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
+        "404":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - message: The resource was not found.
+                  param: null
+                  code: femsa.errors.resource_not_found.entity
+                  debug_message: The object Webhook "641b1d5662d7e00001eaa46b" could
+                    not be found.
+                log_id: 641b6c253cd9a50001514fae
+                object: error
+                type: resource_not_found_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found entity
+        "500":
+          content:
+            application/vnd.app-v2.2.0+json:
+              example:
+                details:
+                - debug_message: There was a runtime error and Femsa engineers have
+                    been notified.
+                  message: There was a runtime error and Femsa engineers have been
+                    notified.
+                  param: null
+                  code: femsa.errors.api.system.general_failure
+                object: error
+                type: api_error
+                log_id: 641b6f2b3cd9a50001515098
+              schema:
+                $ref: '#/components/schemas/error'
+          description: internal server error
+      security:
+      - bearerAuth: []
+      summary: Get Company
+      tags:
+      - Companies
   /customers:
     get:
       description: |
@@ -8799,6 +9022,42 @@ components:
           type: string
       title: charges_data_response
       type: object
+    company_response:
+      description: Company model
+      properties:
+        id:
+          description: The child company's unique identifier
+          example: 6441bb27659a060465da7335
+          type: string
+        created_at:
+          description: The resource's creation date (unix timestamp)
+          example: 1680397724
+          format: int64
+          type: integer
+        name:
+          description: The child company's name
+          example: Child Company A
+          type: string
+        object:
+          description: The resource's type
+          enum:
+          - company
+          type: string
+        parent_company_id:
+          description: Id of the parent company
+          example: 6441bb3c62db5812e7920c31
+          type: string
+        use_parent_fiscal_data:
+          description: Whether the parent company's fiscal data is to be used for
+            liquidation and tax purposes
+          example: false
+          type: boolean
+        payout_destination:
+          $ref: '#/components/schemas/company_payout_destination_response'
+        fiscal_info:
+          $ref: '#/components/schemas/company_fiscal_info_response'
+      title: company_response
+      type: object
     customer_response:
       description: customer response
       properties:
@@ -9401,6 +9660,30 @@ components:
       title: checkout_response
       type: object
     customer_payment_method_cash_response:
+      allOf:
+      - $ref: '#/components/schemas/customer_payment_method_response'
+      - properties:
+          reference:
+            example: "93000262276908"
+            type: string
+          barcode:
+            example: "93000262276908"
+            type: string
+          barcode_url:
+            example: https://pt-common-s3-e.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-
+            format: uri
+            type: string
+          expires_at:
+            example: 1677196303
+            format: int64
+            nullable: true
+            type: integer
+          provider:
+            example: Oxxo
+            type: string
+        type: object
+      description: Cash payment method response.
+      title: customer_payment_method_cash_response
       type: object
     shipping_order_response:
       allOf:
@@ -10336,22 +10619,20 @@ components:
           description: Order status update. Allowed values depend on server-side validations.
           type: string
         currency:
-          description: Currency with which the payment will be made. It uses the 3-letter
-            code of the International Standard ISO 4217.
+          description: Currency used for the order. Uses ISO 4217 (3-letter code).
+            Allowed values depend on server-side validations.
           example: MXN
           maxLength: 3
           type: string
         customer_info:
           $ref: '#/components/schemas/order_update_request_customer_info'
         line_items:
-          description: "List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct)\
-            \ sold in the order."
+          description: List of products sold in the order.
           items:
             $ref: '#/components/schemas/product'
           type: array
         shipping_lines:
-          description: "List of [shipping costs](https://developers.digitalfemsa.io/reference/orderscreateshipping)\
-            \ applied to the order."
+          description: List of shipping costs applied to the order.
           items:
             $ref: '#/components/schemas/shipping_request'
           type: array
@@ -10360,8 +10641,7 @@ components:
             $ref: '#/components/schemas/order_tax_request'
           type: array
         discount_lines:
-          description: "List of [discounts](https://developers.digitalfemsa.io/reference/orderscreatediscountline)\
-            \ applied to the order."
+          description: List of discounts applied to the order.
           items:
             $ref: '#/components/schemas/order_discount_lines_request'
           type: array
@@ -10376,7 +10656,7 @@ components:
           type: string
         charges:
           description: |
-            Charges update. Subject to server-side validations (for example, max charges rules).
+            Add new charges to the order. Subject to server-side validations (for example, maximum charges rules).
           items:
             $ref: '#/components/schemas/charge_request'
           type: array
@@ -10837,6 +11117,68 @@ components:
             type: string
         title: charge_data_payment_method_cash_response
         type: object
+    company_payout_destination_response:
+      description: Company payout destination model
+      properties:
+        object:
+          description: The resource's type
+          enum:
+          - payout_destination
+          type: string
+        currency:
+          description: currency of the receiving account
+          example: MXN
+          type: string
+        account_holder_name:
+          description: Name of the account holder
+          example: Child Company A
+          type: string
+        bank:
+          description: Name of the bank
+          example: BBVA
+          type: string
+        type:
+          description: Type of the payout destination
+          enum:
+          - bank_account
+          type: string
+        account_number:
+          description: Account number of the receiving account
+          example: "123456789012345678"
+          type: string
+      title: company_payout_destination_response
+      type: object
+    company_fiscal_info_response:
+      description: Company fiscal info model
+      properties:
+        object:
+          description: The resource's type
+          enum:
+          - fiscal_info
+          type: string
+        tax_id:
+          description: Tax ID of the company
+          example: XAXX010101000
+          type: string
+        legal_entity_name:
+          description: Legal name of the company
+          example: Child Company A
+          type: string
+        business_type:
+          description: Business type of the company
+          example: persona_moral
+          type: string
+        phone:
+          description: Phone number of the company
+          example: "5555555555"
+          type: string
+        physical_person_business_type:
+          description: Business type if 'persona_fisica'
+          type: string
+        address:
+          $ref: '#/components/schemas/company_fiscal_info_address_response'
+      title: company_fiscal_info_response
+      type: object
     customer_info_response:
       properties:
         custom_reference:
@@ -11026,6 +11368,34 @@ components:
           type: object
       title: discount_line_response
       type: object
+    customer_payment_method_response:
+      properties:
+        id:
+          example: src_2s8K1B3PBKDontpi9
+          type: string
+        object:
+          example: payment_source
+          type: string
+        created_at:
+          example: 1675715413
+          format: int64
+          type: integer
+        parent_id:
+          description: Customer ID this payment source belongs to.
+          example: cus_2s8K1B3PBKDontpi8
+          nullable: true
+          type: string
+        type:
+          description: Payment method type.
+          example: cash
+          type: string
+      required:
+      - created_at
+      - id
+      - object
+      - type
+      title: customer_payment_method_response
+      type: object
     payment_method_cash_request:
       allOf:
       - $ref: '#/components/schemas/customer_payment_method_request'
@@ -11191,6 +11561,48 @@ components:
       required:
       - object
       type: object
+    company_fiscal_info_address_response:
+      description: Company fiscal info address model
+      properties:
+        object:
+          description: The resource's type
+          enum:
+          - address
+          type: string
+        street1:
+          description: Street Address
+          example: Calle 13
+          type: string
+        street2:
+          description: Colonia
+          example: Navarte
+          type: string
+        city:
+          description: City
+          example: Cuauhtémoc
+          type: string
+        state:
+          description: State
+          example: Ciudad de México
+          type: string
+        country:
+          description: Country
+          example: MX
+          type: string
+        postal_code:
+          description: Postal code
+          example: "3072"
+          type: string
+        external_number:
+          description: Street number
+          example: "123"
+          type: string
+        internal_number:
+          description: Unit / apartment number
+          example: "123"
+          type: string
+      title: company_fiscal_info_address_response
+      type: object
     customer_payment_method_request:
       description: Payment method data to attach to a customer.
       properties:
@@ -11257,6 +11669,17 @@ components:
             type: array
         type: object
       title: get_charges_response
+    get_companies_response:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/company_response'
+            type: array
+        type: object
+      title: get_companies_response
     customers_response:
       allOf:
       - $ref: '#/components/schemas/pagination'

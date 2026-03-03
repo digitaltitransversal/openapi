@@ -9,8 +9,9 @@ properties:
   currency:
     type: string
     description: >-
-      Currency with which the payment will be made. It uses the 3-letter code of the International Standard ISO 4217.
-    example: "MXN"
+      Currency used for the order. Uses ISO 4217 (3-letter code).
+      Allowed values depend on server-side validations.
+    example: MXN
     maxLength: 3
 
   customer_info:
@@ -19,14 +20,14 @@ properties:
       - $ref: ../customers/customer_info_just_customer_id.yml
 
   line_items:
-    description: List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct) sold in the order. 
+    description: List of products sold in the order.
     type: array
     items:
       $ref: product.yml
 
   shipping_lines:
     type: array
-    description: List of [shipping costs](https://developers.digitalfemsa.io/reference/orderscreateshipping) applied to the order.
+    description: List of shipping costs applied to the order.
     items:
       $ref: ../../schemas/orders/shipping_request.yml
 
@@ -36,7 +37,7 @@ properties:
       $ref: order_tax_request.yml
 
   discount_lines:
-    description: List of [discounts](https://developers.digitalfemsa.io/reference/orderscreatediscountline) applied to the order.
+    description: List of discounts applied to the order.
     type: array
     items:
       $ref: order_discount_lines_request.yml
@@ -49,12 +50,12 @@ properties:
   return_url:
     type: string
     description: URL to redirect the customer after completing the flow (when applicable).
-    example: "https://example.com/return"
+    example: https://example.com/return
 
   charges:
     type: array
     description: |
-      Charges update. Subject to server-side validations (for example, max charges rules).
+      Add new charges to the order. Subject to server-side validations (for example, maximum charges rules).
     items:
       $ref: ../../schemas/charges/charge_request.yml
 
@@ -82,11 +83,11 @@ properties:
         $ref: fiscal_entity_address.yml
       email:
         type: string
-        example: "test@gmail.com"
+        example: test@gmail.com
         description: Email of the fiscal entity
       name:
         type: string
-        example: "Femsa Inc"
+        example: Femsa Inc
         nullable: true
         description: Name of the fiscal entity
       metadata:
@@ -100,6 +101,6 @@ properties:
         description: Phone of the fiscal entity
       tax_id:
         type: string
-        example: "AAA010101AAA"
+        example: AAA010101AAA
         nullable: true
         description: Tax ID of the fiscal entity
