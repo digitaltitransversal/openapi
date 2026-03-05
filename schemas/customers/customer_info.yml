@@ -1,10 +1,9 @@
 title:  customer_info
 type: object
-required:
-  - name
-  - phone
-  - email
 properties:
+  customer_id:
+    type: string
+    example: "cus_23874283647"
   name:
     type: string
     example: "DevTest"
