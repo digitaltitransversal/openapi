@@ -8376,7 +8376,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/order_discount_lines_request'
+            $ref: '#/components/schemas/update_order_discount_lines_request'
       description: requested field for a discount lines
       required: true
     order:
@@ -10450,6 +10450,28 @@ components:
       - code
       - type
       title: order_discount_lines_request
+      type: object
+    update_order_discount_lines_request:
+      description: List of discounts that apply to the order.
+      properties:
+        amount:
+          example: 500
+          format: int64
+          minimum: 0
+          type: integer
+        code:
+          description: Discount code.
+          example: "123"
+          type: string
+        type:
+          enum:
+          - loyalty
+          - campaign
+          - coupon
+          - sign
+          example: loyalty
+          type: string
+      title: update_order_discount_lines_request
       type: object
     order_request:
       allOf:
