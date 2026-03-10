@@ -3,7 +3,7 @@ get:
     - Webhooks
   operationId: getWebhooks
   summary: Get webhooks
-  description: Returns a paginated list of webhooks.
+  description: 'Consume the list of webhooks you have, each environment supports 10 webhooks (For production and testing)'
 
   security:
     - bearerAuth: []
@@ -50,9 +50,12 @@ post:
 
   security:
     - bearerAuth: []
+  
+  requestBody:
+    $ref: '../../requestBodies/webhooks/webhook.yml'
 
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:

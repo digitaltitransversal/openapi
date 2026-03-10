@@ -2,15 +2,15 @@ get:
   tags:
     - Webhook keys
   operationId: getWebhookKeys
-  summary: Get List of Webhooks
-  description: 'Consume the list of webhooks you have, each environment supports 10 webhooks (For production and testing)'
+  summary: Get List of Webhook Keys
+  description: 'Consume the list of webhook keys you have, each environment supports 10 webhook keys (For production and testing)'
   
   security:
     - bearerAuth: []
 
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
@@ -49,7 +49,7 @@ post:
 
   requestBody:
     content:
-      application/vnd.app-v2.2.0+json:
+      application/json:
         schema:
           type: object
           title: webhook_key_request
@@ -62,7 +62,7 @@ post:
               nullable: true
   
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:

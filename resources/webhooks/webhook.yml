@@ -4,9 +4,13 @@ get:
   operationId: getWebhook
   summary: Get webhook
   description: Retrieves the details of a webhook by its ID.
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
@@ -17,8 +21,7 @@ get:
       $ref: '../errors/404.yml'
     500:
       $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
@@ -30,8 +33,15 @@ put:
   operationId: updateWebhook
   summary: Update webhook
   description: Updates an existing webhook.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: '../../requestBodies/webhooks/webhook_update.yml'
+    
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
@@ -43,10 +53,7 @@ put:
       $ref: '../errors/404.yml'
     500:
       $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/webhooks/webhook_update.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
@@ -58,6 +65,10 @@ delete:
   operationId: deleteWebhook
   summary: Delete webhook
   description: Deletes a webhook.
+
+  security:
+    - bearerAuth: []
+  
   responses:
     200:
       description: successful
@@ -71,9 +82,7 @@ delete:
       $ref: '../errors/404.yml'
     500:
       $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
-    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
