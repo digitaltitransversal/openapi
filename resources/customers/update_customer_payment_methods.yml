@@ -12,19 +12,22 @@ put:
     - bearerAuth: []
 
   requestBody:
-    $ref: ../../requestBodies/customers/customer_update_payment_methods.yml 
+    $ref: ../../requestBodies/customers/customer_update_payment_methods.yml
 
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
-          schema:
-            title: update_customer_payment_methods_response
+           schema:
+            title: "update_customer_payment_methods_response"
             discriminator:
-              propertyName: type
+                propertyName: type
+                mapping:
+                  cash: payment_method_cash_response
+                  oxxo_recurrent: payment_method_cash_response
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'                    
     401:
       $ref: '../errors/401.yml'
     404:
@@ -53,16 +56,19 @@ delete:
     - bearerAuth: []
 
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
-          schema:
-            title: delete_customer_payment_methods_response
+           schema:
+            title: "update_customer_payment_methods_response"
             discriminator:
-              propertyName: type
+                propertyName: type
+                mapping:
+                  cash: payment_method_cash_response
+                  oxxo_recurrent: payment_method_cash_response
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response' 
     401:
       $ref: '../errors/401.yml'
     404:

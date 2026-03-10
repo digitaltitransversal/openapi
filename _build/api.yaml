@@ -5211,7 +5211,7 @@ paths:
           content:
             application/vnd.app-v2.2.0+json:
               schema:
-                $ref: '#/components/schemas/delete_customer_payment_methods_response'
+                $ref: '#/components/schemas/update_customer_payment_methods_response'
           description: successful operation
         "401":
           content:
@@ -9672,8 +9672,6 @@ components:
             example: Oxxo
             type: string
         type: object
-    customer_payment_method_cash_response:
-      type: object
     shipping_order_response:
       allOf:
       - $ref: '#/components/schemas/shipping_request'
@@ -11859,16 +11857,13 @@ components:
       title: create_customer_payment_methods_response
     update_customer_payment_methods_response:
       discriminator:
+        mapping:
+          cash: payment_method_cash_response
+          oxxo_recurrent: payment_method_cash_response
         propertyName: type
       oneOf:
-      - $ref: '#/components/schemas/customer_payment_method_cash_response'
+      - $ref: '#/components/schemas/payment_method_cash_response'
       title: update_customer_payment_methods_response
-    delete_customer_payment_methods_response:
-      discriminator:
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/customer_payment_method_cash_response'
-      title: delete_customer_payment_methods_response
     get_transactions_response:
       allOf:
       - $ref: '#/components/schemas/pagination'
@@ -12041,9 +12036,12 @@ components:
       title: charge_order_response_payment_method
     customer_payment_methods_data:
       discriminator:
+        mapping:
+          cash: payment_method_cash_response
+          oxxo_recurrent: payment_method_cash_response
         propertyName: type
       oneOf:
-      - $ref: '#/components/schemas/customer_payment_method_cash_response'
+      - $ref: '#/components/schemas/payment_method_cash_response'
       title: customer_payment_methods_data
     customer_payment_methods_response:
       allOf:
