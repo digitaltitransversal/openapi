@@ -1,7 +1,7 @@
 post:
   tags:
     - Orders
-  operationId: refundOrder
+  operationId: orderRefund
   summary: Refund Order
   description: >-
     Creates a refund for an order. This operation is used to refund a previously

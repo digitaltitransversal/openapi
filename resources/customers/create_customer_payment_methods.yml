@@ -18,12 +18,15 @@ post:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
-          schema:
-            title: create_customer_payment_methods_response
+           schema:
+            title: "create_customer_payment_methods_response"
             discriminator:
-              propertyName: type
+                propertyName: type
+                mapping:
+                  cash: payment_method_cash_response
+                  oxxo_recurrent: payment_method_cash_response
             oneOf:
-              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
+              - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response' 
     401:
       $ref: '../errors/401.yml'
     404:
@@ -53,7 +56,7 @@ get:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
-          schema:
+           schema:
             title: get_payment_method_response
             allOf:
               - $ref: ../../schemas/pagination/pagination.yml
@@ -66,8 +69,11 @@ get:
                       title: get_customer_payment_method_data_response
                       discriminator:
                         propertyName: type
+                        mapping:
+                          cash: payment_method_cash_response
+                          oxxo_recurrent: payment_method_cash_response
                       oneOf:
-                        - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml'
+                        - $ref: '../../schemas/customers/customer_payment_method_cash_response.yml#/payment_method_cash_response'
     401:
       $ref: '../errors/401.yml'
     404:
