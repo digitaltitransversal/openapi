@@ -4,16 +4,6 @@ description: |
   Some nested resources are returned as list previews (for example: `charges`, `line_items`), and may be `null` depending on the request/context.
   The `checkout` field is only present when the order is linked to a checkout (`channel.checkout_request_id`).
 type: object
-required:
-  - id
-  - object
-  - livemode
-  - amount
-  - currency
-  - payment_status
-  - amount_refunded
-  - created_at
-  - updated_at
 properties:
   id:
     type: string
@@ -76,142 +66,228 @@ properties:
 
   customer_info:
     description: Customer information associated with the order.
-    $ref: ../customers/customer_info_response.yml
+    allOf:
+      - type: object
+        properties:
+          object:
+            type: string
+            example: "customer_info"
+      - $ref: order_customer_info_response.yml
+      - $ref: ../customers/customer_info_just_customer_id_response.yml
 
   shipping_contact:
     description: Shipping contact associated with the order. It may be `null` when not provided/required.
     nullable: true
-    $ref: ../customers/customer_shipping_contacts_response.yml
+    allOf:
+      - type: object
+        properties:
+          created_at:
+            type: integer
+            format: int64
+          id:
+            type: string
+          object:
+            type: string
+      - $ref: ../../schemas/customers/customer_shipping_contacts_response.yml
 
   channel:
     description: Channel information for the order (for example Checkout-related metadata). It may be `null`.
     nullable: true
-    $ref: ../channels/channel_response.yml
+    type: object
+    properties:
+      segment:
+        type: string
+        example: "Checkout"
+      checkout_request_id:
+        type: string
+        example: "6fca054a-8519-4c43-971e-cea35cc519bb"
+      checkout_request_type:
+        type: string
+        example: "HostedPayment"
+      id:
+        type: string
+        example: "channel_2tNDzhA4Akmzj11AU"
 
   fiscal_entity:
+    title: order_fiscal_entity_response
     description: Fiscal entity information associated with the order. This field can be `null`.
+    type: object
     nullable: true
-    $ref: ../fiscal_entities/fiscal_entity_response.yml
+    required:
+      - address
+      - id
+      - object
+      - created_at
+    properties:
+      address:
+        title: order_fiscal_entity_address_response
+        description: "Address of the fiscal entity"
+        allOf:
+          - $ref: fiscal_entity_address.yml
+          - type: object
+            properties:
+              object:
+                type: string
+                example: "fiscal_entity_address"
+      email:
+        type: string
+        example: "test@gmail.com"
+        description: "Email of the fiscal entity"
+        nullable: true
+      metadata:
+        type: object
+        additionalProperties: true
+        maxProperties: 100
+        description: "Metadata associated with the fiscal entity"
+      name: 
+        type: string
+        example: "Femsa Inc"
+        nullable: true
+        description: "Name of the fiscal entity"
+      tax_id:
+        type: string
+        example: "324234234"
+        description: "Tax ID of the fiscal entity"
+        nullable: true
+      id:
+        type: string
+        example: "fis_ent_2tN85VYaSMyDvjB3M"
+        description: "ID of the fiscal entity"
+      created_at:
+        type: integer
+        format: int64
+        example: 1676328434
+        description: "The time at which the object was created in seconds since the Unix epoch"
+      object:
+        type: string
+        example: "fiscal_entity"
+      phone:
+        type: string
+        example: "+525511223344"
+        description: "Phone of the fiscal entity"
+        nullable: true
 
   checkout:
+    type: object
     description: Checkout resource linked to the order. Present only when the order is linked to a checkout (`channel.checkout_request_id`).
-    nullable: true
-    $ref: ../checkouts/checkout_response.yml
-
-  is_button_premia:
-    description: Indicates whether the order is associated with Button Premia (when applicable).
-    type: boolean
-    nullable: true
+    properties:
+      allowed_payment_methods:
+        type: array
+        items:
+          type: string
+      can_not_expire:
+        type: boolean
+        example: false
+      emails_sent:
+        type: integer
+        example: 0
+      expires_at:
+        type: integer
+        example: 1676613599
+        format: int64
+      failure_url:
+        type: string
+        example: "http://187.216.228.66:2222/SysVentasPagos/Acceso.aspx"
+      id:
+        type: string
+        example:  "6fca054a-8519-4c43-971e-cea35cc519bb"
+      is_redirect_on_failure:
+        type: boolean
+        example: false
+      livemode:
+        type: boolean
+        example: false
+      metadata:
+        additionalProperties: true
+        maxProperties: 100
+        type: object
+      name:
+        type: string
+        example: "ord-2tNDzhA4Akmzj11AS"
+      needs_shipping_contact:
+        type: boolean
+        example: false
+      object:
+        type: string
+        example: "checkout"
+      on_demand_enabled:
+        type: boolean
+        example: true
+        nullable: true
+      recurrent:
+        type: boolean
+        example: false
+      slug:
+        type: string
+        example:  "6fca054a85194c43971ecea35cc519bb"
+      sms_sent: 
+        type: integer
+        example: 0
+      success_url:
+        type: string
+        example: "http://187.216.228.66:2222/SysVentasPagos/Acceso.aspx"
+      starts_at:
+        type: integer
+        example: 1676354400
+      status:
+        type: string
+        example: "Issued"
+      type:
+        type: string
+        example: "HostedPayment"
+      url:
+        type: string
+        example: "https://pay.stg.femsa.io/checkout/6fca054a85194c43971ecea35cc519bb"
 
   line_items:
-    description: List preview of line items included in the order. It can be `null` depending on the response context.
-    nullable: true
-    type: object
-    required: [object, has_more, data]
-    properties:
-      object:
-        type: string
-        enum: ["list"]
-        example: "list"
-      has_more:
-        type: boolean
-        example: false
-      total:
-        type: integer
-        nullable: true
-        example: 1
-      data:
-        type: array
-        items:
-          $ref: ../orders/line_item_response.yml
-
-  shipping_lines:
-    description: List preview of shipping lines for the order. It can be `null` when not applicable or not included.
-    nullable: true
-    type: object
-    required: [object, has_more, data]
-    properties:
-      object:
-        type: string
-        enum: ["list"]
-        example: "list"
-      has_more:
-        type: boolean
-        example: false
-      total:
-        type: integer
-        nullable: true
-      data:
-        type: array
-        items:
-          $ref: ../orders/shipping_line_response.yml
-
-  tax_lines:
-    description: List preview of tax lines for the order. It can be `null` when not applicable or not included.
-    nullable: true
-    type: object
-    required: [object, has_more, data]
-    properties:
-      object:
-        type: string
-        enum: ["list"]
-        example: "list"
-      has_more:
-        type: boolean
-        example: false
-      total:
-        type: integer
-        nullable: true
-      data:
-        type: array
-        items:
-          $ref: ../orders/tax_line_response.yml
+    title: order_response_products
+    allOf:
+      - $ref: ../pagination/pagination.yml
+      - $ref: ../pagination/page.yml
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              title: product_data_response
+              allOf:
+                - $ref: product.yml
+                - type: object
+                  properties:
+                    id: 
+                      type: string
+                    object:
+                      type: string
+                    parent_id:
+                      type: string
 
   discount_lines:
-    description: List preview of discount lines applied to the order. It can be `null` when not applicable or not included.
-    nullable: true
-    type: object
-    required: [object, has_more, data]
-    properties:
-      object:
-        type: string
-        enum: ["list"]
-        example: "list"
-      has_more:
-        type: boolean
-        example: false
-      total:
-        type: integer
-        nullable: true
-      data:
-        type: array
-        items:
-          $ref: ../orders/discount_line_response.yml
+    allOf:
+      - $ref: ../pagination/pagination.yml
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              title: discount_lines_data_response
+              allOf:
+                - $ref: ../../schemas/orders/discount_lines_response.yml
 
   charges:
     description: |
       List preview of charges created for the order.
       Charges are only created when included in the request or created later through payment flows.
       This field can be `null` depending on the response context.
-    nullable: true
-    type: object
-    required: [object, has_more, data]
-    properties:
-      object:
-        type: string
-        enum: ["list"]
-        example: "list"
-      has_more:
-        type: boolean
-        example: false
-      total:
-        type: integer
-        nullable: true
-        example: 1
-      data:
-        type: array
-        items:
-          $ref: ../charges/charge_response.yml
+    allOf:
+      - $ref: ../pagination/pagination.yml
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              title: charges_data_response
+              allOf:
+                - $ref: ../../schemas/charges/charge_response.yml
 
   partial_reference:
     description: Partial reference information (when applicable). Structure may vary depending on the payment flow.

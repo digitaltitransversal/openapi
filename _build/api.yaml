@@ -8442,7 +8442,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/order_refunds_request'
+            $ref: '#/components/schemas/orderRefund_request'
       description: requested field for a refund
       required: true
     checkout:
@@ -9507,26 +9507,17 @@ components:
           format: int64
           type: integer
         customer_info:
-          $ref: '#/components/schemas/customer_info_response'
+          $ref: '#/components/schemas/order_response_customer_info'
         shipping_contact:
-          $ref: '#/components/schemas/customer_shipping_contacts_response'
+          $ref: '#/components/schemas/order_response_shipping_contact'
         channel:
-          $ref: '#/components/schemas/channel_response'
+          $ref: '#/components/schemas/order_response_channel'
         fiscal_entity:
-          $ref: '#/components/schemas/fiscal_entity_response'
+          $ref: '#/components/schemas/order_fiscal_entity_response'
         checkout:
-          $ref: '#/components/schemas/checkout_response'
-        is_button_premia:
-          description: Indicates whether the order is associated with Button Premia
-            (when applicable).
-          nullable: true
-          type: boolean
+          $ref: '#/components/schemas/order_response_checkout'
         line_items:
-          $ref: '#/components/schemas/order_response_line_items'
-        shipping_lines:
-          $ref: '#/components/schemas/order_response_shipping_lines'
-        tax_lines:
-          $ref: '#/components/schemas/order_response_tax_lines'
+          $ref: '#/components/schemas/order_response_products'
         discount_lines:
           $ref: '#/components/schemas/order_response_discount_lines'
         charges:
@@ -9543,16 +9534,6 @@ components:
             may vary.
           nullable: true
           type: object
-      required:
-      - amount
-      - amount_refunded
-      - created_at
-      - currency
-      - id
-      - livemode
-      - object
-      - payment_status
-      - updated_at
       title: order_response
       type: object
     product_order_response:
@@ -11177,9 +11158,9 @@ components:
       - postal_code
       - street1
       type: object
-    customer_info_response:
+    order_customer_info_response:
       properties:
-        custom_reference:
+        customer_custom_reference:
           description: Custom reference
           example: custom_reference
           nullable: true
@@ -11200,171 +11181,54 @@ components:
         object:
           example: customer_info
           type: string
-      title: customer_info
+      title: order_customer_info_response
       type: object
-    channel_response:
-      description: Channel information.
+    customer_info_just_customer_id_response:
       properties:
-        segment:
-          example: Checkout
+        customer_id:
+          example: cus_23874283647
           type: string
-        checkout_request_id:
-          example: f3a5bfc1-ba1c-474f-9687-46d8b75ffc90
-          type: string
-        checkout_request_type:
-          example: Integration
-          type: string
-        id:
-          example: channel_2zNxD65G8MBNkYksy
-          type: string
-      title: channel_response
+      title: customer_info_response
       type: object
-    fiscal_entity_response:
-      description: Fiscal entity information.
+    fiscal_entity_address:
+      description: Address of the fiscal entity
       properties:
-        id:
-          example: fis_ent_1234567890
+        street1:
+          description: Street name and number
+          example: Nuevo Leon 254
           type: string
-        object:
-          example: fiscal_entity
-          type: string
-        tax_id:
-          example: XAXX010101000
-          type: string
-        name:
-          example: John Doe
-          type: string
-        address:
-          $ref: '#/components/schemas/fiscal_entity_address'
-      title: fiscal_entity_response
-      type: object
-    line_item_response:
-      description: Line item response.
-      properties:
-        id:
-          example: line_item_1234567890
-          type: string
-        object:
-          example: line_item
-          type: string
-        name:
-          example: Box of Cohiba S1s
-          type: string
-        description:
+        street2:
+          description: Street name and number
+          example: Departamento 404
           nullable: true
           type: string
-          example: null
-        sku:
-          example: SKU-001
-          nullable: true
+        postal_code:
+          description: Postal code
+          example: "06100"
           type: string
-        unit_price:
-          example: 20000
-          format: int64
-          type: integer
-        quantity:
-          example: 1
-          type: integer
-        tags:
-          items:
-            type: string
-          nullable: true
-          type: array
-        metadata:
-          additionalProperties: true
-          maxProperties: 100
-          nullable: true
-          type: object
-      title: line_item_response
-      type: object
-    shipping_line_response:
-      description: Shipping line response.
-      properties:
-        id:
-          example: ship_line_1234567890
+        city:
+          description: City
+          example: Ciudad de Mexico
           type: string
-        object:
-          example: shipping_line
+        state:
+          description: State
+          example: Ciudad de Mexico
           type: string
-        amount:
-          example: 1000
-          format: int64
-          type: integer
-        carrier:
-          nullable: true
+        country:
+          description: "this field follows the [ISO 3166-1 alpha-2 standard](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)"
+          example: MX
           type: string
-          example: null
-        tracking_number:
-          nullable: true
+        external_number:
+          description: External number
+          example: "123"
           type: string
-          example: null
-        method:
-          nullable: true
-          type: string
-          example: null
-        metadata:
-          additionalProperties: true
-          maxProperties: 100
-          nullable: true
-          type: object
-      title: shipping_line_response
-      type: object
-    tax_line_response:
-      description: Tax line response.
-      properties:
-        id:
-          example: tax_line_1234567890
-          type: string
-        object:
-          example: tax_line
-          type: string
-        amount:
-          example: 320
-          format: int64
-          type: integer
-        rate:
-          example: 0.16
-          format: float
-          nullable: true
-          type: number
-        description:
-          nullable: true
-          type: string
-          example: null
-        metadata:
-          additionalProperties: true
-          maxProperties: 100
-          nullable: true
-          type: object
-      title: tax_line_response
-      type: object
-    discount_line_response:
-      description: Discount line response.
-      properties:
-        id:
-          example: disc_line_1234567890
-          type: string
-        object:
-          example: discount_line
-          type: string
-        amount:
-          example: -500
-          format: int64
-          type: integer
-        code:
-          nullable: true
-          type: string
-          example: null
-        description:
-          nullable: true
-          type: string
-          example: null
-        metadata:
-          additionalProperties: true
-          maxProperties: 100
-          nullable: true
-          type: object
-      title: discount_line_response
+      required:
+      - city
+      - country
+      - external_number
+      - postal_code
+      - street1
+      title: order_fiscal_entity_address_request
       type: object
     payment_method_response:
       properties:
@@ -11463,46 +11327,6 @@ components:
       - name
       - phone
       title: customer_info
-      type: object
-    fiscal_entity_address:
-      description: Address of the fiscal entity
-      properties:
-        street1:
-          description: Street name and number
-          example: Nuevo Leon 254
-          type: string
-        street2:
-          description: Street name and number
-          example: Departamento 404
-          nullable: true
-          type: string
-        postal_code:
-          description: Postal code
-          example: "06100"
-          type: string
-        city:
-          description: City
-          example: Ciudad de Mexico
-          type: string
-        state:
-          description: State
-          example: Ciudad de Mexico
-          type: string
-        country:
-          description: "this field follows the [ISO 3166-1 alpha-2 standard](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)"
-          example: MX
-          type: string
-        external_number:
-          description: External number
-          example: "123"
-          type: string
-      required:
-      - city
-      - country
-      - external_number
-      - postal_code
-      - street1
-      title: order_fiscal_entity_address_request
       type: object
     payment_method:
       properties:
@@ -11739,7 +11563,7 @@ components:
       - amount
       title: order_capture_request
       type: object
-    order_refunds_request:
+    orderRefund_request:
       properties:
         amount:
           description: "Amount to refund. If not provided, the API refunds the refundable\
@@ -11771,7 +11595,9 @@ components:
           format: int64
           nullable: true
           type: integer
-      title: order_refunds_request
+      required:
+      - amount
+      - reason
       type: object
     checkouts_response:
       allOf:
@@ -12096,135 +11922,232 @@ components:
       - url
       title: WebhookLog
       type: object
-    order_response_line_items:
-      description: List preview of line items included in the order. It can be `null`
-        depending on the response context.
+    order_response_customer_info:
+      allOf:
+      - properties:
+          object:
+            example: customer_info
+            type: string
+        type: object
+      - $ref: '#/components/schemas/order_customer_info_response'
+      - $ref: '#/components/schemas/customer_info_just_customer_id_response'
+      description: Customer information associated with the order.
+    order_response_shipping_contact:
+      allOf:
+      - properties:
+          created_at:
+            format: int64
+            type: integer
+          id:
+            type: string
+          object:
+            type: string
+        type: object
+      - $ref: '#/components/schemas/customer_shipping_contacts_response'
+      description: Shipping contact associated with the order. It may be `null` when
+        not provided/required.
+      nullable: true
+    order_response_channel:
+      description: Channel information for the order (for example Checkout-related
+        metadata). It may be `null`.
       nullable: true
       properties:
-        object:
-          enum:
-          - list
-          example: list
+        segment:
+          example: Checkout
           type: string
-        has_more:
-          example: false
-          type: boolean
-        total:
-          example: 1
-          nullable: true
-          type: integer
-        data:
-          items:
-            $ref: '#/components/schemas/line_item_response'
-          type: array
-      required:
-      - data
-      - has_more
-      - object
+        checkout_request_id:
+          example: 6fca054a-8519-4c43-971e-cea35cc519bb
+          type: string
+        checkout_request_type:
+          example: HostedPayment
+          type: string
+        id:
+          example: channel_2tNDzhA4Akmzj11AU
+          type: string
       type: object
-    order_response_shipping_lines:
-      description: List preview of shipping lines for the order. It can be `null`
-        when not applicable or not included.
+    order_fiscal_entity_address_response:
+      allOf:
+      - $ref: '#/components/schemas/fiscal_entity_address'
+      - properties:
+          object:
+            example: fiscal_entity_address
+            type: string
+        type: object
+      description: Address of the fiscal entity
+      title: order_fiscal_entity_address_response
+    order_fiscal_entity_response:
+      description: Fiscal entity information associated with the order. This field
+        can be `null`.
       nullable: true
       properties:
-        object:
-          enum:
-          - list
-          example: list
-          type: string
-        has_more:
-          example: false
-          type: boolean
-        total:
+        address:
+          $ref: '#/components/schemas/order_fiscal_entity_address_response'
+        email:
+          description: Email of the fiscal entity
+          example: test@gmail.com
           nullable: true
+          type: string
+        metadata:
+          additionalProperties: true
+          description: Metadata associated with the fiscal entity
+          maxProperties: 100
+          type: object
+        name:
+          description: Name of the fiscal entity
+          example: Femsa Inc
+          nullable: true
+          type: string
+        tax_id:
+          description: Tax ID of the fiscal entity
+          example: "324234234"
+          nullable: true
+          type: string
+        id:
+          description: ID of the fiscal entity
+          example: fis_ent_2tN85VYaSMyDvjB3M
+          type: string
+        created_at:
+          description: The time at which the object was created in seconds since the
+            Unix epoch
+          example: 1676328434
+          format: int64
           type: integer
-        data:
-          items:
-            $ref: '#/components/schemas/shipping_line_response'
-          type: array
+        object:
+          example: fiscal_entity
+          type: string
+        phone:
+          description: Phone of the fiscal entity
+          example: "+525511223344"
+          nullable: true
+          type: string
       required:
-      - data
-      - has_more
+      - address
+      - created_at
+      - id
       - object
+      title: order_fiscal_entity_response
       type: object
-    order_response_tax_lines:
-      description: List preview of tax lines for the order. It can be `null` when
-        not applicable or not included.
-      nullable: true
+    order_response_checkout:
+      description: Checkout resource linked to the order. Present only when the order
+        is linked to a checkout (`channel.checkout_request_id`).
       properties:
-        object:
-          enum:
-          - list
-          example: list
-          type: string
-        has_more:
+        allowed_payment_methods:
+          items:
+            type: string
+          type: array
+        can_not_expire:
           example: false
           type: boolean
-        total:
-          nullable: true
+        emails_sent:
+          example: 0
           type: integer
-        data:
-          items:
-            $ref: '#/components/schemas/tax_line_response'
-          type: array
-      required:
-      - data
-      - has_more
-      - object
+        expires_at:
+          example: 1676613599
+          format: int64
+          type: integer
+        failure_url:
+          example: http://187.216.228.66:2222/SysVentasPagos/Acceso.aspx
+          type: string
+        id:
+          example: 6fca054a-8519-4c43-971e-cea35cc519bb
+          type: string
+        is_redirect_on_failure:
+          example: false
+          type: boolean
+        livemode:
+          example: false
+          type: boolean
+        metadata:
+          additionalProperties: true
+          maxProperties: 100
+          type: object
+        name:
+          example: ord-2tNDzhA4Akmzj11AS
+          type: string
+        needs_shipping_contact:
+          example: false
+          type: boolean
+        object:
+          example: checkout
+          type: string
+        on_demand_enabled:
+          example: true
+          nullable: true
+          type: boolean
+        recurrent:
+          example: false
+          type: boolean
+        slug:
+          example: 6fca054a85194c43971ecea35cc519bb
+          type: string
+        sms_sent:
+          example: 0
+          type: integer
+        success_url:
+          example: http://187.216.228.66:2222/SysVentasPagos/Acceso.aspx
+          type: string
+        starts_at:
+          example: 1676354400
+          type: integer
+        status:
+          example: Issued
+          type: string
+        type:
+          example: HostedPayment
+          type: string
+        url:
+          example: https://pay.stg.femsa.io/checkout/6fca054a85194c43971ecea35cc519bb
+          type: string
       type: object
+    product_data_response:
+      allOf:
+      - $ref: '#/components/schemas/product'
+      - properties:
+          id:
+            type: string
+          object:
+            type: string
+          parent_id:
+            type: string
+        type: object
+      title: product_data_response
+    order_response_products:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - $ref: '#/components/schemas/page'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/product_data_response'
+            type: array
+        type: object
+      title: order_response_products
     order_response_discount_lines:
-      description: List preview of discount lines applied to the order. It can be
-        `null` when not applicable or not included.
-      nullable: true
-      properties:
-        object:
-          enum:
-          - list
-          example: list
-          type: string
-        has_more:
-          example: false
-          type: boolean
-        total:
-          nullable: true
-          type: integer
-        data:
-          items:
-            $ref: '#/components/schemas/discount_line_response'
-          type: array
-      required:
-      - data
-      - has_more
-      - object
-      type: object
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - properties:
+          data:
+            items:
+              allOf:
+              - $ref: '#/components/schemas/discount_lines_response'
+              title: discount_lines_data_response
+            type: array
+        type: object
     order_response_charges:
+      allOf:
+      - $ref: '#/components/schemas/pagination'
+      - properties:
+          data:
+            items:
+              allOf:
+              - $ref: '#/components/schemas/charge_response'
+              title: charges_data_response
+            type: array
+        type: object
       description: |
         List preview of charges created for the order.
         Charges are only created when included in the request or created later through payment flows.
         This field can be `null` depending on the response context.
-      nullable: true
-      properties:
-        object:
-          enum:
-          - list
-          example: list
-          type: string
-        has_more:
-          example: false
-          type: boolean
-        total:
-          example: 1
-          nullable: true
-          type: integer
-        data:
-          items:
-            $ref: '#/components/schemas/charge_response'
-          type: array
-      required:
-      - data
-      - has_more
-      - object
-      type: object
     customer_shipping_contacts_response_address:
       properties:
         object:
