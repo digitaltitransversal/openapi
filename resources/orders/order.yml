@@ -4,14 +4,34 @@ post:
   operationId: createOrder
   summary: Create order
   description: |
-    Creates a new order. Optionally, you can include `charges` to create payment charges for the order during creation.
-    If checkout parameters are provided and a checkout is created/linked, the response may include a `checkout` object.
+    Creates a new order (products + amounts + customer data).
+
+    Minimum required fields:
+    - `currency`
+    - `line_items`
+    - `customer_info`
+
+    About `customer_info`:
+    - You can reference an existing customer using `customer_info.customer_id`, or
+    - You can provide customer details at minimum `customer_info.name` and `customer_info.email` to create the order with customer context.
+
+    How to create the order:
+    - Create an order only (no payment): send only the order data.
+    - Create an order and create the first payment charge: include `charges`.
+    - Create an order with a checkout configuration (for a hosted payment flow): include `checkout`.
+
+    Important rules:
+    - You cannot send `charges` and `checkout` in the same request (they are mutually exclusive).
+    - If you send `shipping_contact_id` and/or `fiscal_entity_id`, you must also send `customer_info.customer_id` so the API can validate those IDs against that customer.
   
   security:
     - bearerAuth: []
-    
+  
+  requestBody:
+    $ref: "../../requestBodies/orders/order.yml"
+
   responses:
-    "200":
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
@@ -20,17 +40,14 @@ post:
           examples:
             cash:
               $ref: ../../schemas/orders/examples/order_cash.yml
-    "401":
+    401:
       $ref: "../errors/401.yml"
-    "402":
+    402:
       $ref: "../errors/402.yml"
-    "422":
+    422:
       $ref: "../errors/422.yml"
-    "500":
+    500:
       $ref: "../errors/500.yml"
-  
-  requestBody:
-    $ref: "../../requestBodies/orders/order.yml"
   
   parameters:
     - $ref: "../../parameters/commons/headers/accept_language.yml"
@@ -49,7 +66,7 @@ get:
     - bearerAuth: []
   
   responses:
-    "200":
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
@@ -59,9 +76,9 @@ get:
               - $ref: ../../schemas/orders/orders_response.yml
               - $ref: ../../schemas/pagination/pagination.yml
               - $ref: ../../schemas/pagination/page.yml
-    "401":
+    401:
       $ref: "../errors/401.yml"
-    "500":
+    500:
       $ref: "../errors/500.yml"
   
   parameters:

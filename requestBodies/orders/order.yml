@@ -1,39 +1,15 @@
-
-description: |
-  Fields used to create an Order.
-
-  Required:
-  - `currency`
-  - `line_items`
-  - `customer_info`
-
-  Customer information is required to successfully create an order in this API, since downstream flows (such as creating charges, checkout configuration, and validating referenced customer sub-documents) require customer context.
-
-  Provide `customer_info` in one of the following ways:
-  - Reference an existing customer using [customer_info.customer_id] OR
-  - Provide customer details (at minimum `customer_info.name` and `customer_info.email`) to create the order with customer context.
-
-  You can create the order in one of these ways:
-  - Include `charges` to create the order and attempt charging it immediately (only one charge object is allowed).
-  - Include `checkout` to create the order with embedded checkout configuration.
-
-  Important validation rules:
-  - `charges` and `checkout` are mutually exclusive in the same request.
-  - If you provide `shipping_contact_id` or `fiscal_entity_id`, you must also provide [customer_info.customer_id] so the API can validate the referenced customer sub-documents.
-
-
+description: requested field for order        
 content:
   application/json:
-    schema:
-      $ref: "../../schemas/orders/order_request.yml"
+    schema:  
+      $ref: '../../schemas/orders/order_request.yml'
     examples:
       order_with_charges:
-        $ref: "../../schemas/orders/request_examples/order_with_charges.yml"
-      order_with_checkout:
-        $ref: "../../schemas/orders/request_examples/order_with_checkout.yml"
+        $ref: '../../schemas/orders/request_examples/order_with_charges.yml'
       order_with_partial_charges:
         $ref: '../../schemas/orders/request_examples/order_with_partial_charges.yml'
+      order_with_checkout:
+        $ref: '../../schemas/orders/request_examples/order_with_checkout.yml'
       split_payment_with_3_cash_charges:
         $ref: '../../schemas/orders/request_examples/split_payment_with_cash.yml'
-
 required: true

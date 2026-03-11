@@ -3,7 +3,6 @@ description: |
   Order model.
   Some nested resources are returned as list previews (for example: `charges`, `line_items`), and may be `null` depending on the request/context.
   The `checkout` field is only present when the order is linked to a checkout (`channel.checkout_request_id`).
-type: object
 properties:
   id:
     type: string

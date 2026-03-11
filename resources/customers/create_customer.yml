@@ -17,7 +17,7 @@ post:
 
   responses:
     200:
-      description: Customer created successfully
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:

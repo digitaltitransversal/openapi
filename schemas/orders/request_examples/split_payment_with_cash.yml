@@ -1,15 +1,5 @@
 summary: Create an order with split payment (3 cash charges)
 value:
-  charges:
-    - amount: 10000
-      payment_method:
-        type: cash
-    - amount: 10000
-      payment_method:
-        type: cash
-    - amount: 10000
-      payment_method:
-        type: cash
   currency: MXN
   customer_info:
     name: DevTest
@@ -23,3 +13,16 @@ value:
       unit_price: 10000
       quantity: 3
       brand: string
+  charges:
+    - amount: 10000
+      payment_method:
+        type: cash
+        can_not_expire: true
+    - amount: 10000
+      payment_method:
+        type: cash
+        can_not_expire: true
+    - amount: 10000
+      payment_method:
+        type: cash
+        can_not_expire: true
