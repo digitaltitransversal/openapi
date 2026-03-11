@@ -250,7 +250,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/delete_api_keys_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -361,7 +361,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/api_key_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -450,11 +450,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/api_key_update_request'
-        required: true
       responses:
         "200":
           content:
-            application/json:
+            application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/api_key_response'
           description: successful operation
@@ -8629,18 +8628,6 @@ components:
       type: object
     api_key_response:
       description: API keys model
-      example:
-        role: private
-        deleted: false
-        livemode: false
-        updated_at: 1684167923
-        prefix: key_rp
-        deactivated_at: 0
-        active: true
-        description: online store
-        created_at: 1684167881
-        id: 64625cc9f3e02c00163f5e4d
-        object: api_key
       properties:
         id:
           description: Unique identifier of the API key
