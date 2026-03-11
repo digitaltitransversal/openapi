@@ -550,21 +550,13 @@ paths:
           - es
           - en
           type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
-          type: string
       responses:
         "200":
           content:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/balance_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -1227,8 +1219,6 @@ paths:
         Returns a paginated list of customers for the authenticated company.
 
         Use the [search] parameter to filter results.
-
-        Monetary fields are returned as arrays of amounts grouped by currency.
       operationId: getCustomers
       parameters:
       - description: Use for knowing which language to use
@@ -1290,7 +1280,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/customers_response'
-          description: Successful operation
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6883,8 +6873,8 @@ paths:
       - Transfers
   /webhook_keys:
     get:
-      description: "Consume the list of webhooks you have, each environment supports\
-        \ 10 webhooks (For production and testing)"
+      description: "Consume the list of webhook keys you have, each environment supports\
+        \ 10 webhook keys (For production and testing)"
       operationId: getWebhookKeys
       parameters:
       - description: Use for knowing which language to use
@@ -6946,7 +6936,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/get_webhook_keys_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -6980,7 +6970,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get List of Webhooks
+      summary: Get List of Webhook Keys
       tags:
       - Webhook keys
     post:
@@ -7014,7 +7004,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/vnd.app-v2.2.0+json:
+          application/json:
             schema:
               $ref: '#/components/schemas/webhook_key_request'
       responses:
@@ -7088,14 +7078,6 @@ paths:
           enum:
           - es
           - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
           type: string
       responses:
         "200":
@@ -7198,7 +7180,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/webhook-key_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -7279,14 +7261,6 @@ paths:
           - es
           - en
           type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
-          type: string
       requestBody:
         content:
           application/vnd.app-v2.2.0+json:
@@ -7353,7 +7327,8 @@ paths:
       - Webhook keys
   /webhooks:
     get:
-      description: Returns a paginated list of webhooks.
+      description: "Consume the list of webhooks you have, each environment supports\
+        \ 10 webhooks (For production and testing)"
       operationId: getWebhooks
       parameters:
       - description: Use for knowing which language to use
@@ -7491,6 +7466,8 @@ paths:
         required: false
         schema:
           type: string
+      requestBody:
+        $ref: '#/components/requestBodies/webhook'
       responses:
         "200":
           content:
@@ -7562,14 +7539,6 @@ paths:
           enum:
           - es
           - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
           type: string
       responses:
         "200":
@@ -7672,7 +7641,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/webhook_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -7851,14 +7820,6 @@ paths:
           enum:
           - es
           - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
           type: string
       responses:
         "200":

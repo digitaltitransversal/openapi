@@ -8,6 +8,7 @@ post:
 
     Use customers to store and reuse buyer information (for example name, email, phone, and addresses).
     The created customer can be referenced later when creating orders and other resources.
+  
   security:
     - bearerAuth: []
 
@@ -15,19 +16,19 @@ post:
     $ref: ../../requestBodies/customers/customer.yml
 
   responses:
-    "200":
+    200:
       description: Customer created successfully
       content:
         application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/customers/customer_response.yml
-    "401":
+    401:
       $ref: ../errors/401.yml
-    "402":
+    402:
       $ref: ../errors/402.yml
-    "422":
+    422:
       $ref: ../errors/422.yml
-    "500":
+    500:
       $ref: ../errors/500.yml
 
   parameters:
@@ -43,15 +44,13 @@ get:
     Returns a paginated list of customers for the authenticated company.
 
     Use the [search] parameter to filter results.
-
-    Monetary fields are returned as arrays of amounts grouped by currency.
     
   security:
     - bearerAuth: []
 
   responses:
-    "200":
-      description: Successful operation
+    200:
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
@@ -67,13 +66,13 @@ get:
                     type: array
                     items:
                       $ref: ../../schemas/customers/customer_response.yml
-    "401":
+    401:
       $ref: ../errors/401.yml
-    "402":
+    402:
       $ref: ../errors/402.yml
-    "422":
+    422:
       $ref: ../errors/422.yml
-    "500":
+    500:
       $ref: ../errors/500.yml
 
   parameters:
