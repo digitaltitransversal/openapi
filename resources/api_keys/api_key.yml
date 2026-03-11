@@ -10,17 +10,17 @@ get:
     - bearerAuth: []
 
   responses:
-    "200":
-      description: successful
+    200:
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
             $ref: "../../schemas/api_keys/api_key_response.yml"
-    "401":
+    401:
       $ref: "../errors/401.yml"
-    "404":
+    404:
       $ref: "../errors/404.yml"
-    "500":
+    500:
       $ref: "../errors/500.yml"
 
   parameters:
@@ -42,7 +42,6 @@ put:
     - bearerAuth: []
 
   requestBody:
-    required: true
     content:
       application/json:
         schema:
@@ -59,19 +58,19 @@ put:
               description: A name or brief explanation of what this API key is used for.
 
   responses:
-    "200":
+    200:
       description: successful operation
       content:
-        application/json:
+        application/vnd.app-v2.2.0+json:
           schema:
             $ref: ../../schemas/api_keys/api_key_response.yml
-    "401":
+    401:
       $ref: "../errors/401.yml"
-    "404":
+    404:
       $ref: "../errors/404.yml"
-    "422":
+    422:
       $ref: "../errors/422.yml"
-    "500":
+    500:
       $ref: "../errors/500.yml"
 
   parameters:
@@ -90,8 +89,8 @@ delete:
     - bearerAuth: []
 
   responses:
-    "200":
-      description: successful
+    200:
+      description: successful operation
       content:
         application/vnd.app-v2.2.0+json:
           schema:
@@ -103,13 +102,13 @@ delete:
                   deleted:
                     type: boolean
                     example: true
-    "401":
+    401:
       $ref: "../errors/401.yml"
-    "404":
+    404:
       $ref: "../errors/404.yml"
-    "422":
+    422:
       $ref: "../errors/422.yml"
-    "500":
+    500:
       $ref: "../errors/500.yml"
 
   parameters:
