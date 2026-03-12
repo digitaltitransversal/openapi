@@ -9157,29 +9157,20 @@ components:
       description: Log model representing a recorded request/response cycle for troubleshooting
         and auditing.
       properties:
-        id:
-          example: 6307a60c41de27127515a575
-          type: string
-        object:
-          enum:
-          - log
-          example: log
-          type: string
         created_at:
           example: 1661445644
           format: int64
           type: integer
-        updated_at:
-          example: 2022-08-25T16:40:44.887Z
-          format: date-time
+        id:
+          example: 6307a60c41de27127515a575
           type: string
-        livemode:
-          example: true
-          type: boolean
         ip_address:
           example: 54.235.131.48
           format: ipv4
           type: string
+        livemode:
+          example: true
+          type: boolean
         loggable_id:
           example: ord_87632467832
           nullable: true
@@ -9191,32 +9182,37 @@ components:
         method:
           example: POST
           type: string
-        url:
-          example: /filter_resource
-          type: string
-        related:
-          example: FilterResource
-          type: string
-        version:
-          example: 2.2.0
-          type: string
-        user_account_id:
-          example: 5a0b7001edbb6e1725b0b2c6
-          nullable: true
-          type: string
         oauth_token_id:
           nullable: true
-          type: string
-          example: null
-        status:
-          example: "200"
           type: string
         query_string:
           additionalProperties: true
           example:
             amount: 3000
             payable: true
-          nullable: true
+          type: object
+        related:
+          example: FilterResource
+          type: string
+        request_body:
+          example:
+            filters:
+              amount:
+                amount_from: 0
+                amount_to: 0
+              created_at:
+                date_from: 1653627600
+                date_to: 1661489999
+              filterName: Payments
+              search_term: null
+              sort_by: created_at
+              sort_direction: desc
+              status: []
+              type: []
+            id: 78e65162-0f37-4942-847c-9bf7081d54c2
+            page: "0"
+            report_type: charges
+            testMode: false
           type: object
         request_headers:
           additionalProperties:
@@ -9226,7 +9222,8 @@ components:
             Accept-Language: "es-419, es; q=0.9, en; q=0.8"
             Activitypermission: orders:read
             Apiversion: 2.1.0
-          nullable: true
+          type: object
+        response_body:
           type: object
         response_headers:
           additionalProperties:
@@ -9253,28 +9250,6 @@ components:
             X-Permitted-Cross-Domain-Policies: none
             X-XSS-Protection: 1; mode=block
           type: object
-        request_body:
-          example:
-            filters:
-              amount:
-                amount_from: 0
-                amount_to: 0
-              created_at:
-                date_from: 1653627600
-                date_to: 1661489999
-              filterName: Payments
-              search_term: null
-              sort_by: created_at
-              sort_direction: desc
-              status: []
-              type: []
-            id: 78e65162-0f37-4942-847c-9bf7081d54c2
-            page: "0"
-            report_type: charges
-            testMode: false
-          type: object
-        response_body:
-          type: object
         searchable_tags:
           example:
           - 6307a60c41de27127515a575
@@ -9282,6 +9257,21 @@ components:
           items:
             type: string
           type: array
+        status:
+          example: "200"
+          type: string
+        updated_at:
+          example: 2022-08-25T16:40:44.887Z
+          type: string
+        url:
+          example: /filter_resource
+          type: string
+        user_account_id:
+          example: 5a0b7001edbb6e1725b0b2c6
+          type: string
+        version:
+          example: 2.1.0
+          type: string
       required:
       - created_at
       - id
