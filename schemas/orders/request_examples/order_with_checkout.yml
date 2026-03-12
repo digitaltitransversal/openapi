@@ -17,12 +17,11 @@ value:
     type: "HostedPayment"
     name: "ord-devtest-001"
     allowed_payment_methods:
-      - "cash"
+    - "[cash]"
     success_url: "https://example.com/success"
     failure_url: "https://example.com/failure"
     starts_at: 1767892421
-    expires_at: 1768111199
-    can_not_expire: false
+    can_not_expire: true
     is_redirect_on_failure: true
     redirection_time: 15
 
@@ -62,8 +61,6 @@ value:
       description: "testing"
       metadata:
         additionalProp1: {}
-        additionalProp2: {}
-        additionalProp3: {}
 
   metadata:
     additionalProp1: "string"

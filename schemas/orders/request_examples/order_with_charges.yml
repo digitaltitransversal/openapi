@@ -14,5 +14,4 @@ value:
     - amount: 40000
       payment_method:
         type: "cash"
-        can_not_expire: true
       reference_id: "test-reference-id-001"

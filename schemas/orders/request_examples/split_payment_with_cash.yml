@@ -17,12 +17,9 @@ value:
     - amount: 10000
       payment_method:
         type: cash
-        can_not_expire: true
     - amount: 10000
       payment_method:
         type: cash
-        can_not_expire: true
     - amount: 10000
       payment_method:
         type: cash
-        can_not_expire: true
