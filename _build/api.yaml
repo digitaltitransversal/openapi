@@ -2906,7 +2906,7 @@ paths:
             application/vnd.app-v2.2.0+json:
               schema:
                 $ref: '#/components/schemas/logs_response'
-          description: successful
+          description: successful operation
         "401":
           content:
             application/vnd.app-v2.2.0+json:
@@ -7971,7 +7971,6 @@ components:
         - amount: 100000
           payment_method:
             type: partial_cash
-            can_not_expire: true
             partialities: 10
             total_amount: 100000
             min_amount: 10000
@@ -7993,8 +7992,6 @@ components:
           - cash
           success_url: https://example.com/success
           failure_url: https://example.com/failure
-          starts_at: 1767892421
-          can_not_expire: true
           redirection_time: 15
     split_payment_with_cash:
       summary: Create an order with split payment (3 cash charges)
@@ -8014,20 +8011,14 @@ components:
           brand: string
         charges:
         - amount: 10000
-          reference_id: ref-001
           payment_method:
             type: cash
-            can_not_expire: true
         - amount: 10000
-          reference_id: ref-002
           payment_method:
             type: cash
-            can_not_expire: true
         - amount: 10000
-          reference_id: ref-003
           payment_method:
             type: cash
-            can_not_expire: true
   parameters:
     accept_language:
       description: Use for knowing which language to use
@@ -9138,80 +9129,28 @@ components:
       description: Log model representing a recorded request/response cycle for troubleshooting
         and auditing.
       properties:
-        id:
-          example: 696139685c96a70001d67e1a
-          type: string
-        object:
-          enum:
-          - log
-          example: log
-          type: string
-        created_at:
-          example: 1767979368
-          format: int64
-          type: integer
-        livemode:
-          example: true
+        has_more:
+          description: "True, if there are more pages."
+          readOnly: true
           type: boolean
-        method:
-          example: GET
+        object:
+          description: The object type
+          readOnly: true
           type: string
-        url:
-          example: /events
-          type: string
-        status:
-          example: "200"
-          type: string
-        version:
-          example: 2.1.0
-          type: string
-        ip_address:
-          example: 54.86.50.139
-          format: ipv4
-          type: string
-        related:
-          example: Event
-          type: string
-        query_string:
-          additionalProperties: true
-          example:
-            limit: "20"
+        next_page_url:
+          description: URL of the next page.
           nullable: true
-          type: object
-        request_body:
-          additionalProperties: true
-          example: {}
+          type: string
+        previous_page_url:
+          description: Url of the previous page.
           nullable: true
-          type: object
-        response_body:
-          additionalProperties: true
-          nullable: true
-          type: object
-        request_headers:
-          additionalProperties:
-            type: string
-          nullable: true
-          type: object
-        response_headers:
-          additionalProperties:
-            type: string
-          nullable: true
-          type: object
-        searchable_tags:
+          type: string
+        data:
+          description: set to page results.
           items:
-            type: string
+            $ref: '#/components/schemas/logs_response_data'
+          nullable: true
           type: array
-      required:
-      - created_at
-      - id
-      - ip_address
-      - livemode
-      - method
-      - object
-      - related
-      - status
-      - url
-      - version
       title: log_response
       type: object
     log_response:
@@ -9282,20 +9221,59 @@ components:
         request_headers:
           additionalProperties:
             type: string
+          example:
+            Accept-Encoding: "gzip, deflate, br"
+            Accept-Language: "es-419, es; q=0.9, en; q=0.8"
+            Activitypermission: orders:read
+            Apiversion: 2.1.0
           nullable: true
           type: object
         response_headers:
           additionalProperties:
             type: string
-          nullable: true
+          example:
+            Access-Control-Allow-Headers: "Content-Type, Depth, User-Agent, X-File-Size,\
+              \ X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control, X-Prototype-Version,\
+              \ Authorization, Accept, Date, Version, X-Forwarded-For, Host, Connection,\
+              \ X-Forwarded-Proto, X-Forwarded-Port, X-Amzn-Trace-Id, Accept-Encoding,\
+              \ Accept-Language, Referer, Origin, Activitypermission, Apiversion,\
+              \ Entityid, Livemode, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform,\
+              \ Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, X-Datadog-Parent-Id,\
+              \ X-Datadog-Sampling-Priority, X-Datadog-Trace-Id, X-Forwarded-Host,\
+              \ X-Forwarded-Server, X-Real-Ip"
+            Access-Control-Allow-Methods: "POST, GET, PUT, OPTIONS"
+            Access-Control-Allow-Origin: '*'
+            Access-Control-Max-Age: "1728000"
+            Content-Type: application/json; charset=utf-8
+            Referrer-Policy: strict-origin-when-cross-origin
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Frame-Options: SAMEORIGIN
+            X-Permitted-Cross-Domain-Policies: none
+            X-XSS-Protection: 1; mode=block
           type: object
         request_body:
-          additionalProperties: true
-          nullable: true
+          example:
+            filters:
+              amount:
+                amount_from: 0
+                amount_to: 0
+              created_at:
+                date_from: 1653627600
+                date_to: 1661489999
+              filterName: Payments
+              search_term: null
+              sort_by: created_at
+              sort_direction: desc
+              status: []
+              type: []
+            id: 78e65162-0f37-4942-847c-9bf7081d54c2
+            page: "0"
+            report_type: charges
+            testMode: false
           type: object
         response_body:
-          additionalProperties: true
-          nullable: true
           type: object
         searchable_tags:
           example:
@@ -9308,7 +9286,6 @@ components:
       - created_at
       - id
       - livemode
-      - object
       title: log_response
       type: object
     orders_response:
@@ -11849,6 +11826,125 @@ components:
       - last_http_response_status
       - url
       title: WebhookLog
+      type: object
+    logs_response_data:
+      properties:
+        created_at:
+          example: 1661445644
+          format: int64
+          type: integer
+        id:
+          example: 6307a60c41de27127515a575
+          type: string
+        ip_address:
+          example: 54.235.131.48
+          format: ipv4
+          type: string
+        livemode:
+          example: true
+          type: boolean
+        loggable_id:
+          example: ord_87632467832
+          nullable: true
+          type: string
+        loggable_type:
+          example: order
+          nullable: true
+          type: string
+        method:
+          example: POST
+          type: string
+        oauth_token_id:
+          nullable: true
+          type: string
+        query_string:
+          additionalProperties: true
+          example:
+            amount: 3000
+            payable: true
+          type: object
+        related:
+          example: FilterResource
+          type: string
+        request_body:
+          example:
+            filters:
+              amount:
+                amount_from: 0
+                amount_to: 0
+              created_at:
+                date_from: 1653627600
+                date_to: 1661489999
+              filterName: Payments
+              search_term: null
+              sort_by: created_at
+              sort_direction: desc
+              status: []
+              type: []
+            id: 78e65162-0f37-4942-847c-9bf7081d54c2
+            page: "0"
+            report_type: charges
+            testMode: false
+          type: object
+        request_headers:
+          additionalProperties:
+            type: string
+          example:
+            Accept-Encoding: "gzip, deflate, br"
+            Accept-Language: "es-419, es; q=0.9, en; q=0.8"
+            Activitypermission: orders:read
+            Apiversion: 2.1.0
+          type: object
+        response_body:
+          type: object
+        response_headers:
+          additionalProperties:
+            type: string
+          example:
+            Access-Control-Allow-Headers: "Content-Type, Depth, User-Agent, X-File-Size,\
+              \ X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control, X-Prototype-Version,\
+              \ Authorization, Accept, Date, Version, X-Forwarded-For, Host, Connection,\
+              \ X-Forwarded-Proto, X-Forwarded-Port, X-Amzn-Trace-Id, Accept-Encoding,\
+              \ Accept-Language, Referer, Origin, Activitypermission, Apiversion,\
+              \ Entityid, Livemode, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform,\
+              \ Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, X-Datadog-Parent-Id,\
+              \ X-Datadog-Sampling-Priority, X-Datadog-Trace-Id, X-Forwarded-Host,\
+              \ X-Forwarded-Server, X-Real-Ip"
+            Access-Control-Allow-Methods: "POST, GET, PUT, OPTIONS"
+            Access-Control-Allow-Origin: '*'
+            Access-Control-Max-Age: "1728000"
+            Content-Type: application/json; charset=utf-8
+            Referrer-Policy: strict-origin-when-cross-origin
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Frame-Options: SAMEORIGIN
+            X-Permitted-Cross-Domain-Policies: none
+            X-XSS-Protection: 1; mode=block
+          type: object
+        searchable_tags:
+          example:
+          - 6307a60c41de27127515a575
+          - 6307a60c41de27127515a571
+          items:
+            type: string
+          type: array
+        status:
+          example: "200"
+          type: string
+        updated_at:
+          example: 2022-08-25T16:40:44.887Z
+          type: string
+        url:
+          example: /filter_resource
+          type: string
+        user_account_id:
+          example: 5a0b7001edbb6e1725b0b2c6
+          type: string
+        version:
+          example: 2.1.0
+          type: string
+      title: logs_response_data
       type: object
     order_response_customer_info:
       allOf:
