@@ -7958,38 +7958,6 @@ components:
           name: DevTest
           email: test@femsa.com
           phone: "5522997233"
-          corporate: false
-        fiscal_entity:
-          tax_id: "1234567890"
-          name: Femsa Inc
-          email: test@gmail.com
-          phone: "525511223344"
-          metadata:
-            test: true
-            company_id: "123"
-          address:
-            street1: Nuevo Leon 254
-            street2: Departamento 404
-            postal_code: "06100"
-            city: Ciudad de Mexico
-            state: Ciudad de Mexico
-            country: MX
-            external_number: "123"
-        shipping_contact:
-          phone: "525511223344"
-          receiver: Marvin Fuller
-          between_streets: Ackerman Crescent
-          metadata:
-            test: true
-            company_id: "123"
-          address:
-            street1: Nuevo Leon 254
-            street2: Departamento 404
-            postal_code: "06100"
-            city: Ciudad de Mexico
-            state: Ciudad de Mexico
-            country: MX
-            residential: true
         line_items:
         - name: Box of Cohiba S1s
           description: string
@@ -7999,23 +7967,14 @@ components:
           tags:
           - string
           brand: string
-          metadata:
-            additionalProp1: string
-            additionalProp2: string
-            additionalProp3: string
         charges:
         - amount: 100000
           payment_method:
             type: partial_cash
-            expires_at: 1767225600
-            min_amount: 10000
+            can_not_expire: true
             partialities: 10
             total_amount: 100000
-            term: weekly
-        metadata:
-          test: true
-          company_id: "123"
-        pre_authorize: false
+            min_amount: 10000
     order_with_checkout:
       summary: Create an order with checkout
       value:
@@ -8024,58 +7983,19 @@ components:
           name: DevTest
           email: test@femsa.com
           phone: "5522997233"
-          corporate: false
         line_items:
         - name: Box of Cohiba S1s
           unit_price: 20000
           quantity: 1
         checkout:
           type: HostedPayment
-          name: ord-devtest-001
           allowed_payment_methods:
-          - "[cash]"
+          - cash
           success_url: https://example.com/success
           failure_url: https://example.com/failure
           starts_at: 1767892421
           can_not_expire: true
-          is_redirect_on_failure: true
           redirection_time: 15
-        channel:
-          checkout_request_id: 51fb2fac-fcab-44ee-802c-dcebae1e2928
-          checkout_request_type: HostedPayment
-          checkout_request_name: ord-devtest-001
-        discount_lines:
-        - amount: 500
-          code: "123"
-          type: loyalty
-        shipping_contact:
-          phone: "525511223344"
-          receiver: Marvin Fuller
-          between_streets: Ackerman Crescent
-          address:
-            street1: Nuevo Leon 254
-            street2: Departamento 404
-            postal_code: "06100"
-            city: Ciudad de Mexico
-            state: Ciudad de Mexico
-            country: mx
-            residential: true
-        shipping_lines:
-        - amount: 100
-          carrier: FEDEX
-          tracking_number: TRACK123
-          method: TRAING
-          metadata:
-            key: value
-        tax_lines:
-        - amount: 100
-          description: testing
-          metadata:
-            additionalProp1: {}
-        metadata:
-          additionalProp1: string
-          additionalProp2: string
-          additionalProp3: string
     split_payment_with_cash:
       summary: Create an order with split payment (3 cash charges)
       value:
@@ -8094,14 +8014,20 @@ components:
           brand: string
         charges:
         - amount: 10000
+          reference_id: ref-001
           payment_method:
             type: cash
+            can_not_expire: true
         - amount: 10000
+          reference_id: ref-002
           payment_method:
             type: cash
+            can_not_expire: true
         - amount: 10000
+          reference_id: ref-003
           payment_method:
             type: cash
+            can_not_expire: true
   parameters:
     accept_language:
       description: Use for knowing which language to use

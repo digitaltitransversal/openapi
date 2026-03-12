@@ -7,40 +7,6 @@ value:
     name: DevTest
     email: test@femsa.com
     phone: "5522997233"
-    corporate: false
-
-  fiscal_entity:
-    tax_id: "1234567890"
-    name: "Femsa Inc"
-    email: "test@gmail.com"
-    phone: "525511223344"
-    metadata:
-      test: true
-      company_id: "123"
-    address:
-      street1: "Nuevo Leon 254"
-      street2: "Departamento 404"
-      postal_code: "06100"
-      city: "Ciudad de Mexico"
-      state: "Ciudad de Mexico"
-      country: "MX"
-      external_number: "123"
-
-  shipping_contact:
-    phone: "525511223344"
-    receiver: "Marvin Fuller"
-    between_streets: "Ackerman Crescent"
-    metadata:
-      test: true
-      company_id: "123"
-    address:
-      street1: "Nuevo Leon 254"
-      street2: "Departamento 404"
-      postal_code: "06100"
-      city: "Ciudad de Mexico"
-      state: "Ciudad de Mexico"
-      country: "MX"
-      residential: true
 
   line_items:
     - name: "Box of Cohiba S1s"
@@ -51,23 +17,12 @@ value:
       tags:
         - "string"
       brand: "string"
-      metadata:
-        additionalProp1: "string"
-        additionalProp2: "string"
-        additionalProp3: "string"
 
   charges:
     - amount: 100000
       payment_method:
         type: "partial_cash"
-        expires_at: 1767225600
-        min_amount: 10000
+        can_not_expire: true
         partialities: 10
         total_amount: 100000
-        term: "weekly"
-
-  metadata:
-    test: true
-    company_id: "123"
-
-  pre_authorize: false
+        min_amount: 10000

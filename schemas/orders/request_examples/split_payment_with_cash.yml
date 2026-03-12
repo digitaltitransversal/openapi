@@ -15,11 +15,17 @@ value:
       brand: string
   charges:
     - amount: 10000
+      reference_id: "ref-001"
       payment_method:
         type: cash
+        can_not_expire: true
     - amount: 10000
+      reference_id: "ref-002"
       payment_method:
         type: cash
+        can_not_expire: true
     - amount: 10000
+      reference_id: "ref-003"
       payment_method:
         type: cash
+        can_not_expire: true
