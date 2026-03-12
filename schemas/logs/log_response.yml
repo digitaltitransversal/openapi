@@ -3,7 +3,6 @@ description: Log model representing a recorded request/response cycle for troubl
 type: object
 required:
   - id
-  - object
   - created_at
   - livemode
 properties:
@@ -88,6 +87,12 @@ properties:
     nullable: true
     additionalProperties:
       type: string
+    example: {
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "es-419, es; q=0.9, en; q=0.8",
+        "Activitypermission": "orders:read",
+        "Apiversion": "2.1.0",
+    }
 
   response_headers:
     type: object
@@ -97,13 +102,50 @@ properties:
 
   request_body:
     type: object
-    nullable: true
-    additionalProperties: true
+    example: {
+      "filters": {
+            "amount": {
+                "amount_from": 0,
+                "amount_to": 0
+            },
+            "created_at": {
+                "date_from": 1653627600,
+                "date_to": 1661489999
+            },
+            "filterName": "Payments",
+            "search_term": null,
+            "sort_by": "created_at",
+            "sort_direction": "desc",
+            "status": [],
+            "type": []
+        },
+        "id": "78e65162-0f37-4942-847c-9bf7081d54c2",
+        "page": "0",
+        "report_type": "charges",
+        "testMode": false
+    }
 
   response_body:
     type: object
-    nullable: true
-    additionalProperties: true
+    
+  response_headers:
+    type: object
+    additionalProperties:
+      type: string
+    example: {
+        "Access-Control-Allow-Headers": "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control, X-Prototype-Version, Authorization, Accept, Date, Version, X-Forwarded-For, Host, Connection, X-Forwarded-Proto, X-Forwarded-Port, X-Amzn-Trace-Id, Accept-Encoding, Accept-Language, Referer, Origin, Activitypermission, Apiversion, Entityid, Livemode, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, X-Datadog-Parent-Id, X-Datadog-Sampling-Priority, X-Datadog-Trace-Id, X-Forwarded-Host, X-Forwarded-Server, X-Real-Ip",
+        "Access-Control-Allow-Methods": "POST, GET, PUT, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Max-Age": "1728000",
+        "Content-Type": "application/json; charset=utf-8",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "X-XSS-Protection": "1; mode=block"
+    }
 
   searchable_tags:
     type: array

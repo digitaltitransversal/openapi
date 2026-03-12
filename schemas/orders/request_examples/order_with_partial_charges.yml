@@ -22,7 +22,6 @@ value:
     - amount: 100000
       payment_method:
         type: "partial_cash"
-        can_not_expire: true
         partialities: 10
         total_amount: 100000
         min_amount: 10000

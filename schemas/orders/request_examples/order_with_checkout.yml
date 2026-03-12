@@ -18,6 +18,4 @@ value:
       - "cash"
     success_url: "https://example.com/success"
     failure_url: "https://example.com/failure"
-    starts_at: 1767892421
-    can_not_expire: true
     redirection_time: 15
