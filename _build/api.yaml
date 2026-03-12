@@ -7946,7 +7946,6 @@ components:
         - amount: 40000
           payment_method:
             type: cash
-            can_not_expire: true
           reference_id: test-reference-id-001
     order_with_partial_charges:
       description: "Allows paying an order in multiple cash partial payments (installments)\
@@ -8034,12 +8033,11 @@ components:
           type: HostedPayment
           name: ord-devtest-001
           allowed_payment_methods:
-          - cash
+          - "[cash]"
           success_url: https://example.com/success
           failure_url: https://example.com/failure
           starts_at: 1767892421
-          expires_at: 1768111199
-          can_not_expire: false
+          can_not_expire: true
           is_redirect_on_failure: true
           redirection_time: 15
         channel:
@@ -8074,8 +8072,6 @@ components:
           description: testing
           metadata:
             additionalProp1: {}
-            additionalProp2: {}
-            additionalProp3: {}
         metadata:
           additionalProp1: string
           additionalProp2: string
@@ -8100,15 +8096,12 @@ components:
         - amount: 10000
           payment_method:
             type: cash
-            can_not_expire: true
         - amount: 10000
           payment_method:
             type: cash
-            can_not_expire: true
         - amount: 10000
           payment_method:
             type: cash
-            can_not_expire: true
   parameters:
     accept_language:
       description: Use for knowing which language to use
