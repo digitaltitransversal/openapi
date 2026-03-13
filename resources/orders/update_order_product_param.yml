@@ -17,7 +17,7 @@ put:
     "200":
       description: Successful operation
       content:
-        application/vnd.app-v2.2.0+json:
+        application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/charges/product_order_response.yml
     "401":
@@ -51,7 +51,7 @@ delete:
     "200":
       description: Successful operation
       content:
-        application/vnd.app-v2.2.0+json:
+        application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/charges/product_order_response.yml
     "401":

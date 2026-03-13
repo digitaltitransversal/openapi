@@ -8,4 +8,4 @@ merge:
 	--skip-validate-spec
 
 update-readme:
-	make merge && rdme openapi _build/api.yaml --version=2.2.0  --key=${README_API_KEY}
+	make merge && rdme openapi _build/api.yaml --version=2.1.0  --key=${README_API_KEY}
