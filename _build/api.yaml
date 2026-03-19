@@ -7407,8 +7407,6 @@ paths:
         required: false
         schema:
           type: string
-      requestBody:
-        $ref: '#/components/requestBodies/webhook'
       responses:
         "200":
           content:
@@ -7416,6 +7414,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/get_webhooks_response'
           description: successful
+          headers:
+            Date:
+              description: The date and time that the response was sent
+              schema:
+                example: "Fri, 03 Feb 2023 16:57:48 GMT"
+                type: string
+            Content-Type:
+              description: The format of the response body
+              schema:
+                example: application/json; charset=utf-8
+                type: string
+            Content-Length:
+              description: The length of the response body in bytes
+              schema:
+                example: "2737"
+                type: string
+            Connection:
+              description: The type of connection used to transfer the response
+              schema:
+                example: keep-alive
+                type: string
         "401":
           content:
             application/vnd.app-v2.1.0+json:
@@ -7449,12 +7468,15 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Get webhooks
+      summary: Get List of Webhooks
       tags:
       - Webhooks
     post:
-      description: Creates a webhook and subscribes it to events so your system can
-        receive notifications when those events occur.
+      description: "What we do at Femsa translates into events. For example, an event\
+        \ of interest to us occurs at the time a payment is successfully processed.\
+        \ At that moment we will be interested in doing several things: Send an email\
+        \ to the buyer, generate an invoice, start the process of shipping the product,\
+        \ etc."
       operationId: createWebhook
       parameters:
       - description: Use for knowing which language to use
@@ -7473,14 +7495,6 @@ paths:
           enum:
           - es
           - en
-          type: string
-      - description: "In the case of a holding company, the company id of the child\
-          \ company to which will process the request."
-        example: 6441b6376b60c3a638da80af
-        in: header
-        name: X-Child-Company-Id
-        required: false
-        schema:
           type: string
       requestBody:
         $ref: '#/components/requestBodies/webhook'
@@ -7524,7 +7538,7 @@ paths:
           description: internal server error
       security:
       - bearerAuth: []
-      summary: Create webhook
+      summary: Create Webhook
       tags:
       - Webhooks
   /webhooks/{id}:
