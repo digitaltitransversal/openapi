@@ -7279,7 +7279,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/vnd.app-v2.1.0+json:
+          application/json:
             schema:
               $ref: '#/components/schemas/webhook_key_update_request'
       responses:
@@ -7289,20 +7289,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/webhook-key_response'
           description: successful operation
-        "401":
-          content:
-            application/vnd.app-v2.1.0+json:
-              example:
-                details:
-                - message: Please include your access key in your request.
-                  param: null
-                  code: femsa.errors.authentication.missing_key
-                log_id: 507f1f77bcf86cd799439011
-                object: error
-                type: authentication_error
-              schema:
-                $ref: '#/components/schemas/error'
-          description: authentication error
         "404":
           content:
             application/vnd.app-v2.1.0+json:
@@ -7319,6 +7305,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
           description: not found entity
+        "401":
+          content:
+            application/vnd.app-v2.1.0+json:
+              example:
+                details:
+                - message: Please include your access key in your request.
+                  param: null
+                  code: femsa.errors.authentication.missing_key
+                log_id: 507f1f77bcf86cd799439011
+                object: error
+                type: authentication_error
+              schema:
+                $ref: '#/components/schemas/error'
+          description: authentication error
         "500":
           content:
             application/vnd.app-v2.1.0+json:
