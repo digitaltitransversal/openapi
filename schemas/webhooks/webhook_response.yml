@@ -1,5 +1,5 @@
 title: webhook_response
-description: webhooks model
+description: Represents a webhook endpoint configured to receive event notifications.
 type: object
 properties:
   deleted:
