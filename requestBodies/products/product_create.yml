@@ -1,6 +1,8 @@
-description: requested field for a product
+description: >-
+  Fields required to create a new product (line item) for an existing order.
+  This request adds a new item to the order.
 content:
   application/json:
-    schema:  
-      $ref: '../../schemas/orders/product.yml'
+    schema:
+      $ref: ../../schemas/orders/product.yml
 required: true
