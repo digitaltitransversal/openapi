@@ -7938,6 +7938,7 @@ components:
             partialities: 10
             total_amount: 100000
             min_amount: 10000
+            expires_at: 1761436800
     order_with_checkout:
       summary: Create an order with checkout
       value:
@@ -7957,32 +7958,6 @@ components:
           success_url: https://example.com/success
           failure_url: https://example.com/failure
           redirection_time: 15
-    split_payment_with_cash:
-      summary: Create an order with split payment (3 cash charges)
-      value:
-        currency: MXN
-        customer_info:
-          name: DevTest
-          email: test@femsa.com
-          phone: "5522997233"
-          corporate: false
-        line_items:
-        - description: string
-          sku: string
-          name: Box of Cohiba S1s
-          unit_price: 10000
-          quantity: 3
-          brand: string
-        charges:
-        - amount: 10000
-          payment_method:
-            type: cash
-        - amount: 10000
-          payment_method:
-            type: cash
-        - amount: 10000
-          payment_method:
-            type: cash
   parameters:
     accept_language:
       description: Use for knowing which language to use
@@ -8245,8 +8220,6 @@ components:
               $ref: '#/components/examples/order_with_partial_charges'
             order_with_checkout:
               $ref: '#/components/examples/order_with_checkout'
-            split_payment_with_3_cash_charges:
-              $ref: '#/components/examples/split_payment_with_cash'
           schema:
             $ref: '#/components/schemas/order_request'
       description: requested field for order
@@ -8877,15 +8850,6 @@ components:
           description: Custom reference
           example: custom_reference
           type: string
-        referrer:
-          description: Referrer information (if available)
-          nullable: true
-          type: string
-        vertical_info:
-          additionalProperties: true
-          description: Vertical-specific information (shape depends on integration)
-          nullable: true
-          type: object
         default_fiscal_entity_id:
           example: fis_ent_2tKqqAfqPi21oCmEJ
           nullable: true
@@ -9890,13 +9854,6 @@ components:
         custom_reference:
           description: Merchant-defined reference used to identify the customer in
             your system.
-          example: customer_123
-          nullable: true
-          type: string
-        referrer:
-          description: Referrer value (if applicable).
-          example: my_platform
-          nullable: true
           type: string
         metadata:
           additionalProperties: true
@@ -9928,7 +9885,7 @@ components:
       properties:
         name:
           description: Customer's name.
-          example: miguel
+          example: Miguel
           type: string
         email:
           description: Customer email address.
@@ -9937,46 +9894,37 @@ components:
           type: string
         phone:
           description: Customer phone number.
-          example: "+5215555555555"
+          example: "5215555555555"
           type: string
         corporate:
-          default: false
-          description: Indicates whether the customer email is corporate.
-          example: false
+          description: True if the customer represents a company.
           type: boolean
         custom_reference:
           description: Merchant-defined reference used to identify the customer in
             your system.
           example: customer_123
           type: string
-        referrer:
-          description: Referrer value (if applicable).
-          example: my_platform
-          type: string
         metadata:
           additionalProperties: true
           description: Arbitrary metadata associated with the customer.
           type: object
         payment_sources:
-          description: Contains details of the payment methods that the customer has
-            active or has used in Femsa
+          description: Customer payment sources to create/attach (offline recurrent
+            references).
           items:
             $ref: '#/components/schemas/customer_payment_methods_request'
           type: array
         default_payment_source_id:
           description: Sets the default payment source for the customer (must be an
             existing payment source on the customer).
-          example: src_1a2b3c4d5e6f7g8h
           type: string
         default_fiscal_entity_id:
           description: Sets the default fiscal entity for the customer (must be an
             existing fiscal entity on the customer).
-          example: fe_1a2b3c4d5e6f7g8h
           type: string
         default_shipping_contact_id:
           description: Sets the default shipping contact for the customer (must be
             an existing shipping contact on the customer).
-          example: ship_cont_1a2b3c4d5e6f7g8h
           type: string
       title: customer_update_request
       type: object
@@ -10049,6 +9997,19 @@ components:
     order_request:
       description: a order
       properties:
+        currency:
+          description: Currency with which the payment will be made.
+          example: MXN
+          maxLength: 3
+          type: string
+        customer_info:
+          $ref: '#/components/schemas/order_request_customer_info'
+        line_items:
+          description: "List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct)\
+            \ that are sold in the order. You must have at least one product."
+          items:
+            $ref: '#/components/schemas/product'
+          type: array
         charges:
           description: "List of [charges](https://developers.digitalfemsa.io/reference/orderscreatecharge)\
             \ that are applied to the order"
@@ -10057,42 +10018,22 @@ components:
           type: array
         checkout:
           $ref: '#/components/schemas/checkout_request'
-        currency:
-          description: "Currency with which the payment will be made. It uses the\
-            \ 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)"
-          example: MXN
-          maxLength: 3
-          type: string
-        customer_info:
-          $ref: '#/components/schemas/order_request_customer_info'
         discount_lines:
           description: "List of [discounts](https://developers.digitalfemsa.io/reference/orderscreatediscountline)\
             \ that are applied to the order. You must have at least one discount."
           items:
             $ref: '#/components/schemas/order_discount_lines_request'
           type: array
-        fiscal_entity:
-          $ref: '#/components/schemas/order_fiscal_entity_request'
-        line_items:
-          description: "List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct)\
-            \ that are sold in the order. You must have at least one product."
+        tax_lines:
+          description: "List of [taxes](https://developers.digitalfemsa.io/reference/orderscreatetaxes)\
+            \ that are applied to the order."
           items:
-            $ref: '#/components/schemas/product'
+            $ref: '#/components/schemas/order_tax_request'
           type: array
-        metadata:
-          additionalProperties: true
-          description: Metadata associated with the order
-          maxProperties: 100
-          type: object
         needs_shipping_contact:
           description: Allows you to fill out the shipping information at checkout
           example: false
           type: boolean
-        processing_mode:
-          description: "Indicates the processing mode for the order, either ecommerce,\
-            \ recurrent or validation."
-          example: ecommerce
-          type: string
         shipping_contact:
           $ref: '#/components/schemas/customer_shipping_contacts'
         shipping_lines:
@@ -10101,12 +10042,21 @@ components:
           items:
             $ref: '#/components/schemas/shipping_request'
           type: array
-        tax_lines:
-          description: "List of [taxes](https://developers.digitalfemsa.io/reference/orderscreatetaxes)\
-            \ that are applied to the order."
-          items:
-            $ref: '#/components/schemas/order_tax_request'
-          type: array
+        fiscal_entity:
+          $ref: '#/components/schemas/order_fiscal_entity_request'
+        processing_mode:
+          description: "Indicates the processing mode for the order, either ecommerce,\
+            \ recurrent or validation."
+          example: ecommerce
+          type: string
+        metadata:
+          additionalProperties: true
+          description: "Arbitrary key-value data that you can attach to the order\
+            \ for your internal use (e.g. `customer_segment`, `sales_channel`, `internal_order_id`).\
+            \ It is not used for payment processing or fraud decisions. Keys should\
+            \ be strings; values can be any JSON value."
+          maxProperties: 100
+          type: object
       required:
       - currency
       - customer_info
@@ -10116,42 +10066,38 @@ components:
     order_update_request:
       description: Order update payload. Only supported fields can be modified.
       properties:
-        charges:
-          items:
-            $ref: '#/components/schemas/charge_request'
-          type: array
-        checkout:
-          $ref: '#/components/schemas/checkout_request'
         currency:
-          description: "Currency with which the payment will be made. It uses the\
-            \ 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)"
+          description: Currency code in ISO 4217 (3-letter uppercase).
           example: MXN
           maxLength: 3
           type: string
         customer_info:
           $ref: '#/components/schemas/order_update_request_customer_info'
-        discount_lines:
-          description: "List of [discounts](https://developers.femsa.com/v2.1.0/reference/orderscreatediscountline)\
-            \ that are applied to the order. You must have at least one discount."
-          items:
-            $ref: '#/components/schemas/order_discount_lines_request'
-          type: array
-        fiscal_entity:
-          $ref: '#/components/schemas/order_update_fiscal_entity_request'
         line_items:
           description: "List of [products](https://developers.femsa.com/v2.1.0/reference/orderscreateproduct)\
             \ that are sold in the order. You must have at least one product."
           items:
             $ref: '#/components/schemas/product'
           type: array
-        metadata:
-          additionalProperties:
-            type: string
-          type: object
-        pre_authorize:
-          default: false
-          description: Indicates whether the order charges must be preauthorized
-          type: boolean
+        charges:
+          items:
+            $ref: '#/components/schemas/charge_request'
+          type: array
+        discount_lines:
+          description: "List of [discounts](https://developers.femsa.com/v2.1.0/reference/orderscreatediscountline)\
+            \ that are applied to the order. You must have at least one discount."
+          items:
+            $ref: '#/components/schemas/order_discount_lines_request'
+          type: array
+        tax_lines:
+          items:
+            $ref: '#/components/schemas/order_tax_request'
+          type: array
+        shipping_contact_id:
+          description: Existing shipping contact id from the customer to link to this
+            order.
+          nullable: true
+          type: string
         shipping_contact:
           $ref: '#/components/schemas/customer_shipping_contacts'
         shipping_lines:
@@ -10160,36 +10106,40 @@ components:
           items:
             $ref: '#/components/schemas/shipping_request'
           type: array
-        tax_lines:
-          items:
-            $ref: '#/components/schemas/order_tax_request'
-          type: array
+        fiscal_entity_id:
+          description: Existing fiscal entity id from the customer to link to this
+            order.
+          nullable: true
+          type: string
+        fiscal_entity:
+          $ref: '#/components/schemas/order_update_fiscal_entity_request'
+        return_url:
+          description: URL where the customer should be redirected after completing
+            a payment flow (if applicable).
+          type: string
+        metadata:
+          additionalProperties: true
+          description: |
+            Arbitrary key-value data that you can attach to the order for your internal use. It is not used for payment processing. Keys should be strings; values can be any JSON value.
+          maxProperties: 100
+          type: object
+        status:
+          description: Order status update (only allowed transitions will be accepted).
+          type: string
       title: order_update
       type: object
     product:
       properties:
-        brand:
-          description: The brand of the item.
-          example: Cohiba
-          type: string
-        description:
-          description: Short description of the item
-          example: Imported From Mex.
-          maxLength: 250
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: It is a key/value hash that can hold custom fields. Maximum
-            100 elements and allows special characters.
-          example:
-            key: value
-          maxProperties: 100
-          type: object
         name:
           description: The name of the item. It will be displayed in the order.
-          example: Box of Cohiba S1s
+          example: Box of Cohiba
           type: string
+        unit_price:
+          description: The price of the item in cents.
+          example: 20000
+          format: int32
+          minimum: 0
+          type: integer
         quantity:
           description: The quantity of the item in the order.
           example: 1
@@ -10201,21 +10151,32 @@ components:
             the item in the order.
           example: XYZ12345
           type: string
+        brand:
+          description: The brand of the item.
+          example: Cohiba
+          type: string
+        description:
+          description: Short description of the item
+          example: Imported From Mex.
+          maxLength: 250
+          type: string
         tags:
           description: List of tags for the item. It is used to identify the item
             in the order.
-          example:
-          - food
-          - mexican food
           items:
+            maxLength: 249
+            minLength: 2
             type: string
+          minItems: 1
           type: array
-        unit_price:
-          description: The price of the item in cents.
-          example: 20000
-          format: int32
-          minimum: 0
-          type: integer
+        metadata:
+          additionalProperties: true
+          description: |
+            Arbitrary key-value data for your internal use. Keys should be strings; values can be any JSON value.
+          example:
+            key: value
+          maxProperties: 100
+          type: object
       required:
       - name
       - quantity
@@ -10224,11 +10185,6 @@ components:
       type: object
     update_product:
       properties:
-        description:
-          maxLength: 250
-          type: string
-        sku:
-          type: string
         name:
           example: Box of Cohiba S1s
           type: string
@@ -10242,15 +10198,23 @@ components:
           format: int32
           minimum: 1
           type: integer
-        tags:
-          items:
-            type: string
-          type: array
+        sku:
+          type: string
         brand:
           type: string
-        metadata:
-          additionalProperties:
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          items:
+            maxLength: 249
+            minLength: 2
             type: string
+          minItems: 1
+          type: array
+        metadata:
+          additionalProperties: true
+          maxProperties: 100
           type: object
       title: update_product
       type: object
@@ -10767,6 +10731,37 @@ components:
       - object
       - type
       type: object
+    customer_info:
+      properties:
+        customer_id:
+          example: cus_23874283647
+          type: string
+        name:
+          example: DevTest
+          type: string
+        email:
+          example: test@femsa.com
+          format: email
+          type: string
+        phone:
+          example: "5522997233"
+          type: string
+        corporate:
+          type: boolean
+      required:
+      - email
+      - name
+      title: customer_info
+      type: object
+    customer_info_just_customer_id:
+      properties:
+        customer_id:
+          example: cus_23874283647
+          type: string
+      required:
+      - customer_id
+      title: customer_info_customer_id
+      type: object
     checkout_request:
       description: |
         [Checkout](https://developers.digitalfemsa.io/docs/checkout-redireccionado) details
@@ -10803,37 +10798,6 @@ components:
       required:
       - allowed_payment_methods
       title: order_checkout_request
-      type: object
-    customer_info:
-      properties:
-        customer_id:
-          example: cus_23874283647
-          type: string
-        name:
-          example: DevTest
-          type: string
-        email:
-          example: test@femsa.com
-          format: email
-          type: string
-        phone:
-          example: "5522997233"
-          type: string
-        corporate:
-          type: boolean
-      required:
-      - email
-      - name
-      title: customer_info
-      type: object
-    customer_info_just_customer_id:
-      properties:
-        customer_id:
-          example: cus_23874283647
-          type: string
-      required:
-      - customer_id
-      title: customer_info_customer_id
       type: object
     customer_payment_method_request:
       description: Payment method data to attach to a customer.
@@ -11935,7 +11899,6 @@ components:
           $ref: '#/components/schemas/fiscal_entity_address'
         email:
           description: Email of the fiscal entity
-          example: test@gmail.com
           type: string
         metadata:
           additionalProperties: true
@@ -11944,16 +11907,13 @@ components:
           type: object
         name:
           description: Name of the fiscal entity
-          example: Femsa Inc
           nullable: true
           type: string
         phone:
           description: Phone of the fiscal entity
-          example: "+525511223344"
           type: string
         tax_id:
           description: Tax ID of the fiscal entity
-          example: AAA010101AAA
           nullable: true
           type: string
       required:
@@ -11981,7 +11941,8 @@ components:
           type: string
         metadata:
           additionalProperties: true
-          description: Metadata associated with the fiscal entity
+          description: |
+            Arbitrary key-value data associated with the fiscal entity for your internal use. Keys should be strings; values can be any JSON value.
           maxProperties: 100
           type: object
         phone:
