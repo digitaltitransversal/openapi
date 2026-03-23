@@ -10,6 +10,4 @@ content:
         $ref: '../../schemas/orders/request_examples/order_with_partial_charges.yml'
       order_with_checkout:
         $ref: '../../schemas/orders/request_examples/order_with_checkout.yml'
-      split_payment_with_3_cash_charges:
-        $ref: '../../schemas/orders/request_examples/split_payment_with_cash.yml'
 required: true

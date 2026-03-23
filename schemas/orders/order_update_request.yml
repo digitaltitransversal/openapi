@@ -2,27 +2,58 @@ title: order_update
 description: Order update payload. Only supported fields can be modified.
 type: object
 properties:
-  charges:
-    type: array
-    items:
-      $ref: ../../schemas/charges/charge_request.yml
-  checkout:
-    $ref: ../../schemas/checkouts/checkout_request.yml
   currency:
     type: string
-    description: >-
-       Currency with which the payment will be made. It uses the 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)
-    example:  "MXN"
+    description: Currency code in ISO 4217 (3-letter uppercase).
+    example: "MXN"
     maxLength: 3
+
   customer_info:
     oneOf:
       - $ref: ../customers/customer_info.yml
       - $ref: ../customers/customer_info_just_customer_id.yml
+
+  line_items:
+    description: "List of [products](https://developers.femsa.com/v2.1.0/reference/orderscreateproduct) that are sold in the order. You must have at least one product."
+    type: array
+    items:
+      $ref: product.yml
+
+  charges:
+    type: array
+    items:
+      $ref: ../../schemas/charges/charge_request.yml
+
   discount_lines:
     description: "List of [discounts](https://developers.femsa.com/v2.1.0/reference/orderscreatediscountline) that are applied to the order. You must have at least one discount."
     type: array
     items:
       $ref: order_discount_lines_request.yml
+
+  tax_lines:
+    type: array
+    items:
+      $ref: order_tax_request.yml
+
+  shipping_contact_id:
+    type: string
+    nullable: true
+    description: "Existing shipping contact id from the customer to link to this order."
+
+  shipping_contact:
+    $ref: ../../schemas/customers/customer_shipping_contacts.yml
+
+  shipping_lines:
+    type: array
+    description: "List of [shipping costs](https://developers.femsa.com/v2.1.0/reference/orderscreateshipping). If the online store offers digital products."
+    items:
+      $ref: ../../schemas/orders/shipping_request.yml
+
+  fiscal_entity_id:
+    type: string
+    nullable: true
+    description: "Existing fiscal entity id from the customer to link to this order."
+
   fiscal_entity:
     title: order_update_fiscal_entity_request
     type: object
@@ -30,7 +61,7 @@ properties:
     required:
       - address
     properties:
-      address: 
+      address:
         $ref: fiscal_entity_address.yml
       email:
         type: string
@@ -45,7 +76,9 @@ properties:
         type: object
         additionalProperties: true
         maxProperties: 100
-        description: "Metadata associated with the fiscal entity"
+        description: >
+          Arbitrary key-value data associated with the fiscal entity for your internal use.
+          Keys should be strings; values can be any JSON value.
       phone:
         type: string
         example: "+525511223344"
@@ -55,27 +88,19 @@ properties:
         example: "AAA010101AAA"
         nullable: true
         description: "Tax ID of the fiscal entity"
-  line_items:
-    description: "List of [products](https://developers.femsa.com/v2.1.0/reference/orderscreateproduct) that are sold in the order. You must have at least one product."
-    type: array
-    items:
-       $ref: product.yml
+
+  return_url:
+    type: string
+    description: "URL where the customer should be redirected after completing a payment flow (if applicable)."
+
   metadata:
     type: object
-    additionalProperties:
-      type: string
-  pre_authorize:
-    type: boolean
-    description: "Indicates whether the order charges must be preauthorized"
-    default: false
-  shipping_contact:
-    $ref: ../../schemas/customers/customer_shipping_contacts.yml
-  shipping_lines:
-    type: array
-    description: "List of [shipping costs](https://developers.femsa.com/v2.1.0/reference/orderscreateshipping). If the online store offers digital products."
-    items:
-      $ref: ../../schemas/orders/shipping_request.yml
-  tax_lines:
-    type: array
-    items:
-      $ref: order_tax_request.yml
+    additionalProperties: true
+    maxProperties: 100
+    description: >
+      Arbitrary key-value data that you can attach to the order for your internal use.
+      It is not used for payment processing. Keys should be strings; values can be any JSON value.
+
+  status:
+    type: string
+    description: "Order status update (only allowed transitions will be accepted)."

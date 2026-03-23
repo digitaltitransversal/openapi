@@ -25,3 +25,4 @@ value:
         partialities: 10
         total_amount: 100000
         min_amount: 10000
+        expires_at: 1761436800
