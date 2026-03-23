@@ -7911,34 +7911,6 @@ components:
           payment_method:
             type: cash
           reference_id: test-reference-id-001
-    order_with_partial_charges:
-      description: "Allows paying an order in multiple cash partial payments (installments)\
-        \ until the total amount is covered (e.g., $1000 MXN in 10 partialities of\
-        \ $100)."
-      summary: Create an order with partial charges
-      value:
-        currency: MXN
-        customer_info:
-          name: DevTest
-          email: test@femsa.com
-          phone: "5522997233"
-        line_items:
-        - name: Box of Cohiba S1s
-          description: string
-          sku: string
-          unit_price: 100000
-          quantity: 1
-          tags:
-          - string
-          brand: string
-        charges:
-        - amount: 100000
-          payment_method:
-            type: partial_cash
-            partialities: 10
-            total_amount: 100000
-            min_amount: 10000
-            expires_at: 1761436800
     order_with_checkout:
       summary: Create an order with checkout
       value:
@@ -8216,8 +8188,6 @@ components:
           examples:
             order_with_charges:
               $ref: '#/components/examples/order_with_charges'
-            order_with_partial_charges:
-              $ref: '#/components/examples/order_with_partial_charges'
             order_with_checkout:
               $ref: '#/components/examples/order_with_checkout'
           schema:
