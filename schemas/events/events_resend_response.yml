@@ -1,5 +1,5 @@
 title: event_webhook_resend_response
-description: event model
+description: Webhook log model returned after resending an event webhook delivery.
 type: object
 properties:
   failed_attempts:
@@ -22,5 +22,5 @@ properties:
     example: {}
   url:
     type: string
-    example: "https://username:password@mockoon.stg.femsa.io/payments-api/cash/merchant_approval"
+    example: "https://example.com/new-webhooks"
     format: uri
