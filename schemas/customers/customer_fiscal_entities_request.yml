@@ -1,20 +1,25 @@
 title: fiscal_entity_request
+type: object
 required:
   - address
 properties:
   address:
     allOf:
       - $ref: ./customer_address.yml
+
   tax_id:
     type: string
-  email:
-    type: string
-  phone:
-    type: string
-  metadata:
-    type: object
-    additionalProperties:
-      type: object
-  company_name:
+
+  name:
     type: string
     example: "Femsa"
+
+  email:
+    type: string
+
+  phone:
+    type: string
+    
+  metadata:
+    type: object
+    additionalProperties: true

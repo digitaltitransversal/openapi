@@ -1,6 +1,6 @@
-description: requested field for taxes 
+description: Request body for updating a tax line.
 content:
   application/json:
-    schema:  
-      $ref: '../../schemas/orders/update_order_tax_request.yml'
+    schema:
+      $ref: ../../schemas/orders/update_order_tax_request.yml
 required: true

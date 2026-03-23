@@ -1,6 +1,6 @@
-description: requested field for customer payment methods    
+description: Request body for updating a customer payment method.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: ../../schemas/customers/update_payment_methods.yml
 required: true

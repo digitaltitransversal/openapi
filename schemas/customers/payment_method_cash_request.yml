@@ -5,5 +5,6 @@ allOf:
     properties:
       expires_at:
         type: integer
-        example: 1553273553
         format: int64
+        description: Expiration date as unix timestamp (seconds).
+        example: 1553273553

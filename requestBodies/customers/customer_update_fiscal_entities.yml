@@ -1,6 +1,6 @@
-description: requested field for customer update fiscal entities
+description: Request body for updating a customer fiscal entity.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: ../../schemas/customers/customer_update_fiscal_entities_request.yml
 required: true

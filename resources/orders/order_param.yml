@@ -2,52 +2,68 @@ get:
   tags:
     - Orders
   operationId: getOrderById
-  description: Info for a specific order
   summary: Get Order
+  description: >-
+    Returns the full details of an Order by its ID. The response follows the
+    standard Order representation, including nested previews (for example
+    `charges`, `line_items`, `shipping_lines`, `tax_lines`, and `discount_lines`)
+    when available.
+  
+  security:
+    - bearerAuth: []
+    
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/orders/order_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 put:
   tags:
     - Orders
   operationId: updateOrder
-  description: Update an existing Order.
-  summary: Update Order
+  summary: Update order
+  description: |
+    Updates an existing order by its ID.
+
+    Orders are the central resource in the API. Updating an order may also update related order sub-resources when they are included in the request payload, according to server-side validations.
+
+    Only fields supported by the API can be modified.
+    
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/orders/order_update.yml
+  
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/orders/order_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/orders/order_update.yml'
+      $ref: '../errors/500.yml'
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'

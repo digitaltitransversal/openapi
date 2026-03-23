@@ -3,7 +3,16 @@ post:
     - Shippings
   operationId: ordersCreateShipping
   summary: Create Shipping
-  description: Create new shipping for an existing orden
+  description: >-
+    Creates a new shipping line for an existing order. The shipping line is added to the
+    order identified by `id`. The response returns the created shipping line.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: '../../requestBodies/shippings/shipping_create.yml'
+
   responses:
     200:
       description: successful
@@ -12,18 +21,17 @@ post:
           schema:
             $ref: ../../schemas/charges/shipping_order_response.yml
           examples:
-            sucessfull:
+            successful:
               $ref: ../../schemas/orders/examples/shipping.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
+    422:
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/shippings/shipping_create.yml'
+      $ref: '../errors/500.yml'
+ 
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'

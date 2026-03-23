@@ -1,6 +1,6 @@
-description: requested field for a taxes  
+description: Request body for creating a tax line.
 content:
   application/json:
-    schema:  
-      $ref: '../../schemas/orders/order_tax_request.yml'
+    schema:
+      $ref: ../../schemas/orders/order_tax_request.yml
 required: true

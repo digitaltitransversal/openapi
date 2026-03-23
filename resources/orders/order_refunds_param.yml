@@ -2,29 +2,38 @@ post:
   tags:
     - Orders
   operationId: orderRefund
-  description: A refunded order describes the items, amount, and reason an order is being refunded.
   summary: Refund Order
+  description: >-
+    Creates a refund for an order. This operation is used to refund a previously
+    paid order (fully or partially, depending on the request body). The API will
+    validate the order and its related charges before processing the refund. If
+    the refund cannot be created due to business rules or state, an error
+    response is returned.
+  
+  security:
+    - bearerAuth: []
+    
+  requestBody:
+    $ref: ../../requestBodies/orders/order_refunds_request.yml
+  
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/orders/order_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     402:
-     $ref: '../errors/402.yml'
+      $ref: '../errors/402.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-   $ref: '../../requestBodies/orders/order_refunds_request.yml'
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'

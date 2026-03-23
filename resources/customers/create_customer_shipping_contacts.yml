@@ -1,28 +1,34 @@
-post: 
+post:
   tags:
     - Shipping Contacts
   operationId: CreateCustomerShippingContacts
-  summary: Create a shipping contacts
-  description: 'Create a shipping contacts for a customer.'
+  summary: Create a shipping contact
+  description: >-
+    Creates a new shipping contact for a customer. The shipping contact is associated
+    with the customer identified by `id`.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/customers/customer_shipping_contacts.yml
+
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/customers/customer_shipping_contacts_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: ../../requestBodies/customers/customer_shipping_contacts.yml
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
