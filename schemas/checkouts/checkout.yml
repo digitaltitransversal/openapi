@@ -30,11 +30,6 @@ properties:
     type: boolean
     example: false
     description:  "This flag allows you to fill in the shipping information at checkout."
-  on_demand_enabled:
-    type: boolean
-    example: true
-    nullable: true
-    description: "This flag allows you to specify if the link will be on demand."
   order_template:
     description: "It maintains the attributes with which the order will be created when receiving a new payment."
     type: object
@@ -65,7 +60,7 @@ properties:
         description: "It is a set of key-value pairs that you can attach to the order. It can be used to store additional information about the order in a structured format."
   payments_limit_count:
     type: integer
-    format: int8
+    format: int32
     example: 5
     description: "It is the number of payments that can be made through the link."
   recurrent:
@@ -76,4 +71,3 @@ properties:
     type: string
     example: "PaymentLink"
     description: "It is the type of link that will be created. It must be a valid type."
-  
