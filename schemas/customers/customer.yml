@@ -59,11 +59,9 @@ properties:
     description: Customer fiscal entities to be created with the customer (optional).
     items:
       $ref: './customer_fiscal_entities_request.yml'
-    nullable: true
 
   shipping_contacts:
     type: array
     description: Customer shipping contacts to be created with the customer (optional).
     items:
-      $ref: '../customers/customer_shipping_contacts.yml'
-    nullable: true
+      $ref: './customer_shipping_contacts.yml'

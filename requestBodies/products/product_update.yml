@@ -4,5 +4,5 @@ description: >-
 content:
   application/json:
     schema:
-      $ref: ../../schemas/orders/update_product.yml
+      $ref: '../../schemas/orders/update_product.yml'
 required: true

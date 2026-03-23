@@ -48,7 +48,7 @@ properties:
       $ref: './balance_common_field.yml'
     
   target_collateral_amount:
-    type: array
+    type: object
     description: Target collateral amount, grouped by currency.
 
   target_retention_amount:
@@ -60,17 +60,5 @@ properties:
   temporarily_retained:
     type: array
     description: Amounts temporarily retained
-    items:
-      $ref: './balance_common_field.yml'
-  
-  target_temporary_retention_amount:
-    type: array
-    description: Target temporary retention amount, grouped by currency.
-    items:
-      $ref: './balance_common_field.yml'
-
-  cashout_retention_debited:
-    type: array
-    description: Cashout retention debited amounts, grouped by currency.
     items:
       $ref: './balance_common_field.yml'

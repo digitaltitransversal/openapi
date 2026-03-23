@@ -21,7 +21,7 @@ post:
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: ../../schemas/customers/customer_response.yml
+            $ref: '../../schemas/customers/customer_response.yml'
     401:
       $ref: ../errors/401.yml
     402:

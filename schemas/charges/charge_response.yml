@@ -79,11 +79,13 @@ properties:
       propertyName: object
       mapping:
         cash_payment: payment_method_cash
+
   reference_id:
     type: string
     description: "Reference ID of the charge"
     example: ref_2tN73UdUSNrYRPD9r
     nullable: true
+    
   refunds:
     type: object
     title: charge_response_refunds

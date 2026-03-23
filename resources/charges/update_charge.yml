@@ -9,7 +9,7 @@ put:
     - bearerAuth: []
   
   requestBody:
-    $ref: "../../requestBodies/charges/charge_update.yml"
+    $ref: '../../requestBodies/charges/charge_update.yml'
   
   responses:
     200:  
@@ -17,7 +17,7 @@ put:
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: "../../schemas/charges/charge_response.yml"
+            $ref: '../../schemas/charges/charge_response.yml'
     422:
       $ref: '../errors/422_whitelist.yml'
     404:

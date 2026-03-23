@@ -2,5 +2,5 @@ description: Webhook update request payload.
 content:
   application/json:
     schema:
-      $ref: ../../schemas/webhooks/webhook_update_request.yml
+      $ref: '../../schemas/webhooks/webhook_update_request.yml'
 required: true

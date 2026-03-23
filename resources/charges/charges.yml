@@ -27,7 +27,7 @@ get:
                   data:
                     type: array
                     items:
-                      $ref: ../../schemas/charges/charge_response.yml
+                      $ref: '../../schemas/charges/charge_response.yml'
     401:
       $ref: '../errors/401.yml'
     422:

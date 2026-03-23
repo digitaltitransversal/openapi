@@ -25,7 +25,7 @@ get:
                   data:
                     type: array
                     items:
-                      $ref: ../../schemas/checkouts/checkout_response.yml
+                      $ref: '../../schemas/checkouts/checkout_response.yml'
     401:
       $ref: '../errors/401.yml'
     402:
@@ -56,7 +56,7 @@ post:
     - bearerAuth: []
   
   requestBody:
-    $ref: ../../requestBodies/checkouts/checkout.yml
+    $ref: '../../requestBodies/checkouts/checkout.yml'
 
   responses:
     200:
@@ -64,7 +64,7 @@ post:
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: ../../schemas/checkouts/checkout_response.yml
+            $ref: '../../schemas/checkouts/checkout_response.yml'
     401:
       $ref: '../errors/401.yml'
     402:

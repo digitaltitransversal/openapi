@@ -17,7 +17,7 @@ get:
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: ../../schemas/balances/balance_response.yml
+            $ref: '../../schemas/balances/balance_response.yml'
     401:
       $ref: '../errors/401.yml'
     402:
