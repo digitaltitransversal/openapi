@@ -1,5 +1,6 @@
 title: charge_update_request
-description: requested field for update a charge
+type: object
+description: Request body to update a charge. Only `reference_id` can be updated.
 properties:
   reference_id:
     type: string

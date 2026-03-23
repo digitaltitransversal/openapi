@@ -3,44 +3,28 @@ put:
     - Charges
   operationId: updateCharge
   summary: Update a charge
+  description: Updates an existing charge. Only `reference_id` can be updated.
+  
+  security:
+    - bearerAuth: []
+  
+  requestBody:
+    $ref: "../../requestBodies/charges/charge_update.yml"
+  
   responses:
-    200:
-      description: successful
+    200:  
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: '../../schemas/charges/charge_response.yml'
-      headers:
-        Date:
-          description: The date and time that the response was sent
-          schema:
-            type: string
-            example: "Fri, 03 Feb 2023 16:57:48 GMT"
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
-        Content-Length:
-          description: The length of the response body in bytes
-          schema:
-            type: string
-            example: "2737"
-        Connection:
-          description: The type of connection used to transfer the response
-          schema:
-            type: string
-            example: "keep-alive"
+            $ref: "../../schemas/charges/charge_response.yml"
     422:
-     $ref: '../errors/422_whitelist.yml'
+      $ref: '../errors/422_whitelist.yml'
     404:
       $ref: '../errors/404.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-   $ref: '../../requestBodies/charges/charge_update.yml'
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
