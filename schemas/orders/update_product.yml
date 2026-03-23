@@ -1,10 +1,6 @@
 type: object
 title: update_product
 properties:
-  antifraud_info:
-    type: object
-    additionalProperties:
-      type: object
   description:
     type: string
     maxLength: 250
@@ -13,7 +9,7 @@ properties:
   name:
     type: string
     example: "Box of Cohiba S1s"
-  unit_price: 
+  unit_price:
     type: integer
     format: int64
     example: 20000

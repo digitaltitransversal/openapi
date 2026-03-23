@@ -3,7 +3,14 @@ post:
     - Discounts
   operationId: ordersCreateDiscountLine
   summary: Create Discount
-  description: Create discount lines for an existing orden
+  description: Create discount lines for an existing order
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/discount_lines/discount_line_create.yml
+    
   responses:
     200:
       description: successful
@@ -12,25 +19,27 @@ post:
           schema:
             $ref: ../../schemas/orders/discount_lines_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/discount_lines/discount_line_create.yml'
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 get:
   tags:
     - Discounts
   operationId: ordersGetDiscountLines
-  summary: Get a List of Discount
-  description: Get discount lines for an existing orden
+  summary: Get a List of Discounts
+  description: Get discount lines for an existing order
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
@@ -46,13 +55,12 @@ get:
                   data:
                     type: array
                     items:
-                      $ref: ../../schemas/orders/discount_lines_response.yml
+                      $ref: '../../schemas/orders/discount_lines_response.yml'
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+      
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'

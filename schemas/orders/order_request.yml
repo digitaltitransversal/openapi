@@ -7,11 +7,13 @@ required:
   - line_items
 properties:
   charges:
-    description: "List of [charges](https://developers.femsa.com/v2.1.0/reference/orderscreatecharge) that are applied to the order"
+    description: "List of [charges](https://developers.digitalfemsa.io/reference/orderscreatecharge) that are applied to the order"
     type: array
     items:
       $ref: ../../schemas/charges/charge_request.yml
+
   checkout:
+    description: Checkout configuration to create/link a checkout for this order. Cannot be sent together with `charges`.
     $ref: ../../schemas/checkouts/checkout_request.yml
   currency:
     type: string
@@ -19,16 +21,18 @@ properties:
        Currency with which the payment will be made. It uses the 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)
     example:  "MXN"
     maxLength: 3
+
   customer_info:
     description: "Customer information"
     oneOf:
       - $ref: ../customers/customer_info.yml
       - $ref: ../customers/customer_info_just_customer_id.yml
   discount_lines:
-    description: "List of [discounts](https://developers.femsa.com/v2.1.0/reference/orderscreatediscountline) that are applied to the order. You must have at least one discount."
+    description: "List of [discounts](https://developers.digitalfemsa.io/reference/orderscreatediscountline) that are applied to the order. You must have at least one discount."
     type: array
     items:
       $ref: order_discount_lines_request.yml
+
   fiscal_entity:
     title: order_fiscal_entity_request
     type: object
@@ -36,7 +40,7 @@ properties:
     required:
       - address
     properties:
-      address: 
+      address:
         $ref: fiscal_entity_address.yml
       email:
         type: string
@@ -61,34 +65,40 @@ properties:
         example: "AAA010101AAA"
         nullable: true
         description: "Tax ID of the fiscal entity"
+
   line_items:
-    description: "List of [products](https://developers.femsa.com/v2.1.0/reference/orderscreateproduct) that are sold in the order. You must have at least one product."
+    description: "List of [products](https://developers.digitalfemsa.io/reference/orderscreateproduct) that are sold in the order. You must have at least one product."
     type: array
     items:
-       $ref: product.yml
+      $ref: product.yml
+
   metadata:
     type: object
     additionalProperties: true
     maxProperties: 100
     description: "Metadata associated with the order"
+
   needs_shipping_contact:
     type: boolean
     example: false
     description: Allows you to fill out the shipping information at checkout
+
   processing_mode:
     type: string
     description: "Indicates the processing mode for the order, either ecommerce, recurrent or validation."
     example: "ecommerce"
+
   shipping_contact:
     $ref: ../../schemas/customers/customer_shipping_contacts.yml
+
   shipping_lines:
-    description: "List of [shipping costs](https://developers.femsa.com/v2.1.0/reference/orderscreateshipping). If the online store offers digital products."
+    description: "List of [shipping costs](https://developers.digitalfemsa.io/reference/orderscreateshipping). If the online store offers digital products."
     type: array
     items:
       $ref: ../../schemas/orders/shipping_request.yml
+
   tax_lines:
-    description: "List of [taxes](https://developers.femsa.com/v2.1.0/reference/orderscreatetaxes) that are applied to the order."
+    description: "List of [taxes](https://developers.digitalfemsa.io/reference/orderscreatetaxes) that are applied to the order."
     type: array
     items:
       $ref: order_tax_request.yml
-  

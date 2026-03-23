@@ -1,5 +1,5 @@
-title: "order_update"
-description: a order
+title: order_update
+description: Order update payload. Only supported fields can be modified.
 type: object
 properties:
   charges:
