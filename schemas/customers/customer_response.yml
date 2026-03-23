@@ -56,17 +56,6 @@ properties:
     example: "custom_reference"
     description: Custom reference
 
-  referrer:
-    type: string
-    nullable: true
-    description: Referrer information (if available)
-
-  vertical_info:
-    type: object
-    nullable: true
-    additionalProperties: true
-    description: Vertical-specific information (shape depends on integration)
-
   default_fiscal_entity_id:
     type: string
     nullable: true

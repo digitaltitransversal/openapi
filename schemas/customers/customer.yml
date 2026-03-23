@@ -32,15 +32,7 @@ properties:
   custom_reference:
     type: string
     description: Merchant-defined reference used to identify the customer in your system.
-    example: "customer_123"
-    nullable: true
   
-  referrer:
-    type: string
-    description: Referrer value (if applicable).
-    example: "my_platform"
-    nullable: true
-
   metadata:
     type: object
     description: Arbitrary metadata associated with the customer.
