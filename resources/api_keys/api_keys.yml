@@ -80,11 +80,11 @@ post:
                       This value is shown only once (when the key is created). Copy and store it securely.
               - $ref: ../../schemas/api_keys/api_key_response.yml
     401:
-      $ref: '../../errors/401.yml'
+      $ref: '../errors/401.yml'
     422:
-      $ref: '../../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-      $ref: '../../errors/500.yml'
+      $ref: '../errors/500.yml'
 
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
