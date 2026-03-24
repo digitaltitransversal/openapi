@@ -3,7 +3,14 @@ put:
     - Discounts
   operationId: ordersUpdateDiscountLines
   summary: Update Discount
-  description: Update an existing discount lines for an existing orden
+  description: Update an existing discount line for an existing order
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: '../../requestBodies/discount_lines/discount_line_update.yml'
+
   responses:
     200:
       description: successful
@@ -12,28 +19,30 @@ put:
           schema:
             $ref: ../../schemas/orders/discount_lines_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/discount_lines/discount_line_update.yml'
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/discount_lines_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 delete:
   tags:
     - Discounts
   operationId: ordersDeleteDiscountLines
   summary: Delete Discount
-  description: Delete an existing discount lines for an existing orden
+  description: Delete an existing discount line for an existing order
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
@@ -42,26 +51,30 @@ delete:
           schema:
             $ref: ../../schemas/orders/discount_lines_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+      
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/discount_lines_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 get:
   tags:
     - Discounts
   operationId: ordersGetDiscountLine
   summary: Get Discount
-  description: Get an existing discount lines for an existing orden
+  description: Get an existing discount line for an existing order
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
@@ -70,15 +83,12 @@ get:
           schema:
             $ref: ../../schemas/orders/discount_lines_response.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
-    422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/404.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/discount_lines_id.yml'

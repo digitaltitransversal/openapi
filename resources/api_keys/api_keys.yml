@@ -2,8 +2,16 @@ get:
   tags:
     - Api Keys
   operationId: getApiKeys
-  summary: Get list of Api Keys
-  description: "Consume the list of api keys you have"
+  summary: List API keys
+  description: |
+    Retrieves a paginated list of API keys for the authenticated account.
+
+    Use the pagination parameters (`limit`, `next_page`, `previous_page`) to navigate through results.
+    Use the `search` query parameter to perform a general search (for example by key `id` or description).
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful
@@ -19,28 +27,21 @@ get:
                   data:
                     type: array
                     items:
-                      $ref: "../../schemas/api_keys/api_key_response.yml"
-      headers:
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
+                      $ref: '../../schemas/api_keys/api_key_response.yml'
     401:
-      $ref: "../errors/401.yml"
+      $ref: '../errors/401.yml'
     500:
-      $ref: "../errors/500.yml"
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+
   parameters:
-    - $ref: "../../parameters/commons/headers/accept_language.yml"
-    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
-    - $ref: "../../parameters/commons/query/limit.yml"
-    - $ref: "../../parameters/commons/query/next_page.yml"
-    - $ref: "../../parameters/commons/query/previous_page.yml"
+    - $ref: '../../parameters/commons/headers/accept_language.yml'
+    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+    - $ref: '../../parameters/commons/query/limit.yml'
+    - $ref: '../../parameters/commons/query/next_page.yml'
+    - $ref: '../../parameters/commons/query/previous_page.yml'
     - description: "General search, e.g. by id, description, prefix"
       in: query
-      name: "search"
+      name: search
       required: false
       schema:
         type: string
@@ -48,8 +49,19 @@ post:
   tags:
     - Api Keys
   operationId: createApiKey
-  summary: Create Api Key
-  description: "Create a api key"
+  summary: Create API key
+  description: |
+    Creates a new API key.
+
+    The response includes an `authentication_token` that is shown only once (at creation time).
+    Copy and store it securely.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/api_keys/api_keys_create.yml
+
   responses:
     200:
       description: successful operation
@@ -63,24 +75,17 @@ post:
                   authentication_token:
                     type: string
                     example: key_rpHzxufNgjFCdprEEFZRTKi
-                    description: It is occupied as a user when authenticated with basic authentication, with a blank password. This value will only appear once, in the request to create a new key. Copy and save it in a safe place.
-              - $ref: "../../schemas/api_keys/api_key_response.yml"
-      headers:
-        Content-Type:
-          description: The format of the response body
-          schema:
-            type: string
-            example: "application/json; charset=utf-8"
+                    description: >
+                      Used as the username for Basic Authentication, with a blank password.
+                      This value is shown only once (when the key is created). Copy and store it securely.
+              - $ref: ../../schemas/api_keys/api_key_response.yml
     401:
-      $ref: "../errors/401.yml"
+      $ref: '../errors/401.yml'
     422:
-      $ref: "../errors/422.yml"
+      $ref: '../errors/422.yml'
     500:
-      $ref: "../errors/500.yml"
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: "../../requestBodies/api_keys/api_keys_create.yml"
+      $ref: '../errors/500.yml'
+
   parameters:
-    - $ref: "../../parameters/commons/headers/accept_language.yml"
-    - $ref: "../../parameters/commons/headers/x_child_company_id.yml"
+    - $ref: '../../parameters/commons/headers/accept_language.yml'
+    - $ref: '../../parameters/commons/headers/x_child_company_id.yml'

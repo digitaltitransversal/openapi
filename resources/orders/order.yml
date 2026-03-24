@@ -3,56 +3,84 @@ post:
     - Orders
   operationId: createOrder
   summary: Create order
-  description: 'Create a new order.'
+  description: |
+    Creates a new order (products + amounts + customer data).
+
+    Minimum required fields:
+    - `currency`
+    - `line_items`
+    - `customer_info`
+
+    About `customer_info`:
+    - You can reference an existing customer using `customer_info.customer_id`, or
+    - You can provide customer details at minimum `customer_info.name` and `customer_info.email` to create the order with customer context.
+
+    How to create the order:
+    - Create an order only (no payment): send only the order data.
+    - Create an order and create the first payment charge: include `charges`.
+    - Create an order with a checkout configuration (for a hosted payment flow): include `checkout`.
+
+    Important rules:
+    - You cannot send `charges` and `checkout` in the same request (they are mutually exclusive).
+    - If you send `shipping_contact_id` and/or `fiscal_entity_id`, you must also send `customer_info.customer_id` so the API can validate those IDs against that customer.
+  
+  security:
+    - bearerAuth: []
+  
+  requestBody:
+    $ref: "../../requestBodies/orders/order.yml"
+
   responses:
     200:
       description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-              $ref: ../../schemas/orders/order_response.yml
+            $ref: ../../schemas/orders/order_response.yml
           examples:
             cash:
               $ref: ../../schemas/orders/examples/order_cash.yml
-    422:
-     $ref: '../errors/422.yml'
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     402:
-     $ref: '../errors/402.yml'
+      $ref: '../errors/402.yml'
+    422:
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/orders/order.yml'
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 get:
   tags:
     - Orders
   operationId: getOrders
   summary: Get a list of Orders
-  description: 'Get order details in the form of a list'
+  description: |
+    Returns a paginated list of orders created in your account.
+    Use pagination parameters to navigate through results, and `search` to filter by supported criteria.
+  
+  security:
+    - bearerAuth: []
+  
   responses:
     200:
       description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            title: "get_orders_response"
+            title: get_orders_response
             allOf:
-             - $ref: ../../schemas/orders/orders_response.yml
-             - $ref: ../../schemas/pagination/pagination.yml
-             - $ref: ../../schemas/pagination/page.yml
+              - $ref: ../../schemas/orders/orders_response.yml
+              - $ref: ../../schemas/pagination/pagination.yml
+              - $ref: ../../schemas/pagination/page.yml
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     500:
-     $ref: '../errors/500.yml'
-
-  security:
-    - bearerAuth: []
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'

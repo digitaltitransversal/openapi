@@ -2,8 +2,8 @@ post:
   tags:
     - Webhooks
   operationId: testWebhook
-  summary: Test Webhook
-  description: "Send a webhook.ping event"
+  summary: Test webhook
+  description: Sends a test event to the specified webhook to verify it can receive events.
   responses:
     200:
       description: successful

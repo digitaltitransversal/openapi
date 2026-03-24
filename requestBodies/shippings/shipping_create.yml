@@ -1,6 +1,6 @@
-description: requested field for a shipping
+description: Request body for creating or updating a shipping line.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: '../../schemas/orders/shipping_request.yml'
 required: true

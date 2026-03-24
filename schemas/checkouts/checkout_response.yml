@@ -11,7 +11,7 @@ properties:
     type: array
     items:
       type: string
-    example: [ "cash"]
+    example: ["cash"]
   can_not_expire:
     type: boolean
     example: false
@@ -28,7 +28,7 @@ properties:
   id:
     type: string
     example: "b0bf16c4-18b9-445e-ba24-01604f329dbf"
-  livemode: 
+  livemode:
     type: boolean
     example: true
   metadata:
@@ -37,8 +37,8 @@ properties:
     example: { "key": "value" }
   name:
     type: string
-    description: Reason for charge
-    example:  Payment Link Name 1594138857
+    description: Payment link name
+    example: "Payment Link Name 1594138857"
   needs_shipping_contact:
     type: boolean
     example: false
@@ -50,7 +50,7 @@ properties:
     example: 0
   payments_limit_count:
     type: integer
-    format: int8
+    format: int32
     example: 5
     nullable: true
   recurrent:
@@ -67,7 +67,7 @@ properties:
     example: 1677650400
   status:
     type: string
-    example:  "Issued"
+    example: "Issued"
   success_url:
     type: string
     example: "https://pay.femsa.com/success"

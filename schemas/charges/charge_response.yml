@@ -1,9 +1,10 @@
-title: charges_data_response
+title: charge_response
 type: object
 properties:
   amount:
     type: integer
-    example: 4321
+    format: int64
+    example: 600000
   channel:
     type: object
     properties:
@@ -12,48 +13,64 @@ properties:
         example: "Checkout"
       checkout_request_id:
         type: string
-        example: "6fca054a-8519-4c43-971e-cea35cc519bb"
+        example: "f3a5bfc1-ba1c-474f-9687-46d8b75ffc90"
       checkout_request_type:
         type: string
-        example: "HostedPayment"
+        example: "Integration"
       id:
         type: string
-        example: "channel_2tNDzhA4Akmzj11AU"
+        example: "channel_2zNxD65G8MBNkYksy"
+
   created_at:
     type: integer
-    example: 1676386026
     format: int64
+    example: 1768581166
+
   currency:
     type: string
-    example: MXN
+    example: "MXN"
+  
   customer_id:
     type: string
+    
   description:
     type: string
     example: "Payment from order"
+  
   device_fingerprint:
     type: string
     example: "6FR3chaU4Y1nGAW5NAGd1rcjAKa142Ba"
+
   failure_code:
     type: string
+    nullable: true
     example: "suspected_fraud"
+
   failure_message:
     type: string
+    nullable: true
     example: "Este cargo ha sido declinado porque el comportamiento del comprador es sospechoso."
+
   id:
     type: string
-    example: "63efa757cf65380001aec040"
+    example: "696a682e1ef5ca00015698b7"
+  
   livemode:
     type: boolean
+    example: true
+
   object:
     type: string
+  
   order_id:
     type: string
-    example: "ord_2tN73UdUSNrYRPD9r"
+    example: "ord_2zNwzJrfNC24uQUzq"
+  
   paid_at:
     type: integer
-    example: 1676390742
+    format: int64
     nullable: true
+
   payment_method:
     title: charge_response_payment_method
     oneOf:
@@ -62,11 +79,13 @@ properties:
       propertyName: object
       mapping:
         cash_payment: payment_method_cash
+
   reference_id:
     type: string
     description: "Reference ID of the charge"
     example: ref_2tN73UdUSNrYRPD9r
     nullable: true
+    
   refunds:
     type: object
     title: charge_response_refunds
@@ -120,6 +139,11 @@ properties:
                   example: "12002000778626"
                   description: payout reference for oxxo stores  
     nullable: true
+
   status:
     type: string
     example: "pending_payment"
+  
+  is_refundable:
+    type: boolean
+    example: false

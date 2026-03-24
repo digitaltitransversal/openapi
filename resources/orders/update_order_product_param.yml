@@ -2,55 +2,67 @@ put:
   tags:
     - Products
   operationId: ordersUpdateProduct
-  description: Update an existing product for an existing orden
   summary: Update Product
+  description: >-
+    Updates an existing product (line item) for an existing order. Use this
+    endpoint to modify the details of a specific line item in the order.
+  
+  security:
+    - bearerAuth: []
+  
+  requestBody:
+    $ref: '../../requestBodies/products/product_update.yml'
+  
   responses:
-    200:
-      description: successful
+    "200":
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/charges/product_order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    422:
-     $ref: '../errors/422.yml'
-    404:
-     $ref: '../errors/404.yml'
-    500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/products/product_update.yml'
+    "401":
+      $ref: '../errors/401.yml'
+    "404":
+      $ref: '../errors/404.yml'
+    "422":
+      $ref: '../errors/422.yml'
+    "500":
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/line_items_id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'
     - $ref: '../../parameters/commons/headers/x_child_company_id.yml'
+
 delete:
   tags:
     - Products
   operationId: ordersDeleteProduct
-  description: Delete product for an existing orden
   summary: Delete Product
+  description: >-
+    Deletes a product (line item) from an existing order. The API will validate
+    whether the order can be modified before removing the item.
+  
+  security:
+    - bearerAuth: []
+  
   responses:
-    200:
-      description: successful
+    "200":
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
             $ref: ../../schemas/charges/product_order_response.yml
-    401:
-     $ref: '../errors/401.yml'
-    422:
-     $ref: '../errors/422.yml'
-    404:
-     $ref: '../errors/404.yml'
-    500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
+    "401":
+      $ref: '../errors/401.yml'
+    "404":
+      $ref: '../errors/404.yml'
+    "422":
+      $ref: '../errors/422.yml'
+    "500":
+      $ref: '../errors/500.yml'
+  
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/line_items_id.yml'

@@ -2,27 +2,39 @@ post:
   tags:
     - Charges
   operationId: ordersCreateCharge
-  summary: Create charge
-  description: Create charge for an existing orden
+  summary: Create a charge for an order
+  description: |
+    Creates a new charge associated with an existing order.
+
+    Notes:
+    - The charge is created for the order identified by the path parameter `id`.
+    - Depending on the payment method, the charge may be created in a non-final status (for example, pending).
+    - If the order does not meet the required conditions, the API may respond with **428 Precondition Required**.
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: "../../requestBodies/charges/charge_create.yml"
+
   responses:
     200:
-      description: successful
+      description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
           schema:
-            $ref: ../../schemas/charges/charge_order_response.yml
+            $ref: "../../schemas/charges/charge_order_response.yml"
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
+    422:
+      $ref: '../errors/422.yml'
     428:
-     $ref: '../errors/428.yml'
+      $ref: '../errors/428.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: '../../requestBodies/charges/charge_create.yml'
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/headers/accept_language.yml'

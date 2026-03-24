@@ -5,9 +5,14 @@ required:
 properties:
   description:
     type: string
-    description: A name or brief explanation of what this api key is used for
+    description: A name or brief explanation of what this API key is used for.
     example: online store
+
   role:
     type: string
+    description: >
+      Defines the type of API key to create. Only "private" is supported for creation.
+      A "public" API key already exists by default per company/environment.
+    enum:
+      - private
     example: private
-    descripción: Indicates if the api key is private or public

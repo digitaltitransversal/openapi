@@ -1,6 +1,6 @@
-description: requested fields in order to update a webhook  
+description: Webhook update request payload.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: '../../schemas/webhooks/webhook_update_request.yml'
 required: true

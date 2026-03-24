@@ -1,5 +1,5 @@
 title: transaction_response
-description: "The Transaction object represents the actions or steps of an order. Statuses can be: unprocessed, pending, available, owen, paid_out, voided, capture, capture_reversal, liquidation, liquidation_reversal, payout, payout_reversal, refund, refund_reversal, chargeback, chargeback_reversal, rounding_adjustment, won_chargeback, transferred, and transferred."
+description: Transaction object.
 type: object
 required:
   - id
@@ -11,56 +11,97 @@ required:
   - type
   - created_at
   - currency
-  - charge
   - livemode
 properties:
-  amount:
-    type: integer
-    example: 1000
-    format: int64
-    description: "The amount of the transaction."
-  charge:
-    type: string
-    example: "5ee7ec58885a45585e6d9f8m"
-    description: "Randomly assigned unique order identifier associated with the charge."
-  created_at:
-    type: integer
-    example: 1553273553
-    format: int64
-    description: "Date and time of creation of the transaction in Unix format."
-  currency:
-    type: string
-    example: "MXN"
-    description: "The currency of the transaction. It uses the 3-letter code of the [International Standard ISO 4217.](https://es.wikipedia.org/wiki/ISO_4217)"
-    maxLength: 3
-  fee:
-    type: integer
-    example: 560
-    format: int64
-    description: "The amount to be deducted for taxes and commissions."
   id:
     type: string
     example: "5ee7ec5b8dea41085erb7f9e"
-    description: "Unique identifier of the transaction."
-  livemode:
-    type: boolean
-    example: true
-    description: "Indicates whether the transaction was created in live mode or test mode."
-  net:
-    type: integer
-    example: 440
-    format: int64
-    description: "The net amount after deducting commissions and taxes."
+    description: Unique identifier of the transaction.
   object:
     type: string
     example: "transaction"
-    description: "Object name, which is transaction."
+    description: Object name, which is transaction.
+  amount:
+    type: integer
+    format: int64
+    example: 1000
+    description: The amount of the transaction.
+  fee:
+    type: integer
+    format: int64
+    example: 560
+    description: The amount to be deducted for taxes and commissions.
+  net:
+    type: integer
+    format: int64
+    example: 440
+    description: The net amount after deducting commissions and taxes.
+  currency:
+    type: string
+    example: "MXN"
+    maxLength: 3
+    description: The currency of the transaction. It uses the 3-letter code of ISO 4217.
   status:
     type: string
     example: "pending"
-    description: "Code indicating transaction status."
+    enum:
+      - unprocessed
+      - pending
+      - available
+      - owing
+      - paid_out
+      - on_hold
+      - retained
+      - voided
+    description: Code indicating transaction status.
   type:
     type: string
     example: "capture"
-    description: "Transaction Type"
-  
+    enum:
+      - capture
+      - capture_reversal
+      - liquidation
+      - liquidation_reversal
+      - payout
+      - payout_reversal
+      - refund
+      - refund_reversal
+      - rounding_adjustment
+      - transfer
+      - transferred
+      - retention
+      - temporary_retention
+      - cashout_retention
+      - cashout_confirmation
+      - cashout_cancelation
+      - autofund_capture
+    description: Transaction type.
+  created_at:
+    type: integer
+    format: int64
+    example: 1553273553
+    description: Date and time of creation of the transaction in Unix format.
+  livemode:
+    type: boolean
+    example: true
+    description: Indicates whether the transaction was created in live mode or test mode.
+  charge:
+    type: string
+    nullable: true
+    example: "5ee7ec58885a45585e6d9f8m"
+    description: Charge ID associated with the transaction (present only if the transaction belongs to a charge).
+  transfer:
+    type: string
+    nullable: true
+    example: "trf_2tPAmKCEJqh8RE6nY"
+    description: Transfer ID associated with the transaction (present only if the transaction belongs to a transfer).
+  transferred_at:
+    type: integer
+    format: int64
+    nullable: true
+    example: 1553273999
+    description: Date and time when the transaction was transferred, in Unix format.
+  formula:
+    type: string
+    nullable: true
+    description: Transaction fee formula identifier (if available).

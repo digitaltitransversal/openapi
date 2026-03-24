@@ -1,5 +1,5 @@
-title: a webhook
-description: a webhook
+title: webhook_request
+description: Parameters used to create or update a webhook.
 type: object
 required:
   - url

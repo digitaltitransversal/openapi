@@ -1,6 +1,6 @@
-description: requested field for customer shippings contacts
+description: Request body for creating or updating a customer shipping contact.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: ../../schemas/customers/customer_shipping_contacts.yml
 required: true

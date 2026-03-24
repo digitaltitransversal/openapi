@@ -1,5 +1,5 @@
 title: webhook_key_delete_response
-description: webhook keys model
+description: Represents a webhook signing key after it has been deleted.
 type: object
 properties:
   active:

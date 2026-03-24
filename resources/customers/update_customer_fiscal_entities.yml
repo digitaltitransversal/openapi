@@ -2,10 +2,17 @@ put:
   tags:
     - Customers
   operationId: UpdateCustomerFiscalEntities
-  summary: Update  Fiscal Entity
-  description: 'Update Fiscal Entity resource that corresponds to a customer ID.'
+  summary: Update Fiscal Entity
+  description: "Update Fiscal Entity resource that corresponds to a customer ID."
+
+  security:
+    - bearerAuth: []
+
+  requestBody:
+    $ref: ../../requestBodies/customers/customer_update_fiscal_entities.yml
+ 
   responses:
-    '200':
+    200:
       description: successful operation
       content:
         application/vnd.app-v2.1.0+json:
@@ -34,19 +41,15 @@ put:
                     example: "cus_2tKcHxhTz7xU5SymF"
                   default:
                     type: boolean
-            
     401:
-     $ref: '../errors/401.yml'
+      $ref: '../errors/401.yml'
     404:
-     $ref: '../errors/404.yml'
+      $ref: '../errors/404.yml'
     422:
-     $ref: '../errors/422.yml'
+      $ref: '../errors/422.yml'
     500:
-     $ref: '../errors/500.yml'
-  security:
-    - bearerAuth: []
-  requestBody:
-    $ref: ../../requestBodies/customers/customer_update_fiscal_entities.yml
+      $ref: '../errors/500.yml'
+
   parameters:
     - $ref: '../../parameters/commons/path_param/id.yml'
     - $ref: '../../parameters/commons/path_param/fiscal_entities_id.yml'

@@ -1,6 +1,8 @@
-description: requested field for products 
+description: >-
+  Fields allowed to update an existing product (line item) in an order. All
+  fields are optional; only the provided fields will be updated.
 content:
   application/json:
-    schema:  
+    schema:
       $ref: '../../schemas/orders/update_product.yml'
 required: true

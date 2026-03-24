@@ -1,5 +1,5 @@
 title: order_discount_lines_request
-name: order_discount_lines_request
+type: object
 description: "List of discounts that apply to the order."
 required:
   - amount

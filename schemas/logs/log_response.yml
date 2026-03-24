@@ -1,5 +1,5 @@
-title: log response for request
-description: log model
+title: log_response
+description: Log model representing a recorded request/response cycle for troubleshooting and auditing.
 type: object
 required:
   - created_at

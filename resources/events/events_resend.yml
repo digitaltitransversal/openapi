@@ -3,7 +3,13 @@ post:
     - Events
   operationId: resendEvent
   summary: Resend Event
-  description: "Try to send an event"
+  description: |
+    Triggers a new delivery attempt for a specific webhook log associated with the given event.
+    Use this endpoint to retry failed webhook deliveries (for example, non-2xx responses or timeouts). The response returns the updated webhook log with the latest attempt metadata.
+
+  security:
+    - bearerAuth: []
+
   responses:
     200:
       description: successful operation
@@ -17,8 +23,7 @@ post:
       $ref: "../errors/404.yml"
     500:
       $ref: "../errors/500.yml"
-  security:
-    - bearerAuth: []
+      
   parameters:
     - $ref: "../../parameters/commons/path_param/event_id.yml"
     - $ref: "../../parameters/commons/path_param/webhook_log_id.yml"

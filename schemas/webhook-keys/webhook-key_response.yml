@@ -1,5 +1,5 @@
 title: webhook_key_response
-description: webhook keys model
+description: Represents a webhook signing key configuration for the company.
 type: object
 properties:
   id:

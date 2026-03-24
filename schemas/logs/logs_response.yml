@@ -1,6 +1,6 @@
     
-title: log response for request
-description: logs model
+title: log_response
+description: Log model representing a recorded request/response cycle for troubleshooting and auditing.
 type: object
 properties:
   has_more: 

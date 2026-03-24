@@ -3,9 +3,12 @@ allOf:
   - $ref: '../../schemas/orders/shipping_request.yml'
   - type: object
     properties:
-      id: 
+      id:
         type: string
+        example: "ship_lin_2sLxi45ZFs1GHJmzx"
       object:
         type: string
+        example: "shipping_line"
       parent_id:
         type: string
+        example: "ord_2sLxi3MqYFJ1QfTmP"
