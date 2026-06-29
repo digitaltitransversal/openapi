@@ -4,7 +4,7 @@ servers:
     description: Femsa main server
 info:
   description: Femsa sdk
-  version: 2.1.0
+  version: 2.2.0
   contact:
     name: Engineering Femsa
     url: https://github.com/digitalfemsa/openapi/issues
