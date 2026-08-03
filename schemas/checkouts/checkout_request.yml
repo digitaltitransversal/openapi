@@ -30,3 +30,7 @@ properties:
     type: string
     description: "This field represents the type of checkout"
     example: "Integration"
+  redirection_time:
+    type: integer
+    description: "Number of seconds to wait before redirecting to the success or failure url"
+    example: 60
