@@ -27,7 +27,15 @@ steps:
         - GP_USER
       build_args_from_env:
         - SSH_KEY
-    secrets: [GP_TOKEN, GP_USER, aws_access_key_id, aws_secret_access_key,SSH_KEY]
+    environment:
+      GP_TOKEN:
+        from_secret: GP_TOKEN
+      GP_USER:
+        from_secret: GP_USER
+      aws_access_key_id:
+        from_secret: aws_access_key_id
+      aws_secret_access_key:
+        from_secret: aws_secret_access_key
   - name: validate
     image: 348781328318.dkr.ecr.us-east-1.amazonaws.com/${CI_REPO}:${CI_PIPELINE_NUMBER}
     commands:
